@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>狗狗旅遊手冊 - 終極穩定版</title>
+    <title>狗狗旅遊手冊 - Google 搜尋強連線版</title>
     <!-- Web App Icons -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/dog.png">
     <link rel="icon" href="https://img.icons8.com/fluent/48/000000/dog.png">
@@ -198,7 +198,7 @@
                 <button v-if="dates.length > 0" @click="showModal('itinerary')" class="fixed bottom-24 right-6 w-14 h-14 bg-blue-500 text-white rounded-full shadow-xl flex items-center justify-center z-50 text-2xl active:scale-90 transition-transform">➕</button>
             </div>
 
-            <!-- 2. AI 助手 (大腦暴力修復) -->
+            <!-- 2. AI 助手 (Google Search 強化) -->
             <div v-if="currentTab === 'ai'" key="ai" class="space-y-4">
                 <div class="flex space-x-2 bg-blue-50 p-1 rounded-xl">
                     <button @click="aiMode = 'guide'" :class="aiMode === 'guide' ? 'bg-white text-blue-600 shadow' : 'text-blue-300'" class="flex-1 py-2.5 rounded-lg text-xs font-black transition-all">🐾 AI 導遊</button>
@@ -210,7 +210,7 @@
                         <img v-if="aiImagePreview" :src="aiImagePreview" class="w-full h-full object-cover">
                         <div v-else class="text-center">
                             <div class="text-5xl mb-3">{{ isReadingImage ? '⌛' : '📸' }}</div>
-                            <p class="text-xs font-black text-blue-300 uppercase tracking-widest">{{ isReadingImage ? '正在優化照片...' : '點擊上傳照片' }}</p>
+                            <p class="text-xs font-black text-blue-300 uppercase tracking-widest">{{ isReadingImage ? '優化照片中...' : '選取相簿照片' }}</p>
                         </div>
                         <input type="file" accept="image/*" @change="handleAiImageUpload" class="absolute inset-0 opacity-0 cursor-pointer z-10">
                     </div>
@@ -218,7 +218,7 @@
                     <button @click="runAiAnalysis" 
                             :disabled="!aiImagePreview || isAnalyzing || isReadingImage"
                             class="w-full py-4 bg-blue-500 text-white rounded-2xl font-black text-sm shadow-md disabled:bg-blue-200 active:scale-95 transition-transform">
-                        <span v-if="!isAnalyzing">啟動 AI 強力分析 🦴</span>
+                        <span v-if="!isAnalyzing">啟動 Google 搜尋分析 🦴</span>
                         <div v-else class="flex justify-center items-center"><div class="dot-flashing"></div></div>
                     </button>
 
@@ -266,7 +266,6 @@
                 </div>
 
                 <div v-if="prepSub === 'prep'" class="space-y-4">
-                    <!-- 航班票資卡片 -->
                     <div v-for="type in ['outbound', 'inbound']" :key="type" class="ticket p-5 shadow-sm bg-white border border-blue-50">
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest">{{ type === 'outbound' ? 'Departure' : 'Return' }}</span>
@@ -282,7 +281,6 @@
                         </div>
                     </div>
                     
-                    <!-- 行李清單 -->
                     <div class="bg-white rounded-3xl p-5 shadow-sm border border-blue-50">
                         <div v-for="(item, idx) in preparations.行李" :key="idx" class="flex items-center justify-between py-2.5 border-b border-blue-50 last:border-0">
                             <div @click="togglePrep('行李', idx)" class="flex items-center space-x-3 cursor-pointer flex-1">
@@ -343,12 +341,12 @@
                 <div class="bg-white p-6 rounded-3xl border border-blue-50 shadow-sm space-y-5">
                     <div>
                         <label class="text-[10px] text-blue-400 font-black uppercase mb-1.5 block tracking-widest">Trip Name</label>
-                        <input v-model="tripName" @change="saveToStorage" class="w-full p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 text-sm shadow-inner">
+                        <input v-model="tripName" @change="saveToStorage" class="w-full p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 text-sm shadow-inner focus:ring-1 focus:ring-blue-100">
                     </div>
                     <div class="border-t border-blue-50 pt-5">
                         <label class="text-[10px] text-blue-400 font-black uppercase mb-3 block tracking-widest">Dates</label>
                         <div class="flex flex-wrap gap-2 mb-4">
-                            <div v-for="(d, idx) in dates" :key="idx" class="bg-blue-100/50 border border-blue-200 px-3 py-1.5 rounded-xl flex items-center text-[10px] font-black text-blue-900">
+                            <div v-for="(d, idx) in dates" :key="idx" class="bg-blue-100/50 border border-blue-200 px-3 py-1.5 rounded-xl flex items-center text-[10px] font-black text-blue-900 shadow-sm">
                                 <span>{{ d.displayDate }} ({{ d.weekday }})</span>
                                 <button @click="dates.splice(idx, 1); saveToStorage();" class="ml-2.5 text-red-400 font-bold">✕</button>
                             </div>
@@ -360,9 +358,9 @@
                     </div>
                 </div>
 
-                <!-- 翻譯強化版：放入 User Prompt 提高成功率 -->
+                <!-- 翻譯強化：極簡 Payload 避免超時 -->
                 <div class="bg-blue-600 text-white p-6 rounded-[35px] shadow-lg">
-                    <h3 class="font-black mb-3 text-xs flex items-center tracking-widest">🌍 旅遊翻譯專家</h3>
+                    <h3 class="font-black mb-3 text-xs flex items-center tracking-widest">🌍 專業翻譯專家</h3>
                     <textarea v-model="translateText" placeholder="輸入單字(如: hungry)或句子..." class="w-full p-4 rounded-2xl text-blue-900 text-xs border-none h-24 mb-4 focus:ring-0 shadow-inner" :disabled="isTranslating"></textarea>
                     <button @click="handleTranslate" :disabled="isTranslating || !translateText" class="w-full bg-white text-blue-600 py-4 rounded-2xl font-black text-xs uppercase shadow-md active:scale-95 transition-transform flex justify-center items-center">
                         <span v-if="!isTranslating">啟動秒速翻譯 🐾</span>
@@ -400,17 +398,17 @@
                         <span v-else class="text-3xl opacity-20">📸</span>
                         <input type="file" @change="uploadItineraryImg" class="absolute inset-0 opacity-0 cursor-pointer z-10">
                     </div>
-                    <input v-model="form.name" placeholder="景點名稱" class="w-full p-4 bg-blue-50 rounded-2xl text-xs font-black border-none shadow-inner focus:ring-1 focus:ring-blue-100">
-                    <input v-model="form.mapUrl" placeholder="Google Maps 分享連結" class="w-full p-4 bg-blue-50 rounded-2xl text-[10px] border-none shadow-inner focus:ring-1 focus:ring-blue-100">
+                    <input v-model="form.name" placeholder="景點名稱" class="w-full p-4 bg-blue-50 rounded-2xl text-xs font-black border-none shadow-inner">
+                    <input v-model="form.mapUrl" placeholder="Google Maps 連結" class="w-full p-4 bg-blue-50 rounded-2xl text-[10px] border-none shadow-inner">
                     <div class="grid grid-cols-2 gap-3">
-                        <select v-model="form.category" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner"><option v-for="c in ['景點','住宿','美食','購物','航班','其他']">{{c}}</option></select>
-                        <input v-model="form.time" placeholder="預定時間" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner">
+                        <select v-model="form.category" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner focus:ring-1 focus:ring-blue-100"><option v-for="c in ['景點','住宿','美食','購物','航班','其他']">{{c}}</option></select>
+                        <input v-model="form.time" placeholder="時間" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner">
                     </div>
-                    <textarea v-model="form.note" placeholder="備註內容..." class="w-full p-4 bg-blue-50 rounded-2xl text-xs h-28 border-none shadow-inner"></textarea>
+                    <textarea v-model="form.note" placeholder="備註..." class="w-full p-4 bg-blue-50 rounded-2xl text-xs h-28 border-none shadow-inner"></textarea>
                 </div>
 
                 <div v-if="modal.type === 'booking'" class="space-y-5">
-                    <div class="text-[10px] font-black text-blue-400 uppercase text-center mb-2 tracking-widest">手動維護航班 🦴</div>
+                    <div class="text-[10px] font-black text-blue-400 uppercase text-center mb-2 tracking-widest">航班手動維護 🦴</div>
                     <div><label class="text-[9px] font-black text-gray-400 ml-1 uppercase">Flight No.</label><input v-model="form.flightNo" placeholder="JL802" class="w-full p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 shadow-inner mt-1"></div>
                     <div class="grid grid-cols-2 gap-3">
                         <div><label class="text-[9px] font-black text-gray-400 ml-1 uppercase tracking-widest">Origin</label><input v-model="form.from" placeholder="TPE" class="p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 shadow-inner mt-1 text-center"></div>
@@ -419,25 +417,24 @@
                 </div>
 
                 <div v-if="modal.type === 'expense'" class="space-y-5">
-                    <select v-model="form.payer" class="w-full p-4 bg-blue-50 rounded-2xl font-black border-none shadow-inner focus:ring-1 focus:ring-blue-100"><option v-for="m in members" :value="m.name">{{ m.name }}</option></select>
+                    <select v-model="form.payer" class="w-full p-4 bg-blue-50 rounded-2xl font-black border-none shadow-inner"><option v-for="m in members" :value="m.name">{{ m.name }}</option></select>
                     <input v-model="form.name" placeholder="項目" class="w-full p-4 bg-blue-50 rounded-2xl border-none shadow-inner">
                     <input type="number" v-model="form.amount" placeholder="金額" class="w-full p-4 bg-blue-50 rounded-2xl border-none shadow-inner">
                 </div>
 
                 <div v-if="modal.type === 'shopping'" class="space-y-5">
-                    <input v-model="form.name" placeholder="想買什麼？" class="w-full p-4 bg-blue-50 rounded-2xl font-black border-none shadow-inner focus:ring-1 focus:ring-blue-100">
+                    <input v-model="form.name" placeholder="想買什麼？" class="w-full p-4 bg-blue-50 rounded-2xl font-black border-none shadow-inner">
                 </div>
 
                 <div class="flex flex-col space-y-4 mt-10">
                     <button @click="saveData" class="w-full py-5 bg-blue-600 text-white rounded-[25px] font-black shadow-lg active:scale-95 transition-transform tracking-widest uppercase">Save Changes 🦴</button>
-                    <button v-if="modal.isEdit" @click="confirmDelete" class="w-full py-3 text-red-400 text-xs font-bold uppercase tracking-widest">Delete Item</button>
+                    <button v-if="modal.isEdit" @click="confirmDelete" class="w-full py-3 text-red-400 text-xs font-bold uppercase tracking-widest">Delete</button>
                     <button @click="modal.show = false" class="w-full py-3 text-gray-400 font-black text-xs uppercase tracking-widest">Cancel</button>
                 </div>
             </div>
         </div>
     </transition>
 
-    <!-- 用於壓縮照片的隱藏 Canvas -->
     <canvas id="compress-canvas"></canvas>
 </div>
 
@@ -450,7 +447,7 @@ createApp({
         const prepSub = ref('prep');
         const aiMode = ref('guide');
         const selectedDate = ref('');
-        const tripName = ref('我的日本之旅');
+        const tripName = ref('我的精彩之旅');
         
         const aiImagePreview = ref('');
         const aiMimeType = ref('image/jpeg');
@@ -488,14 +485,9 @@ createApp({
         const expenses = ref([]);
         const bookings = ref({ outbound: {}, inbound: {} });
 
-        // --- 核心改進：永久化 Master Key 與 資料搜救隊 ---
+        // --- 核心改進：永久 Master Key 與 資料搜救隊 ---
         const MASTER_KEY = 'TRAVEL_APP_MASTER_DATA';
-        const OLD_KEYS = [
-            'dog_travel_app_permanent_data', 
-            'dog_trip_v11_data', 
-            'dog_trip_v12_data', 
-            'dog_trip_v14_data'
-        ];
+        const OLD_KEYS = ['dog_travel_app_permanent_data', 'dog_trip_v11_data', 'dog_trip_v12_data', 'dog_trip_v14_data', 'dog_trip_v18_data'];
 
         const saveToStorage = () => {
             localStorage.setItem(MASTER_KEY, JSON.stringify({
@@ -508,18 +500,11 @@ createApp({
         };
 
         const loadFromStorage = () => {
-            // 先嘗試讀取 Master Key
             let saved = localStorage.getItem(MASTER_KEY);
-            
-            // 如果 Master Key 沒資料，啟動搜救隊搜尋舊版本資料
             if (!saved) {
                 for (let key of OLD_KEYS) {
                     let oldData = localStorage.getItem(key);
-                    if (oldData) {
-                        saved = oldData;
-                        console.log("資料救援成功：從 " + key + " 恢復資料 🐾");
-                        break; 
-                    }
+                    if (oldData) { saved = oldData; break; }
                 }
             }
 
@@ -536,8 +521,6 @@ createApp({
                     selectedDate.value = data.selectedDate || (dates.value[0]?.fullDate || '');
                     exchangeRates.value = data.exchangeRates || { JPY: 0.21, KRW: 0.024, USD: 32.5, EUR: 35.1 };
                     bookings.value = data.bookings || { outbound: {}, inbound: {} };
-                    
-                    // 恢復後立即存入 Master Key 確保下次讀取
                     saveToStorage();
                 } catch(e) { console.error("Load Error", e); }
             }
@@ -554,19 +537,23 @@ createApp({
                     canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.6)); // 降低品質加速 AI 分析
+                    resolve(canvas.toDataURL('image/jpeg', 0.6));
                 };
             });
         };
 
-        const fetchWithRetry = async (url, options, retries = 3) => {
-            for (let i = 0; i <= retries; i++) {
+        // --- 強連線機制：指數退避重試 ---
+        const fetchWithRetry = async (url, options, maxRetries = 5) => {
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i <= maxRetries; i++) {
                 try {
                     const response = await fetch(url, options);
                     if (response.ok) return await response.json();
-                    if (response.status === 429) { await new Promise(res => setTimeout(res, Math.pow(2, i) * 1000)); continue; }
-                    throw new Error('API Error');
-                } catch (err) { if (i === retries) throw err; await new Promise(res => setTimeout(res, 1000)); }
+                    if (i === maxRetries) throw new Error('連線超時');
+                } catch (err) {
+                    if (i === maxRetries) throw err;
+                    await new Promise(res => setTimeout(res, delays[i]));
+                }
             }
         };
 
@@ -587,16 +574,15 @@ createApp({
             }
         };
 
-        // --- AI 指令優化：將指令與圖片合併，提高分析成功率 ---
+        // AI 導遊：加入 Google Search 搜尋真實資訊
         const runAiAnalysis = async () => {
             if (!aiBase64.value || isAnalyzing.value) return;
             isAnalyzing.value = true;
             aiResult.value = '';
             const apiKey = "";
-            
             const instruction = aiMode.value === 'guide' 
-                ? "你是一位專業的台灣繁體中文導遊。請詳細分析這張旅途照片，告訴我它的背景、有趣的故事或參觀重點。若是籤詩，請解釋其含意。" 
-                : "你是一位菜單翻譯專家。請將照片中的日文或各國語言菜名翻譯為台灣繁體中文，並解釋成分。";
+                ? "你是一位專業的繁體中文導遊。請透過 Google 搜尋這張照片中的景點或地標真實資訊，給予背景故事與建議。" 
+                : "你是一位菜單翻譯專家。請翻譯照片中的菜名並解釋內容。";
 
             try {
                 const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
@@ -608,11 +594,12 @@ createApp({
                                 { text: instruction },
                                 { inlineData: { mimeType: aiMimeType.value, data: aiBase64.value } }
                             ] 
-                        }]
+                        }],
+                        tools: [{ "google_search": {} }] // 啟動 Google 搜尋增強
                     })
                 });
-                aiResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "AI 暫時看不懂這張照片喔，請換一張更清晰的試試！🐾";
-            } catch (err) { aiResult.value = "AI 連線有點慢，請再啟動一次分析看看！🦴"; } 
+                aiResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "Google 暫時無法辨認這張照片 🐾";
+            } catch (err) { aiResult.value = "AI 正在努力重連中，若看到此訊息請再試一次。🦴"; } 
             finally { isAnalyzing.value = false; }
         };
 
@@ -625,7 +612,7 @@ createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: "查詢今日 JPY, KRW, USD, EUR 對 TWD 匯率。" }] }],
+                        contents: [{ parts: [{ text: "查詢 JPY, KRW, USD, EUR 對 TWD 匯率。" }] }],
                         tools: [{ "google_search": {} }],
                         generationConfig: { 
                             responseMimeType: "application/json", 
@@ -639,7 +626,7 @@ createApp({
                 const newRates = JSON.parse(result.candidates[0].content.parts[0].text);
                 exchangeRates.value = { ...exchangeRates.value, ...newRates };
                 saveToStorage();
-            } catch (err) { console.error("Rate Update Error"); } finally { isUpdatingRates.value = false; }
+            } catch (err) { console.error("Rate update failed"); } finally { isUpdatingRates.value = false; }
         };
 
         const calculateCurrency = computed(() => {
@@ -647,11 +634,9 @@ createApp({
             return (currInput.value * rate).toLocaleString(undefined, { maximumFractionDigits: 0 });
         });
 
-        // --- 翻譯強化：修正簡單單字翻譯失敗問題 ---
         const handleTranslate = async () => {
             if (!translateText.value || isTranslating.value) return;
-            isTranslating.value = true; 
-            translatedResult.value = '';
+            isTranslating.value = true; translatedResult.value = '';
             const apiKey = ""; 
             try {
                 const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
@@ -659,12 +644,12 @@ createApp({
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{ 
-                            parts: [{ text: `你是一位精通語言的專業翻譯官。請將以下內容翻譯成台灣繁體中文，若是單字請給予中文解釋，若是句子則直接翻譯，不要多餘的廢話：\n\n${translateText.value}` }] 
+                            parts: [{ text: `將此內容翻譯成台灣繁體中文，若是單字則給予意思。僅回傳翻譯內容：\n\n${translateText.value}` }] 
                         }]
                     })
                 });
-                translatedResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "翻譯小幫手找不到結果喔 🐾";
-            } catch (err) { translatedResult.value = "連線不穩定，請再翻譯一次看看！"; } 
+                translatedResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "翻譯小幫手找不到結果 🐾";
+            } catch (err) { translatedResult.value = "AI 翻譯目前壅塞中，請再試一次看看！"; } 
             finally { isTranslating.value = false; }
         };
 
@@ -698,7 +683,7 @@ createApp({
         };
 
         const editItem = (item) => { modal.value = { show: true, type: 'itinerary', title: '編輯行程', isEdit: true, targetId: item.id }; form.value = { ...item }; };
-        const editBooking = (type) => { modal.value = { show: true, type: 'booking', title: '修改航班資訊', isEdit: true, targetType: type }; form.value = { ...bookings.value[type] }; };
+        const editBooking = (type) => { modal.value = { show: true, type: 'booking', title: '航班維護', isEdit: true, targetType: type }; form.value = { ...bookings.value[type] }; };
 
         const saveData = () => {
             if (modal.value.type === 'booking') { bookings.value[modal.value.targetType] = { ...form.value }; } 
