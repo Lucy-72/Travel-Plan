@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>狗狗旅遊手冊 - 凍結導航版</title>
+    <title>狗狗旅遊手冊 - AI 終極修復版</title>
     <!-- Web App Icons -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/dog.png">
     <link rel="icon" href="https://img.icons8.com/fluent/48/000000/dog.png">
@@ -29,7 +29,7 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* 凍結效果相關 */
+        /* 凍結效果 */
         .sticky-header {
             position: sticky;
             top: 0;
@@ -37,7 +37,7 @@
         }
         .sticky-date-bar {
             position: sticky;
-            top: 120px; /* Header 高度 */
+            top: 120px;
             z-index: 40;
             background-color: white;
             margin-left: -1rem;
@@ -92,9 +92,9 @@
 
         .dot-flashing {
             position: relative;
-            width: 8px;
-            height: 8px;
-            border-radius: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 3px;
             background-color: var(--dog-blue);
             color: var(--dog-blue);
             animation: dot-flashing 1s infinite linear alternate;
@@ -104,16 +104,16 @@
             content: ''; display: inline-block; position: absolute; top: 0;
         }
         .dot-flashing::before {
-            left: -12px; width: 8px; height: 8px; border-radius: 4px;
+            left: -10px; width: 6px; height: 6px; border-radius: 3px;
             background-color: var(--dog-blue); animation: dot-flashing 1s infinite alternate; animation-delay: 0s;
         }
         .dot-flashing::after {
-            left: 12px; width: 8px; height: 8px; border-radius: 4px;
+            left: 10px; width: 6px; height: 6px; border-radius: 3px;
             background-color: var(--dog-blue); animation: dot-flashing 1s infinite alternate; animation-delay: 1s;
         }
         @keyframes dot-flashing {
             0% { background-color: var(--dog-blue); }
-            50%, 100% { background-color: rgba(59, 130, 246, 0.2); }
+            50%, 100% { background-color: rgba(59, 130, 246, 0.1); }
         }
     </style>
 </head>
@@ -132,7 +132,7 @@
                 <p class="text-white/80 text-[9px] font-black tracking-widest uppercase">Smart Travel Journal 🐾</p>
             </div>
         </div>
-        <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-20 text-5xl font-black text-white pointer-events-none uppercase">Happy</div>
+        <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-20 text-5xl font-black text-white pointer-events-none uppercase">HAPPY</div>
     </header>
 
     <!-- 主內容區 -->
@@ -220,7 +220,7 @@
                         <div class="text-xs text-blue-900 leading-relaxed font-bold whitespace-pre-wrap">{{ aiResult }}</div>
                     </div>
                 </div>
-                <div class="text-[9px] text-center text-blue-300 px-6 font-bold">💡 提示：照片越清晰，AI 的分析就越精準喔！🐾</div>
+                <div class="text-[9px] text-center text-blue-300 px-6 font-bold">💡 提示：照片清晰度越高，AI 的分析就越精準！🐾</div>
             </div>
 
             <!-- 3. 匯率頁面 -->
@@ -368,28 +368,12 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-5 rounded-3xl border border-blue-50 shadow-sm">
-                    <h3 class="font-black text-blue-800 mb-3 text-xs flex items-center">旅伴 👥</h3>
-                    <div class="flex flex-wrap gap-3">
-                        <div v-for="(member, idx) in members" :key="idx" class="relative group">
-                            <div class="w-10 h-10 bg-blue-50 rounded-full overflow-hidden border-2 border-white shadow-md relative">
-                                <img v-if="member.avatar" :src="member.avatar" class="w-full h-full object-cover">
-                                <span v-else class="flex items-center justify-center h-full text-lg">🐶</span>
-                                <input type="file" @change="uploadAvatar($event, idx)" class="absolute inset-0 opacity-0 cursor-pointer">
-                            </div>
-                            <div class="text-[7px] font-black text-center mt-1 text-blue-900 w-10 truncate">{{ member.name }}</div>
-                            <button @click="members.splice(idx, 1); saveToStorage();" class="absolute -top-1 -right-1 bg-red-400 text-white w-3.5 h-3.5 rounded-full text-[7px] flex items-center justify-center shadow-sm">×</button>
-                        </div>
-                        <button @click="addMember" class="w-10 h-10 border-2 border-dashed border-blue-100 rounded-full flex items-center justify-center text-blue-200 hover:bg-blue-50 transition-colors">➕</button>
-                    </div>
-                </div>
-
-                <!-- 翻譯功能修復 -->
+                <!-- 翻譯助手升級區 -->
                 <div class="bg-blue-600 text-white p-5 rounded-[30px] shadow-lg">
-                    <h3 class="font-black mb-2 text-xs flex items-center"><span class="mr-2">🌍</span> 翻譯協助</h3>
-                    <textarea v-model="translateText" placeholder="請輸入想翻譯的內容..." class="w-full p-3 rounded-xl text-blue-900 text-xs border-none h-20 mb-3 focus:ring-0 shadow-inner" :disabled="isTranslating"></textarea>
+                    <h3 class="font-black mb-2 text-xs flex items-center"><span class="mr-2">🌍</span> 專業翻譯協助</h3>
+                    <textarea v-model="translateText" placeholder="輸入想翻譯的句子或單字..." class="w-full p-3 rounded-xl text-blue-900 text-xs border-none h-20 mb-3 focus:ring-0 shadow-inner" :disabled="isTranslating"></textarea>
                     <button @click="handleTranslate" :disabled="isTranslating || !translateText" class="w-full bg-white text-blue-600 py-3 rounded-xl font-black text-[10px] uppercase shadow-md active:scale-95 transition-transform flex justify-center items-center">
-                        <span v-if="!isTranslating">開始翻譯 🐾</span>
+                        <span v-if="!isTranslating">啟動翻譯 🐾</span>
                         <div v-else class="dot-flashing"></div>
                     </button>
                     <transition name="fade">
@@ -426,24 +410,20 @@
                     <input v-model="form.mapUrl" placeholder="貼上 Google Map 分享網址" class="w-full p-4 bg-blue-50 rounded-2xl text-[9px] border-none shadow-inner">
                     <div class="grid grid-cols-2 gap-2">
                         <select v-model="form.category" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner"><option v-for="c in ['景點','住宿','美食','購物','航班','其他']">{{c}}</option></select>
-                        <input v-model="form.time" placeholder="預定時間" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner">
+                        <input v-model="form.time" placeholder="時間" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner">
                     </div>
                     <div class="flex space-x-2">
                         <select v-model="form.transport" class="flex-1 p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner"><option value="walk">🚶‍♂️ 步行</option><option value="car">🚗 開車</option><option value="bus">🚌 大眾</option></select>
                         <input v-model="form.transTime" placeholder="分鐘" class="w-20 p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner">
                     </div>
-                    <textarea v-model="form.note" placeholder="備註細節..." class="w-full p-4 bg-blue-50 rounded-2xl text-xs h-24 border-none shadow-inner"></textarea>
+                    <textarea v-model="form.note" placeholder="備註..." class="w-full p-4 bg-blue-50 rounded-2xl text-xs h-24 border-none shadow-inner"></textarea>
                 </div>
 
                 <div v-if="modal.type === 'booking'" class="space-y-4">
-                    <input v-model="form.flightNo" placeholder="航班號 (如：BR123)" class="w-full p-4 bg-blue-50 rounded-xl font-bold border-none shadow-inner">
+                    <input v-model="form.flightNo" placeholder="航班號 (JL802)" class="w-full p-4 bg-blue-50 rounded-xl font-bold border-none shadow-inner">
                     <div class="grid grid-cols-2 gap-2">
-                        <input v-model="form.from" placeholder="出發機場" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner">
-                        <input v-model="form.to" placeholder="抵達機場" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input v-model="form.depTime" placeholder="起飛時間" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner text-xs">
-                        <input v-model="form.arrTime" placeholder="抵達時間" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner text-xs">
+                        <input v-model="form.from" placeholder="From" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner">
+                        <input v-model="form.to" placeholder="To" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner">
                     </div>
                 </div>
 
@@ -451,17 +431,11 @@
                     <select v-model="form.payer" class="w-full p-4 bg-blue-50 rounded-xl font-black border-none shadow-inner"><option v-for="m in members" :value="m.name">{{ m.name }}</option></select>
                     <input v-model="form.name" placeholder="支出項目" class="w-full p-4 bg-blue-50 rounded-xl border-none shadow-inner">
                     <input type="number" v-model="form.amount" placeholder="金額" class="w-full p-4 bg-blue-50 rounded-xl border-none shadow-inner">
-                    <select v-model="form.category" class="w-full p-4 bg-blue-50 rounded-xl font-bold border-none shadow-inner"><option v-for="c in ['交通','飲食','住宿','門票','購物','其他']">{{c}}</option></select>
-                </div>
-
-                <div v-if="modal.type === 'shopping'" class="space-y-4">
-                    <input v-model="form.name" placeholder="商品名稱" class="w-full p-4 bg-blue-50 rounded-xl font-black border-none shadow-inner">
                 </div>
 
                 <div class="flex flex-col space-y-3 mt-8">
                     <button @click="saveData" class="w-full py-4 bg-blue-600 text-white rounded-3xl font-black shadow-lg active:scale-95 transition-transform">儲存資訊 🦴</button>
-                    <button v-if="modal.isEdit" @click="confirmDelete" class="w-full py-3 text-red-400 text-xs font-bold">刪除項目</button>
-                    <button @click="modal.show = false" class="w-full py-3 text-gray-400 font-black text-xs">先不要 🐾</button>
+                    <button @click="modal.show = false" class="w-full py-3 text-gray-400 font-black text-xs">取消 🐾</button>
                 </div>
             </div>
         </div>
@@ -518,7 +492,7 @@ createApp({
         const expenses = ref([]);
 
         const saveToStorage = () => {
-            localStorage.setItem('dog_trip_v10_data', JSON.stringify({
+            localStorage.setItem('dog_trip_v11_data', JSON.stringify({
                 tripName: tripName.value, dates: dates.value, members: members.value,
                 itineraries: itineraries.value, preparations: preparations.value,
                 bookings: bookings.value, shoppingList: shoppingList.value,
@@ -528,7 +502,7 @@ createApp({
         };
 
         const loadFromStorage = () => {
-            const saved = localStorage.getItem('dog_trip_v10_data');
+            const saved = localStorage.getItem('dog_trip_v11_data');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
@@ -542,12 +516,16 @@ createApp({
                     expenses.value = data.expenses || [];
                     selectedDate.value = data.selectedDate || (dates.value[0]?.fullDate || '');
                     exchangeRates.value = data.exchangeRates || { JPY: 0.21, KRW: 0.024, USD: 32.5, EUR: 35.1 };
-                } catch(e) { console.error("Loading Error", e); }
+                } catch(e) { console.error("Load Error", e); }
             }
         };
 
-        const fetchWithRetry = async (url, options, retries = 3) => {
-            for (let i = 0; i < retries; i++) {
+        const cleanJson = (text) => {
+            return text.replace(/```json|```/g, "").trim();
+        };
+
+        const fetchWithRetry = async (url, options, retries = 5) => {
+            for (let i = 0; i <= retries; i++) {
                 try {
                     const response = await fetch(url, options);
                     if (response.ok) return await response.json();
@@ -555,10 +533,10 @@ createApp({
                         await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
                         continue;
                     }
-                    const errData = await response.json().catch(() => ({}));
-                    throw new Error(errData.error?.message || 'API 連線異常');
+                    const err = await response.json();
+                    throw new Error(err.error?.message || 'API Error');
                 } catch (err) {
-                    if (i === retries - 1) throw err;
+                    if (i === retries) throw err;
                     await new Promise(resolve => setTimeout(resolve, 1000));
                 }
             }
@@ -570,11 +548,11 @@ createApp({
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     aiImagePreview.value = ev.target.result;
-                    aiMimeType.value = file.type;
+                    aiMimeType.value = file.type || 'image/jpeg';
                     aiBase64.value = ev.target.result.split(',')[1];
                     aiResult.value = '';
                 };
-                reader.readAsDataURL(file);
+                reader.readAsAsDataURL(file);
             }
         };
 
@@ -584,27 +562,22 @@ createApp({
             aiResult.value = '';
             const apiKey = "";
             
-            const promptContent = aiMode.value === 'guide' 
-                ? "你是一位專業旅遊導遊。請分析照片中的內容（地標、建築、文字或籤詩），先詳細辨識照片中的細節，再用親切的繁體中文解釋其歷史背景與趣味故事。如果看不清楚，請禮貌地說明原因。回覆請簡明扼要。"
-                : "你是一位精通多國語言的菜單翻譯官。請辨識照片菜單，將菜名翻譯成繁體中文並簡單說明成分。最後提供3句該語言的點餐實用對話句子與發音。";
+            const systemPrompt = aiMode.value === 'guide' 
+                ? "你是一位專業導遊。分析圖片中的景點或文字，用繁體中文詳細解釋背景。如果看不清請直說。" 
+                : "你是一位菜單翻譯官。辨識圖片文字，翻成繁體中文並解釋成分，附帶3句實用點餐對話。";
 
             try {
                 const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ 
-                            role: "user", 
-                            parts: [
-                                { text: promptContent },
-                                { inlineData: { mimeType: aiMimeType.value, data: aiBase64.value } }
-                            ] 
-                        }]
+                        contents: [{ role: "user", parts: [{ text: "分析此圖片內容。" }, { inlineData: { mimeType: aiMimeType.value, data: aiBase64.value } }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
                     })
                 });
-                aiResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "AI 助手看不太清楚，換個角度試試！🐾";
+                aiResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "AI 看不懂這張照片唷 🐾";
             } catch (err) {
-                aiResult.value = `連線失敗：${err.message} 🐾`;
+                aiResult.value = "分析失敗，換張照片試試！";
             } finally { isAnalyzing.value = false; }
         };
 
@@ -617,7 +590,7 @@ createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: "查詢目前 JPY, KRW, USD, EUR 對 TWD 的匯率（1單位外幣兌換多少台幣）。" }] }],
+                        contents: [{ parts: [{ text: "給出 JPY, KRW, USD, EUR 對 TWD 的匯率。" }] }],
                         tools: [{ "google_search": {} }],
                         generationConfig: { 
                             responseMimeType: "application/json", 
@@ -628,10 +601,11 @@ createApp({
                         }
                     })
                 });
-                const newRates = JSON.parse(result.candidates[0].content.parts[0].text);
+                const rawText = result.candidates[0].content.parts[0].text;
+                const newRates = JSON.parse(cleanJson(rawText));
                 exchangeRates.value = { ...exchangeRates.value, ...newRates };
                 saveToStorage();
-            } catch (err) { console.error("Rate Update Failed", err); } 
+            } catch (err) { console.error(err); } 
             finally { isUpdatingRates.value = false; }
         };
 
@@ -650,12 +624,13 @@ createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `將以下文字翻譯成自然優雅的繁體中文，僅回傳結果：\n\n${translateText.value}` }] }]
+                        contents: [{ parts: [{ text: translateText.value }] }],
+                        systemInstruction: { parts: [{ text: "你是一位精通各國語言的旅遊翻譯官。將輸入內容翻譯成自然優雅的繁體中文，僅回傳結果，不要解釋。" }] }
                     })
                 });
                 translatedResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "翻譯失敗";
             } catch (err) {
-                translatedResult.value = "翻譯小幫手忙碌中，請稍後！🐾";
+                translatedResult.value = "翻譯小幫手睡著了 🐾";
             } finally { isTranslating.value = false; }
         };
 
@@ -690,11 +665,8 @@ createApp({
             else form.value = {};
         };
         const editItem = (item) => { modal.value = { show: true, type: 'itinerary', title: '編輯行程', isEdit: true, targetId: item.id }; form.value = { ...item }; };
-        const editBooking = (type) => { modal.value = { show: true, type: 'booking', title: '修改票資', isEdit: true, targetType: type }; form.value = { ...bookings.value[type] }; };
-        
         const saveData = () => {
-            if (modal.value.type === 'booking') bookings.value[modal.value.targetType] = { ...form.value };
-            else if (modal.value.isEdit) { const idx = itineraries.value.findIndex(i => i.id === modal.value.targetId); itineraries.value[idx] = { ...form.value }; }
+            if (modal.value.isEdit) { const idx = itineraries.value.findIndex(i => i.id === modal.value.targetId); itineraries.value[idx] = { ...form.value }; }
             else {
                 const newId = Date.now();
                 if (modal.value.type === 'itinerary') itineraries.value.push({ ...form.value, id: newId });
@@ -704,12 +676,12 @@ createApp({
             modal.value.show = false; saveToStorage();
         };
 
-        const confirmDelete = () => { if (confirm('確定要移除嗎？🐾')) { itineraries.value = itineraries.value.filter(i => i.id !== modal.value.targetId); modal.value.show = false; saveToStorage(); }};
-        const removeItem = (type, id) => { if (confirm('確定要移除？')) { if (type === 'shopping') shoppingList.value = shoppingList.value.filter(i => i.id !== id); if (type === 'expense') expenses.value = expenses.value.filter(i => i.id !== id); saveToStorage(); }};
+        const confirmDelete = () => { itineraries.value = itineraries.value.filter(i => i.id !== modal.value.targetId); modal.value.show = false; saveToStorage(); };
+        const removeItem = (type, id) => { if (type === 'shopping') shoppingList.value = shoppingList.value.filter(i => i.id !== id); if (type === 'expense') expenses.value = expenses.value.filter(i => i.id !== id); saveToStorage(); };
         const uploadItineraryImg = (e) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { form.value.img = ev.target.result; }; reader.readAsDataURL(file); }};
         const uploadImg = (e, item) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { item.img = ev.target.result; saveToStorage(); }; reader.readAsDataURL(file); }};
         const uploadAvatar = (e, idx) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { members.value[idx].avatar = ev.target.result; saveToStorage(); }; reader.readAsDataURL(file); }};
-        const addMember = () => { const name = prompt('旅伴大名？'); if (name) { members.value.push({ name, avatar: '' }); saveToStorage(); }};
+        const addMember = () => { const name = prompt('旅伴名字？'); if (name) { members.value.push({ name, avatar: '' }); saveToStorage(); }};
         const openGoogleMaps = (item) => { if (item.mapUrl) window.open(item.mapUrl, '_blank'); };
         const getTransIcon = (type) => type === 'walk' ? '🚶‍♂️' : type === 'car' ? '🚗' : '🚌';
 
@@ -749,7 +721,7 @@ createApp({
             filteredItinerary, totalExpense, newDateInput, newPrepInput,
             aiImagePreview, aiResult, isAnalyzing, handleAiImageUpload, runAiAnalysis,
             currInput, currTarget, exchangeRates, isUpdatingRates, calculateCurrency, updateExchangeRates,
-            modal, form, showModal, editItem, editBooking, saveData, confirmDelete,
+            modal, form, showModal, editItem, saveData, confirmDelete,
             togglePrep, addPrep, addDate, translateText, translatedResult, isTranslating, handleTranslate,
             uploadImg, uploadAvatar, addMember, openGoogleMaps, removeItem, uploadItineraryImg, getTransIcon, saveToStorage
         };
