@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>狗狗旅遊手冊 - 永久儲存穩定版</title>
+    <title>狗狗旅遊手冊 - AI 全能修復版</title>
     <!-- Web App Icons -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/dog.png">
     <link rel="icon" href="https://img.icons8.com/fluent/48/000000/dog.png">
@@ -173,7 +173,7 @@
                 <button v-if="dates.length > 0" @click="showModal('itinerary')" class="fixed bottom-24 right-6 w-14 h-14 bg-blue-500 text-white rounded-full shadow-xl flex items-center justify-center z-50 text-2xl active:scale-90 transition-transform">➕</button>
             </div>
 
-            <!-- 2. AI 助手 -->
+            <!-- 2. AI 助手 (優化相簿讀取) -->
             <div v-if="currentTab === 'ai'" key="ai" class="space-y-4">
                 <div class="flex space-x-2 bg-blue-50 p-1 rounded-xl">
                     <button @click="aiMode = 'guide'" :class="aiMode === 'guide' ? 'bg-white text-blue-600 shadow' : 'text-blue-300'" class="flex-1 py-2 rounded-lg text-xs font-black transition-all">🐾 AI 導遊</button>
@@ -184,14 +184,15 @@
                     <div class="h-48 bg-blue-50 rounded-2xl border-2 border-dashed border-blue-100 flex flex-col items-center justify-center relative overflow-hidden group">
                         <img v-if="aiImagePreview" :src="aiImagePreview" class="w-full h-full object-cover">
                         <div v-else class="text-center">
-                            <div class="text-4xl mb-2">📸</div>
-                            <p class="text-[10px] font-black text-blue-300">點擊上傳或拍一張</p>
+                            <div class="text-4xl mb-2">{{ isReadingImage ? '⌛' : '📸' }}</div>
+                            <p class="text-[10px] font-black text-blue-300">{{ isReadingImage ? '讀取照片中...' : '點擊上傳或拍一張' }}</p>
                         </div>
-                        <input type="file" accept="image/*" @change="handleAiImageUpload" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <!-- Z-index 確保能點擊到 -->
+                        <input type="file" accept="image/*" @change="handleAiImageUpload" class="absolute inset-0 opacity-0 cursor-pointer z-10">
                     </div>
 
                     <button @click="runAiAnalysis" 
-                            :disabled="!aiImagePreview || isAnalyzing"
+                            :disabled="!aiImagePreview || isAnalyzing || isReadingImage"
                             class="w-full py-4 bg-blue-500 text-white rounded-2xl font-black text-sm shadow-md disabled:bg-blue-200 active:scale-95 transition-transform">
                         <span v-if="!isAnalyzing">開始分析 🦴</span>
                         <div v-else class="flex justify-center items-center"><div class="dot-flashing"></div></div>
@@ -223,7 +224,7 @@
                             <label class="text-[9px] font-black text-gray-400 ml-1 uppercase">Amount</label>
                             <div class="flex items-center bg-blue-50 rounded-xl p-3 shadow-inner">
                                 <input type="number" v-model="currInput" class="flex-1 bg-transparent border-none text-blue-900 font-black focus:ring-0">
-                                <select v-model="currTarget" class="bg-transparent border-none font-black text-blue-500 text-xs">
+                                <select v-model="currTarget" class="bg-transparent border-none font-black text-blue-500 text-xs focus:ring-0">
                                     <option value="JPY">日幣 JPY</option>
                                     <option value="KRW">韓元 KRW</option>
                                     <option value="USD">美金 USD</option>
@@ -268,7 +269,7 @@
                         </div>
                         <div class="mt-4 flex space-x-2">
                             <input v-model="newPrepInput" @keyup.enter="addPrep('行李')" placeholder="新增行李..." class="flex-1 bg-blue-50 border-none rounded-lg p-2 text-[10px] font-bold shadow-inner">
-                            <button @click="addPrep('行李')" class="bg-blue-500 text-white px-3 rounded-lg text-xs font-black">加</button>
+                            <button @click="addPrep('行李')" class="bg-blue-500 text-white px-3 rounded-lg text-xs font-black shadow-md">加</button>
                         </div>
                     </div>
                 </div>
@@ -278,7 +279,7 @@
                         <div class="h-24 bg-blue-50 relative flex items-center justify-center">
                             <img v-if="item.img" :src="item.img" class="w-full h-full object-cover">
                             <span v-else class="text-[8px] text-blue-300 font-bold">📷 拍商品</span>
-                            <input type="file" @change="uploadImg($event, item)" class="absolute inset-0 opacity-0 cursor-pointer">
+                            <input type="file" @change="uploadImg($event, item)" class="absolute inset-0 opacity-0 cursor-pointer z-10">
                         </div>
                         <div class="p-2 flex justify-between items-center">
                             <span class="font-black text-[9px] text-blue-900 truncate">{{ item.name }}</span>
@@ -330,14 +331,14 @@
                         </div>
                         <div class="flex space-x-2">
                             <input type="date" v-model="newDateInput" class="flex-1 p-2 bg-blue-50 rounded-lg text-xs font-bold border-none shadow-inner">
-                            <button @click="addDate" class="bg-blue-500 text-white px-3 rounded-lg text-xs font-black">新增日期</button>
+                            <button @click="addDate" class="bg-blue-500 text-white px-3 rounded-lg text-xs font-black shadow-md transition-all active:scale-95">新增日期</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-blue-600 text-white p-5 rounded-[30px] shadow-lg">
                     <h3 class="font-black mb-2 text-xs flex items-center tracking-wide">🌍 旅遊隨身翻譯器</h3>
-                    <textarea v-model="translateText" placeholder="輸入要翻譯的內容..." class="w-full p-3 rounded-xl text-blue-900 text-xs border-none h-20 mb-3 focus:ring-0 shadow-inner" :disabled="isTranslating"></textarea>
+                    <textarea v-model="translateText" placeholder="輸入單字(如: hungry)或句子..." class="w-full p-3 rounded-xl text-blue-900 text-xs border-none h-20 mb-3 focus:ring-0 shadow-inner" :disabled="isTranslating"></textarea>
                     <button @click="handleTranslate" :disabled="isTranslating || !translateText" class="w-full bg-white text-blue-600 py-3 rounded-xl font-black text-[10px] uppercase shadow-md active:scale-95 transition-transform flex justify-center items-center">
                         <span v-if="!isTranslating">啟動 AI 翻譯 🐾</span>
                         <div v-else class="dot-flashing"></div>
@@ -370,7 +371,7 @@
                     <div class="h-28 bg-blue-50 rounded-2xl border-4 border-dashed border-blue-100 flex flex-col items-center justify-center overflow-hidden relative">
                         <img v-if="form.img" :src="form.img" class="w-full h-full object-cover">
                         <span v-else class="text-xl opacity-20">📸</span>
-                        <input type="file" @change="uploadItineraryImg" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <input type="file" @change="uploadItineraryImg" class="absolute inset-0 opacity-0 cursor-pointer z-10">
                     </div>
                     <input v-model="form.name" placeholder="景點名稱" class="w-full p-4 bg-blue-50 rounded-2xl text-xs font-black border-none shadow-inner">
                     <input v-model="form.mapUrl" placeholder="Google Maps 分享網址" class="w-full p-4 bg-blue-50 rounded-2xl text-[9px] border-none shadow-inner">
@@ -423,6 +424,7 @@ createApp({
         const aiBase64 = ref('');
         const aiResult = ref('');
         const isAnalyzing = ref(false);
+        const isReadingImage = ref(false); // 照片讀取狀態
 
         // 匯率相關
         const currInput = ref(1000);
@@ -449,12 +451,12 @@ createApp({
         const dates = ref([]);
         const members = ref([{ name: '我', avatar: '' }]);
         const itineraries = ref([]);
-        const preparations = ref({ 行李: [] });
+        const preparations = ref({ 行理: [] });
         const bookings = ref({ outbound: {}, inbound: {} });
         const shoppingList = ref([]);
         const expenses = ref([]);
 
-        // --- 核心改進：固定儲存名稱，防止版本更新導致資料清空 ---
+        // 固定儲存名稱
         const STORAGE_KEY = 'dog_travel_app_permanent_data';
 
         const saveToStorage = () => {
@@ -468,10 +470,10 @@ createApp({
         };
 
         const loadFromStorage = () => {
-            // 嘗試讀取新版永久鑰匙
             let saved = localStorage.getItem(STORAGE_KEY);
-            // 容錯機制：如果新版沒資料，嘗試讀取 V11 版（讓這次更新能平滑過度）
+            // 嘗試過渡舊版
             if (!saved) saved = localStorage.getItem('dog_trip_v11_data');
+            if (!saved) saved = localStorage.getItem('dog_trip_v12_data');
             
             if (saved) {
                 try {
@@ -509,18 +511,24 @@ createApp({
             }
         };
 
-        // --- 修復：AI 助手拼字錯誤導致無法執行 ---
+        // --- 修復：照片讀取預覽 ---
         const handleAiImageUpload = (e) => {
             const file = e.target.files[0];
             if (file) {
+                isReadingImage.value = true;
+                aiResult.value = '';
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     aiImagePreview.value = ev.target.result;
                     aiMimeType.value = file.type || 'image/jpeg';
                     aiBase64.value = ev.target.result.split(',')[1];
-                    aiResult.value = '';
+                    isReadingImage.value = false;
                 };
-                reader.readAsDataURL(file); // 原本是 readAsAsDataURL 錯誤
+                reader.onerror = () => {
+                    isReadingImage.value = false;
+                    aiResult.value = "照片讀取失敗，請試試其他照片 🐾";
+                };
+                reader.readAsDataURL(file);
             }
         };
 
@@ -530,22 +538,23 @@ createApp({
             aiResult.value = '';
             const apiKey = "";
             
+            // 簡化 Prompt 加速回應
             const systemPrompt = aiMode.value === 'guide' 
-                ? "你是一位專業導遊。請用繁體中文詳細解釋圖片中的景點背景。若看不清請如實告知。" 
-                : "你是一位菜單翻譯專家。請將圖片文字譯為繁體中文，並附上3句實用點餐對話。";
+                ? "你是一位繁體中文導遊。辨識照片地標並說明背景與有趣資訊。簡潔親切。" 
+                : "你是一位菜單翻譯專家。將照片菜單譯為繁體中文並列出點餐語。";
 
             try {
                 const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ role: "user", parts: [{ text: "分析這張旅途照片。" }, { inlineData: { mimeType: aiMimeType.value, data: aiBase64.value } }] }],
+                        contents: [{ role: "user", parts: [{ text: "這是我拍的照片，請幫我分析。" }, { inlineData: { mimeType: aiMimeType.value, data: aiBase64.value } }] }],
                         systemInstruction: { parts: [{ text: systemPrompt }] }
                     })
                 });
-                aiResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "AI 暫時無法辨認這張照片 🐾";
+                aiResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "分析失敗，可能照片不太清楚喔 🐾";
             } catch (err) {
-                aiResult.value = "分析連線超時，請檢查網路或再試一次！";
+                aiResult.value = "AI 連線有點慢，請再試一次看看 🦴";
             } finally { isAnalyzing.value = false; }
         };
 
@@ -558,7 +567,7 @@ createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: "給出今日 JPY, KRW, USD, EUR 對 TWD 的即時匯率數字。" }] }],
+                        contents: [{ parts: [{ text: "給出今日 JPY, KRW, USD, EUR 對 TWD 匯率（數字就好）。" }] }],
                         tools: [{ "google_search": {} }],
                         generationConfig: { 
                             responseMimeType: "application/json", 
@@ -573,7 +582,7 @@ createApp({
                 const newRates = JSON.parse(cleanJson(rawText));
                 exchangeRates.value = { ...exchangeRates.value, ...newRates };
                 saveToStorage();
-            } catch (err) { console.error("Rate fetch failed"); } 
+            } catch (err) { console.error("Rate update failed"); } 
             finally { isUpdatingRates.value = false; }
         };
 
@@ -582,6 +591,7 @@ createApp({
             return (currInput.value * rate).toLocaleString(undefined, { maximumFractionDigits: 0 });
         });
 
+        // --- 修復：翻譯 Hungry 或簡單單字 ---
         const handleTranslate = async () => {
             if (!translateText.value || isTranslating.value) return;
             isTranslating.value = true;
@@ -592,13 +602,13 @@ createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: translateText.value }] }],
-                        systemInstruction: { parts: [{ text: "你是一位精煉的翻譯官。將內容譯為自然流暢的繁體中文，僅回傳譯文，不要任何解釋。" }] }
+                        contents: [{ parts: [{ text: `將此內容翻譯成台灣繁體中文，若是單字則給出意思：\n\n${translateText.value}` }] }],
+                        systemInstruction: { parts: [{ text: "你是一位旅遊翻譯官。僅回傳翻譯結果，不要任何多餘解釋。" }] }
                     })
                 });
                 translatedResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "翻譯失敗 🐾";
             } catch (err) {
-                translatedResult.value = "翻譯助手現在有點累了，請稍後再試。";
+                translatedResult.value = "翻譯助手現在有點忙，請等一下再試。";
             } finally { isTranslating.value = false; }
         };
 
@@ -644,12 +654,12 @@ createApp({
             modal.value.show = false; saveToStorage();
         };
 
-        const confirmDelete = () => { if(confirm('要刪除嗎？')) { itineraries.value = itineraries.value.filter(i => i.id !== modal.value.targetId); modal.value.show = false; saveToStorage(); }};
+        const confirmDelete = () => { if(confirm('確定要刪除嗎？🐾')) { itineraries.value = itineraries.value.filter(i => i.id !== modal.value.targetId); modal.value.show = false; saveToStorage(); }};
         const removeItem = (type, id) => { if(confirm('確定移除？')) { if (type === 'shopping') shoppingList.value = shoppingList.value.filter(i => i.id !== id); if (type === 'expense') expenses.value = expenses.value.filter(i => i.id !== id); saveToStorage(); }};
         const uploadItineraryImg = (e) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { form.value.img = ev.target.result; }; reader.readAsDataURL(file); }};
         const uploadImg = (e, item) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { item.img = ev.target.result; saveToStorage(); }; reader.readAsDataURL(file); }};
         const uploadAvatar = (e, idx) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { members.value[idx].avatar = ev.target.result; saveToStorage(); }; reader.readAsDataURL(file); }};
-        const addMember = () => { const name = prompt('旅伴大名？'); if (name) { members.value.push({ name, avatar: '' }); saveToStorage(); }};
+        const addMember = () => { const name = prompt('旅伴名字？'); if (name) { members.value.push({ name, avatar: '' }); saveToStorage(); }};
         const openGoogleMaps = (item) => { if (item.mapUrl) window.open(item.mapUrl, '_blank'); };
         const getTransIcon = (type) => type === 'walk' ? '🚶‍♂️' : type === 'car' ? '🚗' : '🚌';
 
@@ -687,7 +697,7 @@ createApp({
             currentTab, prepSub, aiMode, selectedDate, tripName, dates, tabs, hearts,
             members, itineraries, preparations, bookings, shoppingList, expenses,
             filteredItinerary, totalExpense, newDateInput, newPrepInput,
-            aiImagePreview, aiResult, isAnalyzing, handleAiImageUpload, runAiAnalysis,
+            aiImagePreview, aiResult, isAnalyzing, isReadingImage, handleAiImageUpload, runAiAnalysis,
             currInput, currTarget, exchangeRates, isUpdatingRates, calculateCurrency, updateExchangeRates,
             modal, form, showModal, editItem, saveData, confirmDelete,
             togglePrep, addPrep, addDate, translateText, translatedResult, isTranslating, handleTranslate,
