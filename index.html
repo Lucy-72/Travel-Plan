@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>狗狗旅遊手冊 - 功能全修復版</title>
+    <title>狗狗旅遊手冊 - AI 大腦強化版</title>
     <!-- Web App Icons -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/dog.png">
     <link rel="icon" href="https://img.icons8.com/fluent/48/000000/dog.png">
@@ -29,7 +29,7 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* 凍結導航效果 */
+        /* 核心改動：凍結頂部區塊 */
         .sticky-header {
             position: sticky;
             top: 0;
@@ -144,7 +144,7 @@
         <transition name="fade" mode="out-in">
             <!-- 1. 行程表 -->
             <div v-if="currentTab === 'itinerary'" key="itinerary">
-                <!-- 凍結日期切換 -->
+                <!-- 凍結日期導航 -->
                 <div class="sticky-date-bar pt-4 pb-4">
                     <div class="flex space-x-2 overflow-x-auto no-scrollbar">
                         <div v-for="d in dates" :key="d.fullDate" 
@@ -159,6 +159,7 @@
                     </div>
                 </div>
 
+                <!-- 行程列表 -->
                 <div id="itinerary-list" class="space-y-5 mt-4">
                     <div v-for="(item, index) in filteredItinerary" :key="item.id" class="relative group">
                         <div v-if="index > 0" class="flex flex-col items-center my-3 text-blue-100">
@@ -191,11 +192,14 @@
                             </div>
                         </div>
                     </div>
+                    <div v-if="filteredItinerary.length === 0 && dates.length > 0" class="text-center py-32 opacity-20 text-[11px] font-black">
+                        今天也是充滿幹勁的一天 🐾
+                    </div>
                 </div>
                 <button v-if="dates.length > 0" @click="showModal('itinerary')" class="fixed bottom-24 right-6 w-14 h-14 bg-blue-500 text-white rounded-full shadow-xl flex items-center justify-center z-50 text-2xl active:scale-90 transition-transform">➕</button>
             </div>
 
-            <!-- 2. AI 助手 -->
+            <!-- 2. AI 助手 (大腦強化版) -->
             <div v-if="currentTab === 'ai'" key="ai" class="space-y-4">
                 <div class="flex space-x-2 bg-blue-50 p-1 rounded-xl">
                     <button @click="aiMode = 'guide'" :class="aiMode === 'guide' ? 'bg-white text-blue-600 shadow' : 'text-blue-300'" class="flex-1 py-2.5 rounded-lg text-xs font-black transition-all">🐾 AI 導遊</button>
@@ -207,7 +211,7 @@
                         <img v-if="aiImagePreview" :src="aiImagePreview" class="w-full h-full object-cover">
                         <div v-else class="text-center">
                             <div class="text-5xl mb-3">{{ isReadingImage ? '⌛' : '📸' }}</div>
-                            <p class="text-xs font-black text-blue-300 uppercase tracking-widest">{{ isReadingImage ? 'Compressing...' : 'Upload Photo' }}</p>
+                            <p class="text-xs font-black text-blue-300 uppercase tracking-widest">{{ isReadingImage ? '正在讀取...' : '點擊上傳照片' }}</p>
                         </div>
                         <input type="file" accept="image/*" @change="handleAiImageUpload" class="absolute inset-0 opacity-0 cursor-pointer z-10">
                     </div>
@@ -215,12 +219,12 @@
                     <button @click="runAiAnalysis" 
                             :disabled="!aiImagePreview || isAnalyzing || isReadingImage"
                             class="w-full py-4 bg-blue-500 text-white rounded-2xl font-black text-sm shadow-md disabled:bg-blue-200 active:scale-95 transition-transform">
-                        <span v-if="!isAnalyzing">啟動 AI 分析 🦴</span>
+                        <span v-if="!isAnalyzing">啟動 AI 大腦分析 🦴</span>
                         <div v-else class="flex justify-center items-center"><div class="dot-flashing"></div></div>
                     </button>
 
                     <div v-if="aiResult" class="mt-4 p-5 bg-blue-50 rounded-2xl border border-blue-100">
-                        <div class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3">AI Analysis Report</div>
+                        <div class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3">AI 分析報告</div>
                         <div class="text-xs text-blue-900 leading-relaxed font-bold whitespace-pre-wrap">{{ aiResult }}</div>
                     </div>
                 </div>
@@ -232,7 +236,7 @@
                     <div class="text-[9px] font-black opacity-60 uppercase mb-1 tracking-widest">Global Rates</div>
                     <div class="flex items-center justify-between">
                         <h2 class="text-xl font-black">即時匯率轉換 💹</h2>
-                        <button @click="updateExchangeRates" :disabled="isUpdatingRates" class="text-[10px] bg-white/20 px-3 py-1.5 rounded-xl active:scale-95 transition-transform tracking-widest uppercase">Sync</button>
+                        <button @click="updateExchangeRates" :disabled="isUpdatingRates" class="text-[10px] bg-white/20 px-3 py-1.5 rounded-xl active:scale-95 transition-transform uppercase">Sync</button>
                     </div>
                 </div>
 
@@ -255,7 +259,7 @@
                 </div>
             </div>
 
-            <!-- 4. 清單 & 票資修復區 -->
+            <!-- 4. 清單 & 航班區 -->
             <div v-if="currentTab === 'prep'" key="prep" class="space-y-5">
                 <div class="flex space-x-2 bg-blue-50 p-1 rounded-xl">
                     <button @click="prepSub = 'prep'" :class="prepSub === 'prep' ? 'bg-white text-blue-600 shadow' : 'text-blue-300'" class="flex-1 py-2.5 rounded-lg text-xs font-black transition-all">預定 & 航班</button>
@@ -267,7 +271,6 @@
                     <div v-for="type in ['outbound', 'inbound']" :key="type" class="ticket p-5 shadow-sm bg-white border border-blue-50">
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest">{{ type === 'outbound' ? 'Departure Flight' : 'Return Flight' }}</span>
-                            <!-- 修復：editBooking 函數 -->
                             <button @click="editBooking(type)" class="text-[9px] font-black text-blue-500 hover:underline uppercase">修改票資</button>
                         </div>
                         <div class="flex justify-between items-center px-2">
@@ -291,7 +294,7 @@
                             <button @click="preparations.行李.splice(idx, 1)" class="text-red-200 px-3">✕</button>
                         </div>
                         <div class="mt-5 flex space-x-2">
-                            <input v-model="newPrepInput" @keyup.enter="addPrep('行李')" placeholder="新增項目..." class="flex-1 bg-blue-50 border-none rounded-xl p-3 text-[11px] font-bold shadow-inner focus:ring-1 focus:ring-blue-100">
+                            <input v-model="newPrepInput" @keyup.enter="addPrep('行李')" placeholder="新增項目..." class="flex-1 bg-blue-50 border-none rounded-xl p-3 text-[11px] font-bold shadow-inner">
                             <button @click="addPrep('行李')" class="bg-blue-500 text-white px-5 rounded-xl text-xs font-black shadow-md">加</button>
                         </div>
                     </div>
@@ -321,28 +324,28 @@
                 </div>
                 <div class="space-y-3 px-1">
                     <div v-for="exp in expenses" :key="exp.id" class="flex items-center justify-between p-5 bg-white rounded-3xl border border-blue-50 shadow-sm transition-shadow hover:shadow-md">
-                        <div class="flex items-center space-x-4 text-xs">
+                        <div class="flex items-center space-x-4">
                             <div class="text-2xl">🦴</div>
                             <div>
-                                <div class="font-black text-blue-900">{{ exp.name }}</div>
-                                <div class="text-[9px] text-blue-400 font-black tracking-tighter uppercase">{{ exp.payer }} · {{ exp.category }}</div>
+                                <div class="font-black text-blue-900 text-xs">{{ exp.name }}</div>
+                                <div class="text-[9px] text-blue-400 font-black uppercase tracking-tighter">{{ exp.payer }} · {{ exp.category }}</div>
                             </div>
                         </div>
                         <div class="text-right">
                             <div class="font-black text-blue-600 text-base">¥{{ exp.amount }}</div>
-                            <button @click="removeItem('expense', exp.id)" class="text-[9px] text-red-300 font-black mt-1">REMOVE</button>
+                            <button @click="removeItem('expense', exp.id)" class="text-[9px] text-red-300 font-black mt-1 uppercase">Remove</button>
                         </div>
                     </div>
                 </div>
                 <button @click="showModal('expense')" class="fixed bottom-24 right-6 w-14 h-14 bg-blue-500 text-white rounded-full shadow-xl flex items-center justify-center z-50 text-2xl active:scale-90 transition-transform">➕</button>
             </div>
 
-            <!-- 6. 設定 & 翻譯 -->
+            <!-- 6. 設定 & 翻譯專家 -->
             <div v-if="currentTab === 'info'" key="info" class="space-y-4 pb-12">
                 <div class="bg-white p-6 rounded-3xl border border-blue-50 shadow-sm space-y-5">
                     <div>
                         <label class="text-[10px] text-blue-400 font-black uppercase mb-1.5 block tracking-widest">Trip Name</label>
-                        <input v-model="tripName" @change="saveToStorage" class="w-full p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 text-sm shadow-inner focus:ring-1 focus:ring-blue-100">
+                        <input v-model="tripName" @change="saveToStorage" class="w-full p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 text-sm shadow-inner">
                     </div>
                     <div class="border-t border-blue-50 pt-5">
                         <label class="text-[10px] text-blue-400 font-black uppercase mb-3 block tracking-widest">Itinerary Dates</label>
@@ -359,6 +362,7 @@
                     </div>
                 </div>
 
+                <!-- 翻譯強化：移除 System Instruction 改用穩定 Payload -->
                 <div class="bg-blue-600 text-white p-6 rounded-[35px] shadow-lg">
                     <h3 class="font-black mb-3 text-xs flex items-center tracking-widest">🌍 專業翻譯專家</h3>
                     <textarea v-model="translateText" placeholder="輸入單字(如: hungry)或句子..." class="w-full p-4 rounded-2xl text-blue-900 text-xs border-none h-24 mb-4 focus:ring-0 shadow-inner" :disabled="isTranslating"></textarea>
@@ -377,7 +381,7 @@
 
     </main>
 
-    <!-- 底部導航 (固定在最上層) -->
+    <!-- 底部導航 -->
     <nav class="nav-fixed fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md h-20 flex items-center justify-around px-2 border-t border-blue-50 z-[200] rounded-t-[30px]">
         <button v-for="t in tabs" :key="t.id" @click="currentTab = t.id" class="flex flex-col items-center transition-all px-2" :class="currentTab === t.id ? 'text-blue-600 -translate-y-1.5' : 'text-blue-200'">
             <div class="text-2xl mb-0.5">{{ t.icon }}</div>
@@ -386,43 +390,44 @@
         </button>
     </nav>
 
-    <!-- 彈出視窗 (航班修復對應) -->
+    <!-- 彈出視窗 -->
     <transition name="fade">
         <div v-if="modal.show" class="fixed inset-0 bg-blue-900/60 backdrop-blur-sm z-[300] flex items-center justify-center p-6">
             <div class="bg-white w-full rounded-[45px] p-10 max-h-[85vh] overflow-y-auto relative shadow-2xl border-2 border-blue-50">
                 <h3 class="text-lg font-black text-blue-900 mb-8 text-center uppercase tracking-widest">{{ modal.title }}</h3>
                 
-                <!-- 1. 行程表編輯 -->
                 <div v-if="modal.type === 'itinerary'" class="space-y-5">
                     <div class="h-32 bg-blue-50 rounded-3xl border-4 border-dashed border-blue-100 flex flex-col items-center justify-center overflow-hidden relative group">
                         <img v-if="form.img" :src="form.img" class="w-full h-full object-cover">
                         <span v-else class="text-3xl opacity-20">📸</span>
                         <input type="file" @change="uploadItineraryImg" class="absolute inset-0 opacity-0 cursor-pointer z-10">
                     </div>
-                    <input v-model="form.name" placeholder="景點名稱" class="w-full p-4 bg-blue-50 rounded-2xl text-xs font-black border-none shadow-inner focus:ring-1 focus:ring-blue-100">
-                    <input v-model="form.mapUrl" placeholder="Google Maps 連結" class="w-full p-4 bg-blue-50 rounded-2xl text-[10px] border-none shadow-inner focus:ring-1 focus:ring-blue-100">
+                    <input v-model="form.name" placeholder="景點名稱" class="w-full p-4 bg-blue-50 rounded-2xl text-xs font-black border-none shadow-inner">
+                    <input v-model="form.mapUrl" placeholder="Google Maps 連結" class="w-full p-4 bg-blue-50 rounded-2xl text-[10px] border-none shadow-inner">
                     <div class="grid grid-cols-2 gap-3">
-                        <select v-model="form.category" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner focus:ring-1 focus:ring-blue-100"><option v-for="c in ['景點','住宿','美食','購物','航班','其他']">{{c}}</option></select>
-                        <input v-model="form.time" placeholder="預定時間" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner focus:ring-1 focus:ring-blue-100">
+                        <select v-model="form.category" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner"><option v-for="c in ['景點','住宿','美食','購物','航班','其他']">{{c}}</option></select>
+                        <input v-model="form.time" placeholder="預定時間" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner">
                     </div>
-                    <textarea v-model="form.note" placeholder="備註內容..." class="w-full p-4 bg-blue-50 rounded-2xl text-xs h-28 border-none shadow-inner focus:ring-1 focus:ring-blue-100"></textarea>
+                    <textarea v-model="form.note" placeholder="備註內容..." class="w-full p-4 bg-blue-50 rounded-2xl text-xs h-28 border-none shadow-inner"></textarea>
                 </div>
 
-                <!-- 2. 修復：航班資訊編輯 (手動維護介面) -->
                 <div v-if="modal.type === 'booking'" class="space-y-5">
-                    <div class="text-[10px] font-black text-blue-400 uppercase text-center mb-2 tracking-widest">手動輸入航班資訊 🦴</div>
+                    <div class="text-[10px] font-black text-blue-400 uppercase text-center mb-2 tracking-widest">航班手動維護 🦴</div>
                     <div><label class="text-[9px] font-black text-gray-400 ml-1 uppercase">Flight No.</label><input v-model="form.flightNo" placeholder="如：JL802" class="w-full p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 shadow-inner mt-1"></div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-[9px] font-black text-gray-400 ml-1 uppercase tracking-widest">Origin</label><input v-model="form.from" placeholder="機場代碼 (如：TPE)" class="p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 shadow-inner mt-1 text-center"></div>
-                        <div><label class="text-[9px] font-black text-gray-400 ml-1 uppercase tracking-widest">Dest</label><input v-model="form.to" placeholder="機場代碼 (如：NRT)" class="p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 shadow-inner mt-1 text-center"></div>
+                        <div><label class="text-[9px] font-black text-gray-400 ml-1 uppercase tracking-widest">Origin</label><input v-model="form.from" placeholder="TPE" class="p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 shadow-inner mt-1 text-center"></div>
+                        <div><label class="text-[9px] font-black text-gray-400 ml-1 uppercase tracking-widest">Dest</label><input v-model="form.to" placeholder="NRT" class="p-4 bg-blue-50 rounded-2xl border-none font-black text-blue-900 shadow-inner mt-1 text-center"></div>
                     </div>
                 </div>
 
-                <!-- 3. 記帳編輯 -->
                 <div v-if="modal.type === 'expense'" class="space-y-5">
-                    <select v-model="form.payer" class="w-full p-4 bg-blue-50 rounded-2xl font-black border-none shadow-inner focus:ring-1 focus:ring-blue-100"><option v-for="m in members" :value="m.name">{{ m.name }}</option></select>
-                    <input v-model="form.name" placeholder="支出項目" class="w-full p-4 bg-blue-50 rounded-2xl border-none shadow-inner focus:ring-1 focus:ring-blue-100">
-                    <input type="number" v-model="form.amount" placeholder="金額 (日幣/原幣)" class="w-full p-4 bg-blue-50 rounded-2xl border-none shadow-inner focus:ring-1 focus:ring-blue-100">
+                    <select v-model="form.payer" class="w-full p-4 bg-blue-50 rounded-2xl font-black border-none shadow-inner"><option v-for="m in members" :value="m.name">{{ m.name }}</option></select>
+                    <input v-model="form.name" placeholder="項目" class="w-full p-4 bg-blue-50 rounded-2xl border-none shadow-inner">
+                    <input type="number" v-model="form.amount" placeholder="金額" class="w-full p-4 bg-blue-50 rounded-2xl border-none shadow-inner">
+                </div>
+
+                <div v-if="modal.type === 'shopping'" class="space-y-5">
+                    <input v-model="form.name" placeholder="想買什麼？" class="w-full p-4 bg-blue-50 rounded-2xl font-black border-none shadow-inner">
                 </div>
 
                 <div class="flex flex-col space-y-4 mt-10">
@@ -434,7 +439,6 @@
         </div>
     </transition>
 
-    <!-- 圖片壓縮 Canvas -->
     <canvas id="compress-canvas"></canvas>
 </div>
 
@@ -449,7 +453,6 @@ createApp({
         const selectedDate = ref('');
         const tripName = ref('我的日本冒險');
         
-        // AI 相關
         const aiImagePreview = ref('');
         const aiMimeType = ref('image/jpeg');
         const aiBase64 = ref('');
@@ -457,7 +460,6 @@ createApp({
         const isAnalyzing = ref(false);
         const isReadingImage = ref(false);
 
-        // 匯率相關
         const currInput = ref(1000);
         const currTarget = ref('JPY');
         const exchangeRates = ref({ JPY: 0.21, KRW: 0.024, USD: 32.5, EUR: 35.1 });
@@ -487,7 +489,6 @@ createApp({
         const expenses = ref([]);
         const bookings = ref({ outbound: {}, inbound: {} });
 
-        // 固定儲存名稱 (V16 永久版)
         const STORAGE_KEY = 'dog_travel_app_permanent_data';
 
         const saveToStorage = () => {
@@ -502,8 +503,6 @@ createApp({
 
         const loadFromStorage = () => {
             let saved = localStorage.getItem(STORAGE_KEY);
-            if (!saved) saved = localStorage.getItem('dog_travel_app_permanent_data');
-            
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
@@ -532,7 +531,7 @@ createApp({
                     canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.75));
+                    resolve(canvas.toDataURL('image/jpeg', 0.8));
                 };
             });
         };
@@ -552,6 +551,7 @@ createApp({
             const file = e.target.files[0];
             if (file) {
                 isReadingImage.value = true;
+                aiResult.value = '';
                 const reader = new FileReader();
                 reader.onload = async (ev) => {
                     const compressedBase64 = await compressImage(ev.target.result);
@@ -564,25 +564,31 @@ createApp({
             }
         };
 
+        // AI 強化：移除 systemInstruction，改用更穩定的內容結構
         const runAiAnalysis = async () => {
             if (!aiBase64.value || isAnalyzing.value) return;
             isAnalyzing.value = true;
             aiResult.value = '';
             const apiKey = "";
-            const systemPrompt = aiMode.value === 'guide' 
-                ? "你是一位專業的台灣繁體中文導遊。請詳細分析照片中的景點或籤詩背景。" 
-                : "你是一位菜單翻譯專家。請將照片中的菜名譯為台灣繁體中文並解釋成分。";
+            
+            const instruction = aiMode.value === 'guide' 
+                ? "你是一位專業的繁體中文導遊。請詳細分析照片中的內容（景點、地標或籤詩），解釋其背景歷史與趣味點。" 
+                : "你是一位菜單翻譯專家。請將照片中的菜名譯為台灣繁體中文，並簡單說明成分。";
 
             try {
                 const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ role: "user", parts: [{ text: "分析此照片內容。" }, { inlineData: { mimeType: aiMimeType.value, data: aiBase64.value } }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                        contents: [{ 
+                            parts: [
+                                { text: instruction + "\n\n請根據圖片回答。" },
+                                { inlineData: { mimeType: aiMimeType.value, data: aiBase64.value } }
+                            ] 
+                        }]
                     })
                 });
-                aiResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "分析失敗 🐾";
+                aiResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "AI 看不懂這張照片唷 🐾";
             } catch (err) { aiResult.value = "AI 連線逾時，請再試一次！"; } finally { isAnalyzing.value = false; }
         };
 
@@ -617,6 +623,7 @@ createApp({
             return (currInput.value * rate).toLocaleString(undefined, { maximumFractionDigits: 0 });
         });
 
+        // 翻譯強化：將指令放入 user prompt 以提高成功率
         const handleTranslate = async () => {
             if (!translateText.value || isTranslating.value) return;
             isTranslating.value = true; translatedResult.value = '';
@@ -626,8 +633,9 @@ createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `將此翻譯成台灣繁體中文，若是單字則說明意思：\n\n${translateText.value}` }] }],
-                        systemInstruction: { parts: [{ text: "你是一位旅遊翻譯官。僅回傳翻譯結果，絕不廢話。" }] }
+                        contents: [{ 
+                            parts: [{ text: `你是一位專業旅遊翻譯官。請將以下內容翻譯成台灣繁體中文，若是單字則說明意思，僅回傳譯文，不要任何解釋：\n\n${translateText.value}` }] 
+                        }]
                     })
                 });
                 translatedResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "翻譯失敗 🐾";
@@ -664,22 +672,11 @@ createApp({
         };
 
         const editItem = (item) => { modal.value = { show: true, type: 'itinerary', title: '編輯行程', isEdit: true, targetId: item.id }; form.value = { ...item }; };
-        
-        // 修復：editBooking 函數
-        const editBooking = (type) => {
-            modal.value = { show: true, type: 'booking', title: '修改票資資訊', isEdit: true, targetType: type };
-            form.value = { ...bookings.value[type] };
-        };
+        const editBooking = (type) => { modal.value = { show: true, type: 'booking', title: '修改航班資訊', isEdit: true, targetType: type }; form.value = { ...bookings.value[type] }; };
 
         const saveData = () => {
-            // 修復：處理 booking 儲存
-            if (modal.value.type === 'booking') {
-                bookings.value[modal.value.targetType] = { ...form.value };
-            } 
-            else if (modal.value.isEdit) {
-                const idx = itineraries.value.findIndex(i => i.id === modal.value.targetId);
-                itineraries.value[idx] = { ...form.value };
-            } 
+            if (modal.value.type === 'booking') { bookings.value[modal.value.targetType] = { ...form.value }; } 
+            else if (modal.value.isEdit) { const idx = itineraries.value.findIndex(i => i.id === modal.value.targetId); itineraries.value[idx] = { ...form.value }; } 
             else {
                 const newId = Date.now();
                 if (modal.value.type === 'itinerary') itineraries.value.push({ ...form.value, id: newId });
