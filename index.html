@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>狗狗旅遊手冊 - AI 大腦升級版</title>
+    <title>狗狗旅遊手冊 - 凍結導航版</title>
     <!-- Web App Icons -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/dog.png">
     <link rel="icon" href="https://img.icons8.com/fluent/48/000000/dog.png">
@@ -29,6 +29,24 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
+        /* 凍結效果相關 */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .sticky-date-bar {
+            position: sticky;
+            top: 120px; /* Header 高度 */
+            z-index: 40;
+            background-color: white;
+            margin-left: -1rem;
+            margin-right: -1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
         .dog-card {
             border-bottom: 4px solid #BFDBFE;
             border-radius: 1.2rem;
@@ -105,10 +123,10 @@
     <!-- 愛心飄浮 -->
     <div v-for="h in hearts" :key="h.id" class="heart-float" :style="h.style">❤️</div>
 
-    <!-- 頁首 Banner -->
-    <header class="relative h-[120px] w-full overflow-hidden bg-gradient-to-b from-blue-400 to-blue-200 flex items-center px-6">
+    <!-- 頁首 Banner (凍結頂部) -->
+    <header class="sticky-header h-[120px] w-full overflow-hidden bg-gradient-to-b from-blue-400 to-blue-200 flex items-center px-6 shadow-md">
         <div class="relative z-10 flex items-center space-x-3">
-            <div class="bg-white/60 backdrop-blur-md w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-lg border border-white/40 shadow-blue-400/20">🐕</div>
+            <div class="bg-white/70 backdrop-blur-md w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-lg border border-white/40">🐕</div>
             <div>
                 <h1 class="text-white text-lg font-black drop-shadow-md">{{ tripName }}</h1>
                 <p class="text-white/80 text-[9px] font-black tracking-widest uppercase">Smart Travel Journal 🐾</p>
@@ -123,22 +141,24 @@
         <transition name="fade" mode="out-in">
             <!-- 1. 行程表 -->
             <div v-if="currentTab === 'itinerary'" key="itinerary">
-                <!-- 日期選擇清單 -->
-                <div class="flex space-x-2 overflow-x-auto no-scrollbar pb-3 mb-1">
-                    <div v-for="d in dates" :key="d.fullDate" 
-                         @click="selectedDate = d.fullDate"
-                         :class="['flex-shrink-0 px-3 h-14 rounded-xl flex flex-col items-center justify-center transition-all border-2', selectedDate === d.fullDate ? 'bg-blue-500 text-white border-blue-200 shadow-md scale-105' : 'bg-blue-50 text-blue-300 border-transparent']">
-                        <span class="text-[8px] font-black uppercase">{{ d.weekday }}</span>
-                        <span class="text-base font-black">{{ d.displayDate }}</span>
-                    </div>
-                    <div v-if="dates.length === 0" @click="currentTab = 'info'" class="flex-shrink-0 px-4 h-14 rounded-xl flex items-center justify-center bg-blue-50 text-blue-300 border-2 border-dashed border-blue-200 text-xs font-black">
-                        先去設定日期 🐾
+                <!-- 日期選擇清單 (凍結在標題下方) -->
+                <div class="sticky-date-bar pt-3 pb-3 mb-1">
+                    <div class="flex space-x-2 overflow-x-auto no-scrollbar">
+                        <div v-for="d in dates" :key="d.fullDate" 
+                             @click="selectedDate = d.fullDate"
+                             :class="['flex-shrink-0 px-3 h-14 rounded-xl flex flex-col items-center justify-center transition-all border-2', selectedDate === d.fullDate ? 'bg-blue-500 text-white border-blue-200 shadow-md scale-105' : 'bg-blue-50 text-blue-300 border-transparent']">
+                            <span class="text-[8px] font-black uppercase">{{ d.weekday }}</span>
+                            <span class="text-base font-black">{{ d.displayDate }}</span>
+                        </div>
+                        <div v-if="dates.length === 0" @click="currentTab = 'info'" class="flex-shrink-0 px-4 h-14 rounded-xl flex items-center justify-center bg-blue-50 text-blue-300 border-2 border-dashed border-blue-200 text-xs font-black">
+                            先去設定日期 🐾
+                        </div>
                     </div>
                 </div>
 
-                <div id="itinerary-list" class="space-y-3">
+                <div id="itinerary-list" class="space-y-4 mt-2">
                     <div v-for="(item, index) in filteredItinerary" :key="item.id" class="relative group">
-                        <div v-if="index > 0" class="flex flex-col items-center my-1 text-blue-100">
+                        <div v-if="index > 0" class="flex flex-col items-center my-2 text-blue-100">
                             <div class="text-[8px] font-black bg-white px-2 py-0.5 rounded-full border border-blue-50 shadow-xs">
                                 🦴 {{ getTransIcon(item.transport) }} {{ item.transTime || '10' }}m
                             </div>
@@ -154,7 +174,7 @@
                                         <div class="flex items-center space-x-2 mb-1">
                                             <span class="px-1.5 py-0.5 rounded-md text-[8px] font-black bg-blue-100 text-blue-600">{{ item.category }}</span>
                                             <h3 class="font-black text-blue-900 text-xs">{{ item.name }}</h3>
-                                            <span v-if="item.mapUrl" class="text-blue-400">📍</span>
+                                            <span v-if="item.mapUrl" class="text-blue-500 font-bold">📍</span>
                                         </div>
                                         <p class="text-[9px] text-gray-500 line-clamp-2 leading-relaxed">📝 {{ item.note }}</p>
                                     </div>
@@ -166,12 +186,12 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="filteredItinerary.length === 0 && dates.length > 0" class="text-center py-12 opacity-20 text-[10px] font-black">這天還沒有行程唷 🐾</div>
+                    <div v-if="filteredItinerary.length === 0 && dates.length > 0" class="text-center py-20 opacity-20 text-[10px] font-black">這天還沒有行程唷 🐾</div>
                 </div>
                 <button v-if="dates.length > 0" @click="showModal('itinerary')" class="fixed bottom-24 right-6 w-12 h-12 bg-blue-500 text-white rounded-full shadow-lg flex items-center justify-center z-50 text-xl active:scale-90 transition-transform">➕</button>
             </div>
 
-            <!-- 2. AI 助手 (大腦升級版) -->
+            <!-- 2. AI 助手 (邏輯優化) -->
             <div v-if="currentTab === 'ai'" key="ai" class="space-y-4">
                 <div class="flex space-x-2 bg-blue-50 p-1 rounded-xl">
                     <button @click="aiMode = 'guide'" :class="aiMode === 'guide' ? 'bg-white text-blue-600 shadow' : 'text-blue-300'" class="flex-1 py-2 rounded-lg text-xs font-black">🐾 AI 導遊</button>
@@ -185,7 +205,7 @@
                             <div class="text-4xl mb-2">📸</div>
                             <p class="text-[10px] font-black text-blue-300">拍下照片讓 AI 看看</p>
                         </div>
-                        <input type="file" accept="image/*" capture="camera" @change="handleAiImageUpload" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <input type="file" accept="image/*" @change="handleAiImageUpload" class="absolute inset-0 opacity-0 cursor-pointer">
                     </div>
 
                     <button @click="runAiAnalysis" 
@@ -200,7 +220,7 @@
                         <div class="text-xs text-blue-900 leading-relaxed font-bold whitespace-pre-wrap">{{ aiResult }}</div>
                     </div>
                 </div>
-                <div class="text-[9px] text-center text-blue-300 px-6 font-bold">💡 提示：拍照時儘量對準文字或地標中心，光線充足分析會更準確唷！🐾</div>
+                <div class="text-[9px] text-center text-blue-300 px-6 font-bold">💡 提示：照片越清晰，AI 的分析就越精準喔！🐾</div>
             </div>
 
             <!-- 3. 匯率頁面 -->
@@ -220,9 +240,9 @@
                     <div class="space-y-4">
                         <div class="flex-1">
                             <label class="text-[9px] font-black text-gray-400 ml-1">輸入外幣金額</label>
-                            <div class="flex items-center bg-blue-50 rounded-xl p-3">
+                            <div class="flex items-center bg-blue-50 rounded-xl p-3 shadow-inner">
                                 <input type="number" v-model="currInput" class="flex-1 bg-transparent border-none text-blue-900 font-black focus:ring-0">
-                                <select v-model="currTarget" class="bg-transparent border-none font-black text-blue-500 text-xs">
+                                <select v-model="currTarget" class="bg-transparent border-none font-black text-blue-500 text-xs focus:ring-0">
                                     <option value="JPY">日幣 JPY</option>
                                     <option value="KRW">韓元 KRW</option>
                                     <option value="USD">美金 USD</option>
@@ -280,8 +300,8 @@
                             <button @click="preparations.行李.splice(idx, 1)" class="text-[8px] text-red-200">✕</button>
                         </div>
                         <div class="mt-4 flex space-x-2">
-                            <input v-model="newPrepInput" @keyup.enter="addPrep('行李')" placeholder="新增行李項目..." class="flex-1 bg-blue-50 border-none rounded-lg p-2 text-[10px] font-bold">
-                            <button @click="addPrep('行李')" class="bg-blue-500 text-white px-3 rounded-lg text-xs font-black">加</button>
+                            <input v-model="newPrepInput" @keyup.enter="addPrep('行李')" placeholder="新增行李項目..." class="flex-1 bg-blue-50 border-none rounded-lg p-2 text-[10px] font-bold shadow-inner">
+                            <button @click="addPrep('行李')" class="bg-blue-500 text-white px-3 rounded-lg text-xs font-black shadow-md">加</button>
                         </div>
                     </div>
                 </div>
@@ -326,7 +346,7 @@
                 <button @click="showModal('expense')" class="fixed bottom-24 right-6 w-12 h-12 bg-blue-500 text-white rounded-full shadow-lg flex items-center justify-center z-50 text-xl active:scale-90 transition-transform">➕</button>
             </div>
 
-            <!-- 6. 設定頁面 (日期維護優化版) -->
+            <!-- 6. 設定頁面 (翻譯助手修復) -->
             <div v-if="currentTab === 'info'" key="info" class="space-y-4 pb-12">
                 <div class="bg-white p-5 rounded-3xl border border-blue-50 shadow-sm space-y-4">
                     <div>
@@ -364,15 +384,16 @@
                     </div>
                 </div>
 
+                <!-- 翻譯功能修復 -->
                 <div class="bg-blue-600 text-white p-5 rounded-[30px] shadow-lg">
                     <h3 class="font-black mb-2 text-xs flex items-center"><span class="mr-2">🌍</span> 翻譯協助</h3>
-                    <textarea v-model="translateText" placeholder="輸入要翻譯的句子..." class="w-full p-3 rounded-xl text-blue-900 text-xs border-none h-20 mb-3 focus:ring-0 shadow-inner" :disabled="isTranslating"></textarea>
-                    <button @click="handleTranslate" :disabled="isTranslating || !translateText" class="w-full bg-white text-blue-600 py-3 rounded-xl font-black text-[10px] uppercase shadow-md active:scale-95 transition-transform">
-                        <span v-if="!isTranslating">立刻翻譯 🐾</span>
-                        <span v-else class="flex justify-center"><div class="dot-flashing"></div></span>
+                    <textarea v-model="translateText" placeholder="請輸入想翻譯的內容..." class="w-full p-3 rounded-xl text-blue-900 text-xs border-none h-20 mb-3 focus:ring-0 shadow-inner" :disabled="isTranslating"></textarea>
+                    <button @click="handleTranslate" :disabled="isTranslating || !translateText" class="w-full bg-white text-blue-600 py-3 rounded-xl font-black text-[10px] uppercase shadow-md active:scale-95 transition-transform flex justify-center items-center">
+                        <span v-if="!isTranslating">開始翻譯 🐾</span>
+                        <div v-else class="dot-flashing"></div>
                     </button>
                     <transition name="fade">
-                        <div v-if="translatedResult" class="mt-3 p-3 bg-white/20 rounded-xl text-xs font-bold border border-white/20">{{ translatedResult }}</div>
+                        <div v-if="translatedResult" class="mt-3 p-3 bg-white/20 rounded-xl text-xs font-bold border border-white/20 leading-relaxed">{{ translatedResult }}</div>
                     </transition>
                 </div>
             </div>
@@ -401,28 +422,28 @@
                         <span v-else class="text-xl opacity-20">📸</span>
                         <input type="file" @change="uploadItineraryImg" class="absolute inset-0 opacity-0 cursor-pointer">
                     </div>
-                    <input v-model="form.name" placeholder="景點名稱" class="w-full p-4 bg-blue-50 rounded-2xl text-xs font-black border-none shadow-inner">
-                    <input v-model="form.mapUrl" placeholder="Google Maps 分享網址 (選填)" class="w-full p-4 bg-blue-50 rounded-2xl text-[9px] border-none shadow-inner">
+                    <input v-model="form.name" placeholder="行程名稱" class="w-full p-4 bg-blue-50 rounded-2xl text-xs font-black border-none shadow-inner">
+                    <input v-model="form.mapUrl" placeholder="貼上 Google Map 分享網址" class="w-full p-4 bg-blue-50 rounded-2xl text-[9px] border-none shadow-inner">
                     <div class="grid grid-cols-2 gap-2">
                         <select v-model="form.category" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner"><option v-for="c in ['景點','住宿','美食','購物','航班','其他']">{{c}}</option></select>
-                        <input v-model="form.time" placeholder="時間 (09:00)" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner">
+                        <input v-model="form.time" placeholder="預定時間" class="p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner">
                     </div>
                     <div class="flex space-x-2">
                         <select v-model="form.transport" class="flex-1 p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner"><option value="walk">🚶‍♂️ 步行</option><option value="car">🚗 開車</option><option value="bus">🚌 大眾</option></select>
                         <input v-model="form.transTime" placeholder="分鐘" class="w-20 p-4 bg-blue-50 rounded-2xl text-xs font-bold border-none shadow-inner">
                     </div>
-                    <textarea v-model="form.note" placeholder="備註..." class="w-full p-4 bg-blue-50 rounded-2xl text-xs h-24 border-none shadow-inner"></textarea>
+                    <textarea v-model="form.note" placeholder="備註細節..." class="w-full p-4 bg-blue-50 rounded-2xl text-xs h-24 border-none shadow-inner"></textarea>
                 </div>
 
                 <div v-if="modal.type === 'booking'" class="space-y-4">
-                    <input v-model="form.flightNo" placeholder="航班號 (JL802)" class="w-full p-4 bg-blue-50 rounded-xl font-bold border-none shadow-inner">
+                    <input v-model="form.flightNo" placeholder="航班號 (如：BR123)" class="w-full p-4 bg-blue-50 rounded-xl font-bold border-none shadow-inner">
                     <div class="grid grid-cols-2 gap-2">
-                        <input v-model="form.from" placeholder="Origin" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner">
-                        <input v-model="form.to" placeholder="Dest" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner">
+                        <input v-model="form.from" placeholder="出發機場" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner">
+                        <input v-model="form.to" placeholder="抵達機場" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <input v-model="form.depTime" placeholder="Dep Time" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner text-xs">
-                        <input v-model="form.arrTime" placeholder="Arr Time" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner text-xs">
+                        <input v-model="form.depTime" placeholder="起飛時間" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner text-xs">
+                        <input v-model="form.arrTime" placeholder="抵達時間" class="p-4 bg-blue-50 rounded-xl border-none shadow-inner text-xs">
                     </div>
                 </div>
 
@@ -438,8 +459,8 @@
                 </div>
 
                 <div class="flex flex-col space-y-3 mt-8">
-                    <button @click="saveData" class="w-full py-4 bg-blue-600 text-white rounded-3xl font-black shadow-lg active:scale-95 transition-transform">儲存 🦴</button>
-                    <button v-if="modal.isEdit" @click="confirmDelete" class="w-full py-3 text-red-400 text-xs font-bold">刪除此項目</button>
+                    <button @click="saveData" class="w-full py-4 bg-blue-600 text-white rounded-3xl font-black shadow-lg active:scale-95 transition-transform">儲存資訊 🦴</button>
+                    <button v-if="modal.isEdit" @click="confirmDelete" class="w-full py-3 text-red-400 text-xs font-bold">刪除項目</button>
                     <button @click="modal.show = false" class="w-full py-3 text-gray-400 font-black text-xs">先不要 🐾</button>
                 </div>
             </div>
@@ -458,14 +479,20 @@ createApp({
         const aiMode = ref('guide');
         const selectedDate = ref('');
         const tripName = ref('澎湖之旅');
+        
+        // AI 相關
         const aiImagePreview = ref('');
+        const aiMimeType = ref('image/png');
         const aiBase64 = ref('');
         const aiResult = ref('');
         const isAnalyzing = ref(false);
+
+        // 匯率相關
         const currInput = ref(1000);
         const currTarget = ref('JPY');
         const exchangeRates = ref({ JPY: 0.21, KRW: 0.024, USD: 32.5, EUR: 35.1 });
         const isUpdatingRates = ref(false);
+
         const translateText = ref('');
         const translatedResult = ref('');
         const isTranslating = ref(false);
@@ -491,7 +518,7 @@ createApp({
         const expenses = ref([]);
 
         const saveToStorage = () => {
-            localStorage.setItem('dog_trip_v8_data', JSON.stringify({
+            localStorage.setItem('dog_trip_v10_data', JSON.stringify({
                 tripName: tripName.value, dates: dates.value, members: members.value,
                 itineraries: itineraries.value, preparations: preparations.value,
                 bookings: bookings.value, shoppingList: shoppingList.value,
@@ -501,20 +528,135 @@ createApp({
         };
 
         const loadFromStorage = () => {
-            const saved = localStorage.getItem('dog_trip_v8_data');
+            const saved = localStorage.getItem('dog_trip_v10_data');
             if (saved) {
-                const data = JSON.parse(saved);
-                tripName.value = data.tripName || '我的旅程';
-                dates.value = data.dates || [];
-                members.value = data.members || [{ name: '我', avatar: '' }];
-                itineraries.value = data.itineraries || [];
-                preparations.value = data.preparations || { 行李: [] };
-                bookings.value = data.bookings || { outbound: {}, inbound: {} };
-                shoppingList.value = data.shoppingList || [];
-                expenses.value = data.expenses || [];
-                selectedDate.value = data.selectedDate || (dates.value[0]?.fullDate || '');
-                exchangeRates.value = data.exchangeRates || { JPY: 0.21, KRW: 0.024, USD: 32.5, EUR: 35.1 };
+                try {
+                    const data = JSON.parse(saved);
+                    tripName.value = data.tripName || '我的旅程';
+                    dates.value = data.dates || [];
+                    members.value = data.members || [{ name: '我', avatar: '' }];
+                    itineraries.value = data.itineraries || [];
+                    preparations.value = data.preparations || { 行李: [] };
+                    bookings.value = data.bookings || { outbound: {}, inbound: {} };
+                    shoppingList.value = data.shoppingList || [];
+                    expenses.value = data.expenses || [];
+                    selectedDate.value = data.selectedDate || (dates.value[0]?.fullDate || '');
+                    exchangeRates.value = data.exchangeRates || { JPY: 0.21, KRW: 0.024, USD: 32.5, EUR: 35.1 };
+                } catch(e) { console.error("Loading Error", e); }
             }
+        };
+
+        const fetchWithRetry = async (url, options, retries = 3) => {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) return await response.json();
+                    if (response.status === 429) {
+                        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                        continue;
+                    }
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error?.message || 'API 連線異常');
+                } catch (err) {
+                    if (i === retries - 1) throw err;
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+        };
+
+        const handleAiImageUpload = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    aiImagePreview.value = ev.target.result;
+                    aiMimeType.value = file.type;
+                    aiBase64.value = ev.target.result.split(',')[1];
+                    aiResult.value = '';
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        const runAiAnalysis = async () => {
+            if (!aiBase64.value || isAnalyzing.value) return;
+            isAnalyzing.value = true;
+            aiResult.value = '';
+            const apiKey = "";
+            
+            const promptContent = aiMode.value === 'guide' 
+                ? "你是一位專業旅遊導遊。請分析照片中的內容（地標、建築、文字或籤詩），先詳細辨識照片中的細節，再用親切的繁體中文解釋其歷史背景與趣味故事。如果看不清楚，請禮貌地說明原因。回覆請簡明扼要。"
+                : "你是一位精通多國語言的菜單翻譯官。請辨識照片菜單，將菜名翻譯成繁體中文並簡單說明成分。最後提供3句該語言的點餐實用對話句子與發音。";
+
+            try {
+                const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ 
+                            role: "user", 
+                            parts: [
+                                { text: promptContent },
+                                { inlineData: { mimeType: aiMimeType.value, data: aiBase64.value } }
+                            ] 
+                        }]
+                    })
+                });
+                aiResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "AI 助手看不太清楚，換個角度試試！🐾";
+            } catch (err) {
+                aiResult.value = `連線失敗：${err.message} 🐾`;
+            } finally { isAnalyzing.value = false; }
+        };
+
+        const updateExchangeRates = async () => {
+            if (isUpdatingRates.value) return;
+            isUpdatingRates.value = true;
+            const apiKey = "";
+            try {
+                const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: "查詢目前 JPY, KRW, USD, EUR 對 TWD 的匯率（1單位外幣兌換多少台幣）。" }] }],
+                        tools: [{ "google_search": {} }],
+                        generationConfig: { 
+                            responseMimeType: "application/json", 
+                            responseSchema: { 
+                                type: "OBJECT", 
+                                properties: { JPY: { type: "NUMBER" }, KRW: { type: "NUMBER" }, USD: { type: "NUMBER" }, EUR: { type: "NUMBER" } } 
+                            } 
+                        }
+                    })
+                });
+                const newRates = JSON.parse(result.candidates[0].content.parts[0].text);
+                exchangeRates.value = { ...exchangeRates.value, ...newRates };
+                saveToStorage();
+            } catch (err) { console.error("Rate Update Failed", err); } 
+            finally { isUpdatingRates.value = false; }
+        };
+
+        const calculateCurrency = computed(() => {
+            const rate = exchangeRates.value[currTarget.value] || 0;
+            return (currInput.value * rate).toLocaleString(undefined, { maximumFractionDigits: 0 });
+        });
+
+        const handleTranslate = async () => {
+            if (!translateText.value || isTranslating.value) return;
+            isTranslating.value = true;
+            translatedResult.value = '';
+            const apiKey = ""; 
+            try {
+                const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `將以下文字翻譯成自然優雅的繁體中文，僅回傳結果：\n\n${translateText.value}` }] }]
+                    })
+                });
+                translatedResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "翻譯失敗";
+            } catch (err) {
+                translatedResult.value = "翻譯小幫手忙碌中，請稍後！🐾";
+            } finally { isTranslating.value = false; }
         };
 
         const addDate = () => {
@@ -532,89 +674,6 @@ createApp({
             if (dates.value.length === 1) selectedDate.value = newDateInput.value;
             newDateInput.value = '';
             saveToStorage();
-        };
-
-        const handleAiImageUpload = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    aiImagePreview.value = ev.target.result;
-                    aiBase64.value = ev.target.result.split(',')[1];
-                    aiResult.value = '';
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
-        const fetchWithRetry = async (url, options, retries = 5) => {
-            for (let i = 0; i <= retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.ok) return await response.json();
-                    throw new Error('API Error');
-                } catch (err) {
-                    if (i === retries) throw err;
-                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
-                }
-            }
-        };
-
-        const runAiAnalysis = async () => {
-            if (!aiBase64.value || isAnalyzing.value) return;
-            isAnalyzing.value = true;
-            aiResult.value = '';
-            const apiKey = "";
-            
-            // 強化版 System Prompt
-            const systemPrompt = aiMode.value === 'guide' 
-                ? "你是一個知識淵博且細心的在地導遊。請仔細觀察圖片中的文字、建築特徵、自然景觀或任何微小線索。如果看到文字（如籤詩、看板），請先進行精準文字辨識再解釋。請提供準確的歷史背景、文化意義或實用旅遊建議。如果圖片模糊或資訊不足，請禮貌地說明原因並請使用者提供更多細節。請使用台灣繁體中文回答。" 
-                : "你是一位精通多國語言的菜單翻譯官。請精準辨識圖片中的菜單文字，將菜名翻譯成台灣繁體中文，並簡單解釋菜餚成分。最後，請針對該料理提供 3 句當地語言的點餐實用語句（附帶發音參考）。如果遇到手寫體或模糊處，請標註不確定的部分。";
-
-            try {
-                const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ role: "user", parts: [{ text: "這是我在旅途中拍的照片，請根據你設定的角色幫我分析內容。" }, { inlineData: { mimeType: "image/png", data: aiBase64.value } }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] }
-                    })
-                });
-                aiResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "抱歉，我現在看不太清楚，要不要試試換個角度拍一張？🐾";
-            } catch (err) {
-                aiResult.value = "AI 小狗狗現在連線有點問題，請稍後再試試看！🐾";
-            } finally {
-                isAnalyzing.value = false;
-            }
-        };
-
-        const calculateCurrency = computed(() => {
-            const rate = exchangeRates.value[currTarget.value] || 0;
-            return (currInput.value * rate).toLocaleString(undefined, { maximumFractionDigits: 0 });
-        });
-
-        const updateExchangeRates = async () => {
-            if (isUpdatingRates.value) return;
-            isUpdatingRates.value = true;
-            const apiKey = "";
-            try {
-                const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: "查詢目前 JPY, KRW, USD, EUR 對 TWD 的即時匯率（1外幣兌換多少台幣）。" }] }],
-                        tools: [{ "google_search": {} }],
-                        generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { JPY: { type: "NUMBER" }, KRW: { type: "NUMBER" }, USD: { type: "NUMBER" }, EUR: { type: "NUMBER" } } } }
-                    })
-                });
-                const newRates = JSON.parse(result.candidates[0].content.parts[0].text);
-                exchangeRates.value = { ...exchangeRates.value, ...newRates };
-                saveToStorage();
-            } catch (err) {
-                console.error("更新失敗");
-            } finally {
-                isUpdatingRates.value = false;
-            }
         };
 
         const addPrep = (cat) => { if (newPrepInput.value) { preparations.value[cat].push({ text: newPrepInput.value, done: false }); newPrepInput.value = ''; saveToStorage(); }};
@@ -645,32 +704,14 @@ createApp({
             modal.value.show = false; saveToStorage();
         };
 
-        const confirmDelete = () => { if (confirm('要移除這個行程嗎？🐾')) { itineraries.value = itineraries.value.filter(i => i.id !== modal.value.targetId); modal.value.show = false; saveToStorage(); }};
-        const removeItem = (type, id) => { if (confirm('確定要刪除嗎？')) { if (type === 'shopping') shoppingList.value = shoppingList.value.filter(i => i.id !== id); if (type === 'expense') expenses.value = expenses.value.filter(i => i.id !== id); saveToStorage(); }};
-        
+        const confirmDelete = () => { if (confirm('確定要移除嗎？🐾')) { itineraries.value = itineraries.value.filter(i => i.id !== modal.value.targetId); modal.value.show = false; saveToStorage(); }};
+        const removeItem = (type, id) => { if (confirm('確定要移除？')) { if (type === 'shopping') shoppingList.value = shoppingList.value.filter(i => i.id !== id); if (type === 'expense') expenses.value = expenses.value.filter(i => i.id !== id); saveToStorage(); }};
         const uploadItineraryImg = (e) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { form.value.img = ev.target.result; }; reader.readAsDataURL(file); }};
         const uploadImg = (e, item) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { item.img = ev.target.result; saveToStorage(); }; reader.readAsDataURL(file); }};
         const uploadAvatar = (e, idx) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { members.value[idx].avatar = ev.target.result; saveToStorage(); }; reader.readAsDataURL(file); }};
-        const addMember = () => { const name = prompt('旅伴姓名？'); if (name) { members.value.push({ name, avatar: '' }); saveToStorage(); }};
+        const addMember = () => { const name = prompt('旅伴大名？'); if (name) { members.value.push({ name, avatar: '' }); saveToStorage(); }};
         const openGoogleMaps = (item) => { if (item.mapUrl) window.open(item.mapUrl, '_blank'); };
         const getTransIcon = (type) => type === 'walk' ? '🚶‍♂️' : type === 'car' ? '🚗' : '🚌';
-
-        const handleTranslate = async () => {
-            if (!translateText.value || isTranslating.value) return;
-            isTranslating.value = true; translatedResult.value = '';
-            const apiKey = ""; 
-            try {
-                const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: translateText.value }] }],
-                        systemInstruction: { parts: [{ text: "你是一位翻譯小助手，請將以下文字翻譯成優美的台灣繁體中文，並保持語氣親切。只回傳翻譯結果。" }] }
-                    })
-                });
-                translatedResult.value = result.candidates?.[0]?.content?.parts?.[0]?.text || "翻譯失敗";
-            } catch (err) { translatedResult.value = "翻譯服務目前有點忙，請等一下下！🐾"; } finally { isTranslating.value = false; }
-        };
 
         const spawnHearts = () => {
             setInterval(() => {
