@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>狗狗旅遊手冊 - 穩定架構回歸版</title>
+    <title>狗狗旅遊手冊 - 穩定修復版</title>
     <!-- Web App 圖示 -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/dog.png">
     <link rel="icon" href="https://img.icons8.com/fluent/48/000000/dog.png">
@@ -52,6 +52,7 @@
             height: 220px;
             overflow: hidden;
             background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            position: relative;
         }
         .header-image-container img {
             width: 100%; height: 100%; object-fit: cover;
@@ -70,7 +71,7 @@
             z-index: 20;
         }
 
-        /* 導航按鈕 (向上移動至圖片區) */
+        /* 導航按鈕 (位於圖片區) */
         .side-tab-bar {
             position: absolute;
             bottom: 35px;
@@ -146,7 +147,7 @@
         .sync-dot.syncing { background-color: #F59E0B; animation: pulse 1s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* 彈窗 */
+        /* 彈窗背景 */
         .modal-overlay {
             position: fixed;
             inset: 0; background: rgba(15, 23, 42, 0.7);
@@ -222,7 +223,7 @@
     </header>
 
     <main class="p-4 pt-6">
-        <!-- 1. 行程分頁 -->
+        <!-- 1. 行程分頁 (預設顯示) -->
         <div v-if="currentTab === 'itinerary'" class="space-y-4 animate-fade">
             <!-- 日期選擇 -->
             <div class="flex space-x-3 overflow-x-auto no-scrollbar pb-2 mb-2">
@@ -241,7 +242,7 @@
             <!-- 行程清單 -->
             <div id="itinerary-list">
                 <div v-for="(item, index) in filteredItinerary" :key="item.id">
-                    <!-- 經典交通路徑 -->
+                    <!-- 交通腳印路徑 -->
                     <div v-if="index > 0" class="travel-path">
                         <div class="path-paw">🐾</div>
                         <div class="travel-info-pill">
@@ -285,7 +286,7 @@
             </button>
         </div>
 
-        <!-- 2. 準備清單 -->
+        <!-- 2. 準備清單分頁 -->
         <div v-if="currentTab === 'prep'" class="space-y-6 animate-fade">
             <div class="bg-white rounded-3xl p-6 shadow-sm border border-blue-50">
                 <h3 class="font-black text-slate-800 text-sm mb-4 uppercase tracking-widest"><i class="fa-solid fa-suitcase-rolling mr-2 text-blue-400"></i> Packing List</h3>
@@ -303,7 +304,7 @@
             </div>
         </div>
 
-        <!-- 3. 花費紀錄 -->
+        <!-- 3. 花費紀錄分頁 -->
         <div v-if="currentTab === 'expenses'" class="space-y-6 animate-fade">
             <div class="bg-gradient-to-br from-blue-600 to-blue-400 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
                 <div class="relative z-10">
@@ -317,7 +318,7 @@
             <div class="bg-white rounded-3xl p-6 shadow-sm border border-blue-50">
                 <div v-for="(exp, idx) in expenses" :key="idx" class="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-[10px] font-black uppercase">{{ exp.category[0] }}</div>
+                        <div class="w-10 h-10 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-[10px] font-black uppercase">{{ exp.category ? exp.category[0] : 'E' }}</div>
                         <div>
                             <p class="font-black text-slate-700 text-xs">{{ exp.name }}</p>
                             <p class="text-[9px] text-slate-400 uppercase tracking-tighter">{{ exp.date }}</p>
@@ -332,7 +333,7 @@
             </div>
         </div>
 
-        <!-- 4. 設定與成員 -->
+        <!-- 4. 設定與成員分頁 -->
         <div v-if="currentTab === 'info'" class="space-y-6 animate-fade">
             <!-- 成員管理 -->
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-blue-50">
@@ -380,7 +381,7 @@
         </div>
     </main>
 
-    <!-- 1. 行程編輯彈窗 -->
+    <!-- 行程編輯彈窗 (v-if="showItineraryModal" 確保預設不開啟) -->
     <div v-if="showItineraryModal" class="modal-overlay" @click.self="showItineraryModal = false">
         <div class="modal-box">
             <h3 class="text-center font-black text-slate-800 mb-6 uppercase tracking-widest text-sm">
@@ -412,7 +413,7 @@
         </div>
     </div>
 
-    <!-- 2. 花費紀錄彈窗 -->
+    <!-- 花費紀錄彈窗 (v-if="showExpenseModal" 確保預設不開啟) -->
     <div v-if="showExpenseModal" class="modal-overlay" @click.self="showExpenseModal = false">
         <div class="modal-box">
             <h3 class="text-center font-black text-slate-800 mb-6 uppercase tracking-widest text-sm">記帳一筆 Receipt</h3>
@@ -445,13 +446,13 @@ if (firebaseConfig.apiKey) firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'travel-dog-app';
-const MASTER_KEY = 'DOG_APP_V44_STABLE';
+const MASTER_KEY = 'DOG_APP_V45_CLEAN';
 const SHARED_DOC_PATH = `artifacts/${appId}/public/data/shared_trip/main`;
 
 createApp({
     setup() {
         const isSyncing = ref(false);
-        const currentTab = ref('itinerary');
+        const currentTab = ref('itinerary'); // 強制預設分頁為行程
         const selectedDate = ref('');
         const tripName = ref('我的狗狗旅行 🐾');
         const targetDate = ref('2026-02-01');
@@ -461,11 +462,11 @@ createApp({
         const newPrepInput = ref('');
         const dates = ref([]);
         const itineraries = ref([]);
-        const preparations = ref({ 行李: [], 待辦: [] });
+        const preparations = ref({ 行耳: [], 待辦: [] });
         const expenses = ref([]);
         const members = ref([{ name: '旅伴', img: '' }]);
 
-        // 獨立彈窗狀態 (防止邏輯衝突)
+        // 彈窗狀態：一律初始化為 false，確保不會自動彈出
         const showItineraryModal = ref(false);
         const showExpenseModal = ref(false);
         const isEditMode = ref(false);
@@ -478,9 +479,10 @@ createApp({
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
             if (days > 0) return `${days} Days`;
             if (days === 0) return 'Today!';
-            return 'Finished';
+            return 'Enjoying';
         });
 
+        // 讀取本地快取
         const loadLocal = () => {
             const saved = localStorage.getItem(MASTER_KEY);
             if (saved) {
@@ -541,6 +543,10 @@ createApp({
         };
 
         onMounted(async () => {
+            // 初始化時確保彈窗是關閉的
+            showItineraryModal.value = false;
+            showExpenseModal.value = false;
+
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await auth.signInWithCustomToken(__initial_auth_token);
@@ -551,7 +557,7 @@ createApp({
             } catch(e) { }
         });
 
-        // 獨立行程控制
+        // 彈窗控制功能
         const openItineraryModal = () => {
             isEditMode.value = false;
             itineraryForm.value = { category: '景點', transport: 'car', transTime: '15', date: selectedDate.value };
@@ -572,7 +578,6 @@ createApp({
             showItineraryModal.value = false; syncToCloud();
         };
 
-        // 獨立花費控制
         const openExpenseModal = () => {
             expenseForm.value = { category: '飲食', amount: null, date: new Date().toISOString().substring(0,10) };
             showExpenseModal.value = true;
@@ -583,7 +588,7 @@ createApp({
         };
 
         const removeItem = (type, id) => {
-            if (confirm('確定要刪除嗎？🐾')) {
+            if (confirm('確定刪除這個項目嗎？🐾')) {
                 if (type === 'itinerary') itineraries.value = itineraries.value.filter(i => i.id !== id);
                 syncToCloud();
             }
