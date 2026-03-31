@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>狗狗旅遊手冊 - 雙人同步閃電版</title>
+    <title>狗狗旅遊手冊 - 穩定同步修復版</title>
     <!-- Web App Icons -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/dog.png">
     <link rel="icon" href="https://img.icons8.com/fluent/48/000000/dog.png">
@@ -13,7 +13,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- SortableJS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <!-- Firebase SDKs (Compat version for stability) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
@@ -164,7 +164,6 @@
         .member-avatar-box img { width: 100%; height: 100%; object-fit: cover; }
         .avatar-upload-hint { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.4); color: white; font-size: 8px; padding: 2px 0; font-weight: bold; }
 
-        /* 右上角極簡同步狀態 */
         .sync-dot {
             position: fixed;
             top: 15px;
@@ -186,7 +185,7 @@
 
 <div id="app">
     <!-- 同步狀態點 -->
-    <div :class="['sync-dot', isSyncing ? 'syncing' : 'online']" title="雲端同步中"></div>
+    <div :class="['sync-dot', isSyncing ? 'syncing' : 'online']" title="同步中"></div>
 
     <!-- 愛心飄浮 -->
     <div v-for="h in hearts" :key="h.id" class="heart-float" :style="h.style">❤️</div>
@@ -197,10 +196,10 @@
             <div class="bg-white/90 backdrop-blur-sm w-7 h-7 rounded-lg flex items-center justify-center text-lg shadow-md">🐕</div>
             <div>
                 <h1 class="text-white text-sm font-black leading-none mb-0.5">{{ tripName }}</h1>
-                <p class="text-white/70 text-[7px] font-black tracking-widest uppercase">Shared Sync Edition 🐾</p>
+                <p class="text-white/70 text-[7px] font-black tracking-widest uppercase">Safe Sync Edition 🐾</p>
             </div>
         </div>
-        <div class="absolute right-2 top-1/2 -translate-y-1/2 opacity-10 text-3xl font-black text-white pointer-events-none italic uppercase">SHARED</div>
+        <div class="absolute right-2 top-1/2 -translate-y-1/2 opacity-10 text-3xl font-black text-white pointer-events-none italic uppercase">FIXED</div>
     </header>
 
     <!-- 主內容區 -->
@@ -256,7 +255,7 @@
                 <button v-if="dates.length > 0" @click="showModal('itinerary')" class="fixed bottom-24 right-6 w-14 h-14 bg-blue-500 text-white rounded-full shadow-2xl flex items-center justify-center z-50 text-2xl border-4 border-white btn-active">➕</button>
             </div>
 
-            <!-- 2. 準備清單 -->
+            <!-- 2. 準備清單 (已修正「行李」打錯字的問題) -->
             <div v-if="currentTab === 'prep'" key="prep" class="p-4 space-y-6 pb-20">
                 <div class="bg-white rounded-[24px] p-6 shadow-sm border border-blue-50">
                     <h3 class="text-blue-900 font-black text-xs mb-4 flex items-center">🧳 行李打包清單</h3>
@@ -349,7 +348,7 @@
         </button>
     </nav>
 
-    <!-- 編輯視窗 -->
+    <!-- 編輯視窗 (Modal) -->
     <transition name="fade">
         <div v-if="modal.show" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
             <div class="bg-white w-full max-w-sm rounded-[32px] p-6 max-h-[90vh] overflow-y-auto relative shadow-2xl border-2 border-blue-50">
@@ -368,9 +367,18 @@
                     <input v-model="form.mapUrl" placeholder="Google Maps 連結" class="w-full p-3 bg-blue-50 rounded-xl text-[10px] border-none shadow-inner">
                     <textarea v-model="form.note" placeholder="詳細備註..." class="w-full p-3 bg-blue-50 rounded-xl text-xs h-24 border-none shadow-inner"></textarea>
                 </div>
+
+                <div v-if="modal.type === 'hotel'" class="space-y-4">
+                    <input v-model="form.name" placeholder="飯店名稱" class="w-full p-3 bg-blue-50 rounded-xl font-black text-slate-800 text-xs border-none shadow-inner">
+                    <input v-model="form.date" placeholder="日期" class="w-full p-3 bg-blue-50 rounded-xl border-none shadow-inner text-xs font-bold">
+                    <input v-model="form.address" placeholder="地址" class="w-full p-3 bg-blue-50 rounded-xl border-none shadow-inner text-xs font-bold">
+                    <input v-model="form.mapUrl" placeholder="地圖連結" class="w-full p-3 bg-blue-50 rounded-xl border-none shadow-inner text-[10px]">
+                </div>
+
                 <div class="flex flex-col space-y-3 mt-8">
                     <button @click="saveData" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black shadow-lg btn-active text-sm">儲存更新 Save 🦴</button>
-                    <button @click="modal.show = false" class="w-full py-2 text-gray-400 font-black text-[10px] uppercase">取消</button>
+                    <!-- 強化取消按鈕 -->
+                    <button @click="closeModal" class="w-full py-2 text-gray-400 font-black text-[10px] uppercase">取消</button>
                 </div>
             </div>
         </div>
@@ -380,7 +388,6 @@
 <script>
 const { createApp, ref, computed, onMounted } = Vue;
 
-// Firebase 初始化
 const firebaseConfig = JSON.parse(__firebase_config);
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -393,7 +400,7 @@ createApp({
         const isSyncing = ref(false);
         const currentTab = ref('itinerary');
         const selectedDate = ref('');
-        const tripName = ref('藍色狗狗冒險 🦴');
+        const tripName = ref('我的狗狗旅行 🐾');
         const hearts = ref([]);
         const tabs = [
             { id: 'itinerary', name: '行程', icon: '🐾' },
@@ -406,12 +413,13 @@ createApp({
         const dates = ref([]);
         const members = ref([{ name: '我', icon: '🐕', img: '' }]);
         const itineraries = ref([]);
-        const preparations = ref({ 行底: [], 待辦: [] });
+        // 修正 typo：行底 -> 行李
+        const preparations = ref({ 行李: [], 待辦: [] });
         const expenses = ref([]);
         const bookings = ref({ outbound: {}, inbound: {} });
         const accommodations = ref([]);
 
-        // 【極速讀取】從 LocalStorage 秒開
+        // 本地秒開
         const loadFromLocalStorage = () => {
             const saved = localStorage.getItem(MASTER_KEY);
             if (saved) {
@@ -421,17 +429,20 @@ createApp({
                     dates.value = data.dates || [];
                     members.value = data.members || members.value;
                     itineraries.value = data.itineraries || [];
-                    preparations.value = data.preparations || { 行底: [], 待辦: [] };
+                    // 修正資料結構相容性
+                    preparations.value = {
+                        行李: Array.isArray(data.preparations?.行李) ? data.preparations.行李 : [],
+                        待辦: Array.isArray(data.preparations?.待辦) ? data.preparations.待辦 : []
+                    };
                     expenses.value = data.expenses || [];
                     bookings.value = data.bookings || { outbound: {}, inbound: {} };
                     accommodations.value = data.accommodations || [];
                     if (dates.value.length > 0) selectedDate.value = dates.value[0].fullDate;
-                } catch(e) {}
+                } catch(e) { console.error("Local Load Fail", e); }
             }
         };
         loadFromLocalStorage();
 
-        // 雲端同步上傳
         const syncToCloud = async () => {
             const user = auth.currentUser;
             if (!user) return;
@@ -448,45 +459,40 @@ createApp({
                     accommodations: JSON.parse(JSON.stringify(accommodations.value)),
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
                 };
-                // 更新快取
                 localStorage.setItem(MASTER_KEY, JSON.stringify(payload));
-                // 上傳雲端 (共用路徑讓另一半看得到)
                 await db.doc(`artifacts/${appId}/public/data/shared_trip`).set(payload);
             } catch (e) { console.error("Sync Error", e); } finally { isSyncing.value = false; }
         };
 
-        // 雲端監聽 (即時接收另一半的修改)
         const listenToCloud = () => {
-            isSyncing.value = true;
             db.doc(`artifacts/${appId}/public/data/shared_trip`).onSnapshot((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
-                    // 只有當雲端資料比本地新，或是第一次載入時才更新 (避免循環)
                     tripName.value = data.tripName || tripName.value;
                     dates.value = data.dates || [];
                     members.value = data.members || members.value;
                     itineraries.value = data.itineraries || [];
-                    preparations.value = data.preparations || { 行底: [], 待辦: [] };
+                    preparations.value = {
+                        行李: data.preparations?.行李 || [],
+                        待辦: data.preparations?.待辦 || []
+                    };
                     expenses.value = data.expenses || [];
                     bookings.value = data.bookings || { outbound: {}, inbound: {} };
                     accommodations.value = data.accommodations || [];
                     if (dates.value.length > 0 && !selectedDate.value) selectedDate.value = dates.value[0].fullDate;
-                    
                     localStorage.setItem(MASTER_KEY, JSON.stringify(data));
                 }
-                isSyncing.value = false;
-            }, (error) => { isSyncing.value = false; });
+            }, (error) => { console.error("Cloud Listen Fail", error); });
         };
 
         onMounted(async () => {
-            // 背景登入與監聽
             const initCloud = async () => {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await auth.signInWithCustomToken(__initial_auth_token);
                 } else {
                     await auth.signInAnonymously();
                 }
-                listenToCloud(); // 開始即時監聽另一半的更新
+                listenToCloud();
             };
             initCloud();
 
@@ -540,24 +546,46 @@ createApp({
 
         const togglePrep = (cat, idx) => { preparations.value[cat][idx].done = !preparations.value[cat][idx].done; syncToCloud(); };
         const filteredItinerary = computed(() => itineraries.value.filter(i => i.date === selectedDate.value));
+        
         const modal = ref({ show: false, type: '', title: '', isEdit: false, targetId: null });
         const form = ref({});
+        
         const showModal = (type, title = '新增項目') => {
             modal.value = { show: true, type, title, isEdit: false, targetId: null };
             if (type === 'itinerary') form.value = { category: '景點', transport: 'car', transTime: '15', date: selectedDate.value };
+            else if (type === 'hotel') form.value = { name: '', date: '', address: '', mapUrl: '' };
             else form.value = {};
         };
+        const closeModal = () => { modal.value.show = false; };
+        
         const editItem = (item) => { modal.value = { show: true, type: 'itinerary', title: '編輯行程', isEdit: true, targetId: item.id }; form.value = { ...item }; };
+        const editHotel = (hotel) => { modal.value = { show: true, type: 'hotel', title: '編輯住宿', isEdit: true, targetId: hotel.id }; form.value = { ...hotel }; };
+        
         const saveData = () => {
             if (modal.value.isEdit) {
-                const idx = itineraries.value.findIndex(i => i.id === modal.value.targetId);
-                itineraries.value[idx] = { ...form.value };
+                if (modal.value.type === 'hotel') {
+                    const idx = accommodations.value.findIndex(h => h.id === modal.value.targetId);
+                    if (idx !== -1) accommodations.value[idx] = { ...form.value };
+                } else {
+                    const idx = itineraries.value.findIndex(i => i.id === modal.value.targetId);
+                    if (idx !== -1) itineraries.value[idx] = { ...form.value };
+                }
             } else {
-                itineraries.value.push({ ...form.value, id: Date.now() });
+                const newId = Date.now();
+                if (modal.value.type === 'itinerary') itineraries.value.push({ ...form.value, id: newId });
+                else if (modal.value.type === 'hotel') accommodations.value.push({ ...form.value, id: newId });
             }
-            modal.value.show = false; syncToCloud();
+            closeModal(); syncToCloud();
         };
-        const removeItem = (type, id) => { if(confirm('要刪除嗎？')) { itineraries.value = itineraries.value.filter(i => i.id !== id); syncToCloud(); } };
+
+        const removeItem = (type, id) => { 
+            if(confirm('要刪除嗎？🐾')) { 
+                if (type === 'itinerary') itineraries.value = itineraries.value.filter(i => i.id !== id);
+                if (type === 'hotel') accommodations.value = accommodations.value.filter(h => h.id !== id);
+                syncToCloud(); 
+            } 
+        };
+
         const uploadItineraryImg = (e) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { form.value.img = ev.target.result; }; reader.readAsDataURL(file); }};
         const openGoogleMaps = (item) => { if (item && item.mapUrl) window.open(item.mapUrl, '_blank'); else alert('請貼上連結喔！🐾'); };
         const getTransIcon = (t) => t === 'walk' ? '🚶‍♂️' : t === 'bus' ? '🚌' : '🚗';
@@ -565,7 +593,7 @@ createApp({
         return {
             isSyncing, currentTab, selectedDate, tripName, dates, tabs, hearts, itineraries, preparations, expenses, bookings, members, accommodations,
             filteredItinerary, newDateInput, newPrepInput, newTodoInput,
-            modal, form, showModal, editItem, saveData, togglePrep, addPrep, addDate, addMember, triggerAvatarUpload, handleAvatarUpload,
+            modal, form, showModal, closeModal, editItem, editHotel, saveData, togglePrep, addPrep, addDate, addMember, triggerAvatarUpload, handleAvatarUpload,
             uploadItineraryImg, syncToCloud, openGoogleMaps, removeItem, getTransIcon
         };
     }
