@@ -106,7 +106,7 @@
             transform: translateY(-5px);
         }
 
-        /* 機票樣式優化 */
+        /* 機票樣式 */
         .ticket-card {
             background: white;
             border-radius: 30px;
@@ -262,7 +262,7 @@
                 <div>
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Outfit Advice 穿搭建議</p>
                     <p class="text-xs text-slate-600 font-bold leading-relaxed mt-0.5">
-                        {{ weather?.advice || '無穿搭建議紀錄。' }}
+                        {{ weather?.advice || '自動產生穿搭建議中...' }}
                     </p>
                 </div>
             </div>
@@ -333,7 +333,7 @@
         <div v-if="bookingSubTab === 'flight'" class="space-y-6">
             <div v-for="(f, idx) in bookings.flights" :key="f.id" class="ticket-card animate-fade-in">
                 <div class="bg-dog-blue-50 px-8 py-6 flex justify-between items-center">
-                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest">航班紀錄</p>
+                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest">登機證樣式</p>
                 </div>
                 <div class="px-8 pt-4 pb-6">
                     <div class="bg-slate-50 rounded-2xl py-4 text-center mb-6">
@@ -360,15 +360,15 @@
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="border-r border-slate-100 py-2">
-                            <p class="text-[10px] font-black text-slate-300 uppercase text-center mb-1">Baggage</p>
-                            <p class="text-sm font-black text-slate-700 text-center flex items-center justify-center gap-2">
+                            <p class="text-[10px] font-black text-slate-300 uppercase text-center mb-1">行李重量</p>
+                            <p class="text-sm font-black text-slate-700 text-center">
                                 <i class="fa-solid fa-suitcase-rolling text-accent-teal"></i> {{ f.baggage || '15kg' }}
                             </p>
                         </div>
                         <div class="py-2">
-                            <p class="text-[10px] font-black text-slate-300 uppercase text-center mb-1">Aircraft</p>
-                            <p class="text-sm font-black text-slate-700 text-center flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-plane-up text-orange-400"></i> {{ f.aircraft || '--' }}
+                            <p class="text-[10px] font-black text-slate-300 uppercase text-center mb-1">機型</p>
+                            <p class="text-sm font-black text-slate-700 text-center">
+                                <i class="fa-solid fa-plane-up text-orange-400"></i> {{ f.aircraft || 'A321' }}
                             </p>
                         </div>
                     </div>
@@ -381,7 +381,7 @@
             
             <button @click="openAddBooking('flight')" class="w-full py-6 border-4 border-dashed border-slate-200 rounded-[35px] text-slate-300 flex flex-col items-center justify-center gap-2">
                 <i class="fa-solid fa-plus text-2xl"></i>
-                <span class="text-sm font-black uppercase tracking-widest">新增航班</span>
+                <span class="text-sm font-black uppercase tracking-widest">新增航班紀錄</span>
             </button>
         </div>
 
@@ -403,7 +403,7 @@
                 </div>
                 <div class="mt-8 flex gap-3">
                     <button @click="openMap(h.address)" class="flex-1 py-3 bg-dog-blue-50 text-dog-blue-600 rounded-2xl text-xs font-black">地圖導航</button>
-                    <button @click="removeBooking('hotels', idx)" class="flex-1 py-3 bg-red-50 text-red-500 rounded-2xl text-xs font-black">刪除資訊</button>
+                    <button @click="removeBooking('hotels', idx)" class="flex-1 py-3 bg-red-50 text-red-500 rounded-2xl text-xs font-black">刪除</button>
                 </div>
             </div>
             <button @click="openAddBooking('hotel')" class="w-full py-10 border-4 border-dashed border-slate-200 rounded-[40px] text-slate-300 flex flex-col items-center justify-center gap-2">
@@ -413,80 +413,97 @@
         </div>
     </div>
 
-    <!-- 3. 記帳分頁內容 -->
+    <!-- 3. 記帳分頁內容 (正式上線) -->
     <div v-if="currentTab === 'expenses'" class="animate-fade-in space-y-6">
         <!-- 總支出卡片 -->
         <div class="bg-yellow-400 rounded-[40px] p-8 shadow-xl">
-            <p class="text-dog-blue-900 text-xs font-black opacity-60">總支出預算</p>
-            <h2 class="text-5xl font-black text-dog-blue-900 mt-2 mb-8 tracking-tighter">NT$ 0</h2>
-            <div class="bg-white/30 backdrop-blur-md rounded-2xl p-4">
-                <p class="text-[9px] font-black text-dog-blue-900 opacity-60 uppercase mb-1">功能開發中</p>
-                <p class="text-lg font-black text-dog-blue-900 italic">記帳功能即將上線...</p>
+            <p class="text-dog-blue-900 text-xs font-black opacity-60">總累計支出</p>
+            <h2 class="text-5xl font-black text-dog-blue-900 mt-2 mb-8 tracking-tighter">NT$ {{ totalExpenses }}</h2>
+            
+            <div class="flex gap-4">
+                <div class="bg-white/30 backdrop-blur-md rounded-2xl p-4 flex-1">
+                    <p class="text-[9px] font-black text-dog-blue-900 opacity-60 uppercase mb-1">今日支出</p>
+                    <p class="text-lg font-black text-dog-blue-900">NT$ {{ todayExpenses }}</p>
+                </div>
+                <div class="bg-white/30 backdrop-blur-md rounded-2xl p-4 flex-1">
+                    <p class="text-[9px] font-black text-dog-blue-900 opacity-60 uppercase mb-1">筆數</p>
+                    <p class="text-lg font-black text-dog-blue-900">{{ expenses.length }} 筆</p>
+                </div>
             </div>
         </div>
+
+        <section class="space-y-4">
+            <div class="flex justify-between items-center px-2">
+                <h3 class="font-black text-slate-800 flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-dog-blue-500 rounded-full"></span> 帳務明細
+                </h3>
+                <button @click="openAddExpense" class="bg-dog-blue-500 text-white px-4 py-2 rounded-full text-xs font-black shadow-md">
+                    + 記一筆
+                </button>
+            </div>
+
+            <div v-for="(ex, idx) in expenses" :key="ex.id" class="bg-white rounded-[30px] p-5 shadow-sm border border-slate-100 flex items-center gap-4 animate-fade-in">
+                <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-dog-blue-500 text-xl">
+                    <i :class="getExpenseIcon(ex.category)"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-black text-slate-800">{{ ex.name }}</h4>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="bg-dog-blue-50 text-dog-blue-400 text-[9px] font-black px-2 py-0.5 rounded-full">{{ ex.payer }}</span>
+                        <span class="text-[10px] text-slate-300 font-bold">{{ ex.date }}</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-lg font-black text-slate-800">NT$ {{ ex.amount }}</p>
+                    <button @click="expenses.splice(idx, 1)" class="text-[9px] text-red-300 font-bold uppercase mt-1">刪除</button>
+                </div>
+            </div>
+
+            <div v-if="expenses.length === 0" class="text-center py-20 opacity-20">
+                <i class="fa-solid fa-wallet text-6xl mb-4"></i>
+                <p class="font-black tracking-widest uppercase">目前尚無帳務紀錄</p>
+            </div>
+        </section>
     </div>
 
     <!-- 4. 成員與設定分頁 -->
-    <div v-if="currentTab === 'info'" class="animate-fade-in space-y-6">
+    <div v-if="currentTab === 'info'" class="animate-fade-in space-y-6 pb-10">
         <!-- 基本旅遊設定 -->
         <section class="bg-white rounded-[40px] p-8 shadow-sm border border-slate-100">
-            <h3 class="font-black text-slate-800 text-xl mb-6">旅遊設定</h3>
+            <h3 class="font-black text-slate-800 text-xl mb-6">旅遊核心設定</h3>
             <div class="space-y-4">
                 <div>
-                    <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">旅遊名稱</label>
+                    <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">行程名稱</label>
                     <input v-model="settings.tripTitle" class="input-standard font-bold" placeholder="輸入行程標題">
                 </div>
                 <div>
-                    <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">目的地城市</label>
-                    <input v-model="settings.city" class="input-standard font-bold" placeholder="例如：澎湖、首爾">
+                    <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">手動維護目的地 (輸入即自動帶出天氣)</label>
+                    <input v-model="settings.city" @blur="fetchWeather" class="input-standard font-bold text-dog-blue-500" placeholder="例如：澎湖、首爾、東京">
                 </div>
                 <div>
-                    <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">出發日期 (倒數計時用)</label>
+                    <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">出發目標日 (倒數計時用)</label>
                     <input type="date" v-model="settings.targetDate" class="input-standard font-bold">
                 </div>
             </div>
         </section>
 
-        <!-- 天氣手動維護區 -->
-        <section class="bg-dog-blue-900 rounded-[40px] p-8 shadow-xl text-white">
-            <h3 class="font-black text-xl mb-6 flex items-center gap-2">
-                <i class="fa-solid fa-cloud-sun text-accent-teal"></i> 今日天氣維護
+        <!-- 行程日期手動維護 -->
+        <section class="bg-white rounded-[40px] p-8 shadow-sm border border-slate-100">
+            <h3 class="font-black text-slate-800 text-xl mb-6 flex justify-between items-center">
+                <span>行程日期維護</span>
+                <button @click="addDate" class="text-xs font-black text-dog-blue-500">+ 新增天數</button>
             </h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="col-span-2">
-                    <label class="text-[10px] font-black opacity-60 uppercase tracking-widest block mb-2">天氣狀況</label>
-                    <select v-model="weather.code" class="w-full bg-white/10 rounded-2xl p-4 outline-none border-none font-bold">
-                        <option :value="0" class="text-slate-800">晴天</option>
-                        <option :value="1" class="text-slate-800">多雲</option>
-                        <option :value="2" class="text-slate-800">陰天</option>
-                        <option :value="3" class="text-slate-800">雨天</option>
-                        <option :value="4" class="text-slate-800">雪天</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] font-black opacity-60 uppercase tracking-widest block mb-2">當前氣溫 (°C)</label>
-                    <input type="number" v-model="weather.temp" class="w-full bg-white/10 rounded-2xl p-4 outline-none font-bold">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black opacity-60 uppercase tracking-widest block mb-2">氣溫範圍 (H/L)</label>
-                    <input v-model="weather.range" placeholder="如 5° / 13°" class="w-full bg-white/10 rounded-2xl p-4 outline-none font-bold">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black opacity-60 uppercase tracking-widest block mb-2">降雨機率</label>
-                    <input v-model="weather.rain" placeholder="如 10%" class="w-full bg-white/10 rounded-2xl p-4 outline-none font-bold">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black opacity-60 uppercase tracking-widest block mb-2">日出時間</label>
-                    <input v-model="weather.sunrise" placeholder="如 06:45" class="w-full bg-white/10 rounded-2xl p-4 outline-none font-bold">
-                </div>
-                <div class="col-span-2">
-                    <label class="text-[10px] font-black opacity-60 uppercase tracking-widest block mb-2">穿搭建議</label>
-                    <textarea v-model="weather.advice" class="w-full bg-white/10 rounded-2xl p-4 outline-none font-bold h-24" placeholder="輸入推薦的穿搭建議..."></textarea>
+            <div class="space-y-3">
+                <div v-for="(d, idx) in dates" :key="idx" class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl">
+                    <span class="text-xs font-black text-dog-blue-400 w-8">D{{ idx+1 }}</span>
+                    <input type="date" v-model="d.fullDate" @change="updateWeekday(idx)" class="flex-1 bg-transparent border-none text-sm font-bold outline-none">
+                    <span class="text-[10px] font-black text-slate-400">{{ d.weekday }}</span>
+                    <button @click="dates.splice(idx, 1)" class="text-red-300"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </div>
         </section>
 
-        <!-- 成員管理 -->
+        <!-- 團員管理 -->
         <section class="bg-white rounded-[40px] p-8 shadow-sm border border-slate-100">
             <h3 class="font-black text-slate-800 text-xl mb-6">團員管理</h3>
             <div class="space-y-4">
@@ -501,8 +518,8 @@
             </div>
         </section>
 
-        <div class="text-center pb-10">
-            <button @click="clearStorage" class="text-xs text-red-300 font-bold underline uppercase tracking-widest">清除本機存檔</button>
+        <div class="text-center">
+            <button @click="clearStorage" class="text-xs text-red-300 font-bold underline uppercase tracking-widest">重設所有資料</button>
         </div>
     </div>
 
@@ -526,10 +543,10 @@
         </button>
     </nav>
 
-    <!-- Modal 彈窗區 (行程新增/編輯) -->
+    <!-- Modal: 新增行程 -->
     <div v-if="showItineraryModal" class="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center p-6 backdrop-blur-sm">
         <div class="bg-white rounded-[40px] w-full max-w-md p-8 shadow-2xl">
-            <h3 class="font-black text-xl mb-6 text-dog-blue-900">新增行程計畫</h3>
+            <h3 class="font-black text-xl mb-6 text-dog-blue-900">新增計畫</h3>
             <div class="space-y-4">
                 <div class="flex gap-4">
                     <select v-model="tempItem.category" class="w-1/3 bg-slate-50 rounded-2xl p-4 outline-none font-bold">
@@ -539,13 +556,40 @@
                     </select>
                     <input v-model="tempItem.startTime" placeholder="時間" class="w-2/3 bg-slate-50 rounded-2xl p-4 outline-none">
                 </div>
-                <input v-model="tempItem.name" placeholder="計畫名稱" class="w-full bg-slate-50 rounded-2xl p-4 outline-none font-bold">
-                <input v-model="tempItem.address" placeholder="地點或地址" class="w-full bg-slate-50 rounded-2xl p-4 outline-none">
-                <textarea v-model="tempItem.note" placeholder="備註細節..." class="w-full bg-slate-50 rounded-2xl p-4 outline-none h-24"></textarea>
+                <input v-model="tempItem.name" placeholder="標題" class="w-full bg-slate-50 rounded-2xl p-4 outline-none font-bold">
+                <input v-model="tempItem.address" placeholder="地點" class="w-full bg-slate-50 rounded-2xl p-4 outline-none">
+                <textarea v-model="tempItem.note" placeholder="備註..." class="w-full bg-slate-50 rounded-2xl p-4 outline-none h-24"></textarea>
             </div>
             <div class="flex gap-4 mt-8">
                 <button @click="showItineraryModal = false" class="flex-1 py-4 bg-slate-100 rounded-2xl font-bold text-slate-400">取消</button>
-                <button @click="saveItinerary" class="flex-1 py-4 bg-dog-blue-500 rounded-2xl font-bold text-white shadow-lg">儲存</button>
+                <button @click="saveItinerary" class="flex-1 py-4 bg-dog-blue-500 rounded-2xl font-bold text-white">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: 記帳 -->
+    <div v-if="showExpenseModal" class="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white rounded-[40px] w-full max-w-md p-8 shadow-2xl">
+            <h3 class="font-black text-xl mb-6 text-dog-blue-900">記一筆支出</h3>
+            <div class="space-y-4">
+                <div class="flex gap-4">
+                    <select v-model="tempExpense.category" class="w-1/3 bg-slate-50 rounded-2xl p-4 outline-none font-bold">
+                        <option value="food">餐飲</option>
+                        <option value="transport">交通</option>
+                        <option value="shopping">購物</option>
+                        <option value="other">其他</option>
+                    </select>
+                    <input v-model="tempExpense.amount" type="number" placeholder="金額 (TWD)" class="w-2/3 bg-slate-50 rounded-2xl p-4 outline-none font-bold">
+                </div>
+                <input v-model="tempExpense.name" placeholder="支出項目" class="w-full bg-slate-50 rounded-2xl p-4 outline-none font-bold">
+                <select v-model="tempExpense.payer" class="w-full bg-slate-50 rounded-2xl p-4 outline-none font-bold">
+                    <option v-for="m in members" :key="m.id" :value="m.name">{{ m.name }} 支付</option>
+                </select>
+                <input type="date" v-model="tempExpense.date" class="w-full bg-slate-50 rounded-2xl p-4 outline-none">
+            </div>
+            <div class="flex gap-4 mt-8">
+                <button @click="showExpenseModal = false" class="flex-1 py-4 bg-slate-100 rounded-2xl font-bold text-slate-400">取消</button>
+                <button @click="saveExpense" class="flex-1 py-4 bg-dog-blue-500 rounded-2xl font-bold text-white">儲存</button>
             </div>
         </div>
     </div>
@@ -557,31 +601,34 @@
 
     createApp({
         setup() {
-            const storageKey = 'DOG_TRIP_MASTER_LAYOUT_PENGHU';
+            const storageKey = 'DOG_TRIP_MASTER_LAYOUT_PRO_FINAL';
             const currentYear = ref(2026);
             
+            // 城市經緯度字典
+            const cityLookup = {
+                '澎湖': { lat: 23.57, lon: 119.57 },
+                '台北': { lat: 25.03, lon: 121.56 },
+                '東京': { lat: 35.68, lon: 139.65 },
+                '首爾': { lat: 37.56, lon: 126.97 },
+                '高雄': { lat: 22.62, lon: 120.30 },
+                '札幌': { lat: 43.06, lon: 141.35 },
+                '大阪': { lat: 34.69, lon: 135.50 }
+            };
+
             const data = JSON.parse(localStorage.getItem(storageKey)) || {
-                settings: { tripTitle: '澎湖夏日大冒險', targetDate: '2026-07-15', city: '澎湖', tripCover: '' },
+                settings: { tripTitle: '狗狗夏日澎湖大冒險', targetDate: '2026-07-15', city: '澎湖' },
                 members: [
-                    { id: 1, name: '主揪', avatar: '' },
-                    { id: 2, name: '小狗', avatar: '' }
+                    { id: 1, name: '主揪爸', avatar: '' },
+                    { id: 2, name: '狗狗酷', avatar: '' }
                 ],
                 dates: [
                     { fullDate: '2026-07-15', weekday: '三', displayDate: '7/15' },
-                    { fullDate: '2026-07-16', weekday: '四', displayDate: '7/16' },
-                    { fullDate: '2026-07-17', weekday: '五', displayDate: '7/17' }
+                    { fullDate: '2026-07-16', weekday: '四', displayDate: '7/16' }
                 ],
                 itineraryData: {},
                 bookings: { flights: [], hotels: [] },
-                weather: {
-                    code: 0,
-                    temp: 28,
-                    range: '26° / 32°',
-                    rain: '10%',
-                    wind: '3級',
-                    sunrise: '05:30',
-                    advice: '天氣炎熱，請做好防曬，並適時補充水分。'
-                }
+                expenses: [],
+                weather: { code: 0, temp: '--', range: '-- / --', rain: '0%', wind: '0級', sunrise: '--:--', advice: '輸入城市即自動帶出...' }
             };
 
             const settings = ref(data.settings);
@@ -589,68 +636,126 @@
             const dates = ref(data.dates);
             const itineraryData = ref(data.itineraryData);
             const bookings = ref(data.bookings);
+            const expenses = ref(data.expenses || []);
             const weather = ref(data.weather);
             
             const currentTab = ref('itinerary');
             const bookingSubTab = ref('flight');
             const selectedDateIndex = ref(0);
             const showItineraryModal = ref(false);
+            const showExpenseModal = ref(false);
             const tempItem = ref({ category: 'sightseeing', name: '', startTime: '', address: '', note: '' });
+            const tempExpense = ref({ category: 'food', name: '', amount: 0, payer: '', date: '' });
             const defaultAvatar = 'https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?w=100';
 
-            watch([settings, members, dates, itineraryData, bookings, weather], () => {
+            // 自動存檔
+            watch([settings, members, dates, itineraryData, bookings, weather, expenses], () => {
                 localStorage.setItem(storageKey, JSON.stringify({ 
-                    settings: settings.value, members: members.value, dates: dates.value, itineraryData: itineraryData.value, bookings: bookings.value, weather: weather.value 
+                    settings: settings.value, members: members.value, dates: dates.value, itineraryData: itineraryData.value, bookings: bookings.value, weather: weather.value, expenses: expenses.value 
                 }));
             }, { deep: true });
+
+            // 天氣抓取邏輯
+            const fetchWeather = async () => {
+                const city = settings.value.city;
+                const coords = cityLookup[city];
+                if(!coords) {
+                    weather.value.advice = '找不到此城市的預設經緯度，無法自動帶出天氣資訊。';
+                    return;
+                }
+                try {
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,sunrise,precipitation_probability_max&timezone=auto`);
+                    const json = await res.json();
+                    
+                    const cw = json.current_weather;
+                    const daily = json.daily;
+
+                    weather.value = {
+                        code: cw.weathercode,
+                        temp: Math.round(cw.temperature),
+                        range: `${Math.round(daily.temperature_2m_max[0])}° / ${Math.round(daily.temperature_2m_min[0])}°`,
+                        rain: `${daily.precipitation_probability_max[0]}%`,
+                        wind: `${Math.round(cw.windspeed / 3.6)}級`, // km/h to approximate level
+                        sunrise: daily.sunrise[0].split('T')[1].substring(0, 5),
+                        advice: getAdvice(cw.temperature, cw.weathercode)
+                    };
+                } catch (e) {
+                    console.error("Fetch weather failed", e);
+                }
+            };
+
+            const getAdvice = (temp, code) => {
+                let advice = "";
+                if(temp > 28) advice = "天氣炎熱，請準備涼墊與充足飲水，避免正午帶狗狗踩地。";
+                else if(temp < 15) advice = "氣溫較低，早晚建議幫狗狗加件輕便背心。";
+                else advice = "氣溫舒適，是狗狗出遊的最佳天氣！";
+                
+                if(code > 3) advice += " 降雨機率高，記得攜帶寵物雨衣與乾毛巾。";
+                return advice;
+            };
+
+            // 行程日期維護
+            const addDate = () => {
+                dates.value.push({ fullDate: '', weekday: '?', displayDate: 'MM/DD' });
+            };
+            const updateWeekday = (idx) => {
+                const d = new Date(dates.value[idx].fullDate);
+                if (!isNaN(d)) {
+                    dates.value[idx].weekday = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'][d.getDay()].replace('週','');
+                    dates.value[idx].displayDate = `${d.getMonth()+1}/${d.getDate()}`;
+                }
+            };
+
+            // 記帳計算
+            const totalExpenses = computed(() => expenses.value.reduce((sum, ex) => sum + Number(ex.amount), 0));
+            const todayExpenses = computed(() => {
+                const today = new Date().toISOString().split('T')[0];
+                return expenses.value.filter(ex => ex.date === today).reduce((sum, ex) => sum + Number(ex.amount), 0);
+            });
+
+            const openAddExpense = () => {
+                tempExpense.value = { category: 'food', name: '', amount: 0, payer: members.value[0]?.name, date: new Date().toISOString().split('T')[0] };
+                showExpenseModal.value = true;
+            };
+            const saveExpense = () => {
+                if(!tempExpense.value.name || !tempExpense.value.amount) return;
+                expenses.value.unshift({ ...tempExpense.value, id: Date.now() });
+                showExpenseModal.value = false;
+            };
+            const getExpenseIcon = (cat) => ({ food: 'fa-solid fa-utensils', transport: 'fa-solid fa-bus', shopping: 'fa-solid fa-basket-shopping', other: 'fa-solid fa-coins' }[cat] || 'fa-solid fa-receipt');
 
             const countdownDays = computed(() => {
                 const diff = new Date(settings.value.targetDate) - new Date();
                 return Math.max(0, Math.ceil(diff / 86400000));
             });
-
-            const countdownPercentage = computed(() => {
-                const max = 30; // 假定進度條從30天開始跑
-                return Math.min(100, Math.max(0, (max - countdownDays.value) / max * 100));
-            });
+            const countdownPercentage = computed(() => Math.min(100, Math.max(0, (30 - countdownDays.value) / 30 * 100)));
 
             const currentItinerary = computed(() => itineraryData.value[selectedDateIndex.value] || []);
-
-            const getWeatherText = (code) => {
-                const texts = ['晴朗', '多雲', '陰天', '雨天', '雪天'];
-                return texts[code] || '未知';
-            };
-
-            const getWeatherIcon = (code) => {
-                const icons = ['fa-solid fa-sun', 'fa-solid fa-cloud-sun', 'fa-solid fa-cloud', 'fa-solid fa-cloud-showers-heavy', 'fa-solid fa-snowflake'];
-                return icons[code] || 'fa-solid fa-cloud';
-            };
-            
-            const openMap = (u) => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(u)}`, '_blank');
-            
-            const openAddItinerary = () => {
-                tempItem.value = { category: 'sightseeing', name: '', startTime: '', address: '', note: '' };
-                showItineraryModal.value = true;
-            };
-
             const saveItinerary = () => {
                 if (!itineraryData.value[selectedDateIndex.value]) itineraryData.value[selectedDateIndex.value] = [];
                 itineraryData.value[selectedDateIndex.value].push({ ...tempItem.value, id: Date.now() });
                 showItineraryModal.value = false;
             };
 
-            const openAddBooking = (type) => {
-                if(type === 'flight') bookings.value.flights.push({id: Date.now(), flightNo: '航班編號', from: 'TPE', to: 'MZG', depTime: '10:00', arrTime: '11:00'});
-                else bookings.value.hotels.push({id: Date.now(), name: '飯店名稱', checkIn: '07/15', checkOut: '07/17', address: '澎湖縣...'});
-            };
-
-            const removeBooking = (type, idx) => bookings.value[type].splice(idx, 1);
-            const clearStorage = () => { if(confirm('確定清除所有存檔？')) { localStorage.removeItem(storageKey); location.reload(); } };
+            onMounted(() => {
+                fetchWeather();
+                dates.value.forEach((_, i) => updateWeekday(i));
+            });
 
             return {
                 settings, members, dates, itineraryData, bookings, currentTab, bookingSubTab, selectedDateIndex, weather, countdownDays, countdownPercentage, currentItinerary, defaultAvatar, currentYear,
-                showItineraryModal, tempItem,
-                getWeatherText, getWeatherIcon, openMap, removeBooking, openAddItinerary, saveItinerary, openAddBooking, clearStorage,
+                showItineraryModal, tempItem, showExpenseModal, tempExpense, expenses, totalExpenses, todayExpenses,
+                getWeatherText: (c) => ['晴朗', '多雲', '陰天', '雨天', '雪天'][Math.min(c, 4)],
+                getWeatherIcon: (c) => ['fa-solid fa-sun', 'fa-solid fa-cloud-sun', 'fa-solid fa-cloud', 'fa-solid fa-cloud-showers-heavy', 'fa-solid fa-snowflake'][Math.min(c, 4)],
+                openMap: (u) => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(u)}`, '_blank'),
+                removeBooking: (type, idx) => bookings.value[type].splice(idx, 1),
+                openAddItinerary: () => { tempItem.value = { category: 'sightseeing', name: '', startTime: '', address: '', note: '' }; showItineraryModal.value = true; },
+                saveItinerary, openAddBooking: (type) => {
+                    if(type === 'flight') bookings.value.flights.push({id: Date.now(), flightNo: '航班編號', from: 'KHH', to: 'MZG', depTime: '10:00', arrTime: '11:00'});
+                    else bookings.value.hotels.push({id: Date.now(), name: '飯店', checkIn: '07/15', checkOut: '07/17', address: '澎湖縣...'});
+                },
+                addDate, updateWeekday, fetchWeather, openAddExpense, saveExpense, getExpenseIcon,
+                clearStorage: () => { if(confirm('確定清除所有存檔？')) { localStorage.removeItem(storageKey); location.reload(); } },
                 getCategoryColor: (c) => ({ sightseeing: 'bg-green-500', food: 'bg-orange-500', transport: 'bg-dog-blue-500' }[c] || 'bg-slate-400'),
                 getCategoryIcon: (c) => ({ sightseeing: 'fa-solid fa-camera', food: 'fa-solid fa-utensils', transport: 'fa-solid fa-plane' }[c] || 'fa-solid fa-paw')
             };
