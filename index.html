@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>狗狗旅遊手冊 - 穩定修復版</title>
+    <title>狗狗旅遊手冊 - 經典回歸版</title>
     <!-- Web App Icons -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/dog.png">
     <link rel="icon" href="https://img.icons8.com/fluent/48/000000/dog.png">
@@ -39,6 +39,7 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
+        /* 頁首樣式 */
         .sticky-header {
             position: sticky;
             top: 0;
@@ -55,6 +56,7 @@
             border-bottom: 1px solid #e2e8f0;
         }
 
+        /* 行程卡片 */
         .itinerary-card {
             background: white;
             border-radius: 1.25rem;
@@ -87,36 +89,38 @@
             align-items: center; gap: 4px;
         }
 
+        /* 【經典回歸】交通路徑樣式 */
         .travel-path {
             position: relative;
             margin-left: 2rem;
-            padding: 0.5rem 0;
+            padding: 1rem 0;
             border-left: 2px dashed #CBD5E1;
-            min-height: 35px;
+            min-height: 50px;
             display: flex;
             align-items: center;
         }
         .travel-info-pill {
-            margin-left: 1rem;
+            margin-left: 1.2rem;
             background: white;
-            border: 1px solid #E2E8F0;
-            padding: 3px 10px;
-            border-radius: 10px;
+            border: 1.5px solid #E2E8F0;
+            padding: 4px 12px;
+            border-radius: 12px;
             font-size: 10px;
             font-weight: 900;
             color: #64748B;
             display: flex;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            white-space: nowrap;
         }
         .path-paw {
             position: absolute;
-            left: -8px;
+            left: -9px;
             top: 50%;
             transform: translateY(-50%);
             background: var(--ice-blue);
-            padding: 2px 0;
-            font-size: 12px;
+            padding: 4px 0;
+            font-size: 14px;
         }
 
         .dashed-note {
@@ -162,7 +166,6 @@
             position: relative;
         }
         .member-avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-        .avatar-upload-hint { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.4); color: white; font-size: 8px; padding: 2px 0; font-weight: bold; }
 
         .sync-dot {
             position: fixed;
@@ -196,10 +199,10 @@
             <div class="bg-white/90 backdrop-blur-sm w-7 h-7 rounded-lg flex items-center justify-center text-lg shadow-md">🐕</div>
             <div>
                 <h1 class="text-white text-sm font-black leading-none mb-0.5">{{ tripName }}</h1>
-                <p class="text-white/70 text-[7px] font-black tracking-widest uppercase italic">Stable Pro 🐾</p>
+                <p class="text-white/70 text-[7px] font-black tracking-widest uppercase italic">Memories Edition 🐾</p>
             </div>
         </div>
-        <div class="absolute right-2 top-1/2 -translate-y-1/2 opacity-10 text-3xl font-black text-white pointer-events-none italic uppercase tracking-tighter">STABLE</div>
+        <div class="absolute right-2 top-1/2 -translate-y-1/2 opacity-10 text-3xl font-black text-white pointer-events-none italic uppercase tracking-tighter">WOOF</div>
     </header>
 
     <!-- 主內容區 -->
@@ -224,6 +227,7 @@
 
                 <div id="itinerary-list" class="space-y-0 mt-4 px-4">
                     <div v-for="(item, index) in filteredItinerary" :key="item.id || index">
+                        <!-- 【回歸】交通資訊路徑 -->
                         <div v-if="index > 0" class="travel-path">
                             <div class="path-paw">🐾</div>
                             <div class="travel-info-pill">
@@ -233,6 +237,7 @@
                             </div>
                         </div>
 
+                        <!-- 行程卡片 -->
                         <div class="itinerary-card group">
                             <div class="time-pill">{{ item.time || '未定' }}</div>
                             <button @click="removeItem('itinerary', item.id)" class="absolute top-3 right-3 text-gray-300 hover:text-red-400 p-2">✕</button>
@@ -252,9 +257,9 @@
                     </div>
                 </div>
                 
-                <div v-if="filteredItinerary.length === 0 && dates.length > 0" class="text-center py-20 opacity-20">
+                <div v-if="filteredItinerary.length === 0 && dates.length > 0" class="text-center py-24 opacity-20">
                     <div class="text-5xl mb-2">🦴</div>
-                    <div class="text-[9px] font-black tracking-widest uppercase italic">No Plans For Today</div>
+                    <div class="text-[9px] font-black tracking-widest uppercase italic">No plans yet for this day</div>
                 </div>
 
                 <button v-if="dates.length > 0" @click="showModal('itinerary')" class="fixed bottom-24 right-6 w-14 h-14 bg-blue-500 text-white rounded-full shadow-2xl flex items-center justify-center z-50 text-2xl border-4 border-white btn-active">➕</button>
@@ -263,7 +268,7 @@
             <!-- 2. 準備清單 -->
             <div v-if="currentTab === 'prep'" key="prep" class="p-4 space-y-6 pb-20">
                 <div class="bg-white rounded-[24px] p-6 shadow-sm border border-blue-50">
-                    <h3 class="text-blue-900 font-black text-xs mb-4 flex items-center">🧳 行李打包清單</h3>
+                    <h3 class="text-blue-900 font-black text-xs mb-4 flex items-center uppercase tracking-widest">🧳 Packing List</h3>
                     <div class="space-y-2">
                         <div v-for="(item, idx) in preparations.行李" :key="idx" class="flex items-center justify-between py-2 border-b border-blue-50 last:border-0">
                             <div @click="togglePrep('行李', idx)" class="flex items-center space-x-3 cursor-pointer flex-1">
@@ -280,7 +285,7 @@
                 </div>
 
                 <div class="bg-blue-50 rounded-[24px] p-6 border border-blue-100">
-                    <h3 class="text-blue-600 font-black text-xs mb-4 flex items-center">✅ 旅前待辦事項</h3>
+                    <h3 class="text-blue-600 font-black text-xs mb-4 flex items-center uppercase tracking-widest">✅ To-Do List</h3>
                     <div class="space-y-2">
                         <div v-for="(item, idx) in preparations.待辦" :key="idx" class="flex items-center justify-between py-2 border-b border-white/50 last:border-0">
                             <div @click="togglePrep('待辦', idx)" class="flex items-center space-x-3 cursor-pointer flex-1">
@@ -306,7 +311,7 @@
                             <div @click="triggerAvatarUpload(idx)" class="member-avatar-box cursor-pointer hover:border-blue-300 btn-active">
                                 <img v-if="m.img" :src="m.img" class="w-full h-full object-cover">
                                 <span v-else>{{ m.icon }}</span>
-                                <div class="avatar-upload-hint">換照片</div>
+                                <div class="absolute bottom-0 inset-x-0 bg-black/30 text-white text-[7px] font-black py-1">更換照片</div>
                                 <input :id="'avatar-input-' + idx" type="file" @change="handleAvatarUpload($event, m)" class="hidden" accept="image/*">
                             </div>
                             <input v-model="m.name" @change="syncToCloud" class="w-full bg-transparent border-none text-center font-black text-slate-800 text-[11px] focus:ring-0 p-0 mt-1">
@@ -367,16 +372,16 @@
                     </div>
                     <input v-model="form.name" placeholder="景點名稱" class="w-full p-3 bg-blue-50 rounded-xl text-xs font-black border-none shadow-inner">
                     <div class="grid grid-cols-2 gap-2">
-                        <input v-model="form.time" placeholder="預計時間 (13:00)" class="p-3 bg-blue-50 rounded-xl text-xs font-bold border-none shadow-inner">
+                        <input v-model="form.time" placeholder="時間 (如 13:00)" class="p-3 bg-blue-50 rounded-xl text-xs font-bold border-none shadow-inner">
                         <select v-model="form.category" class="p-3 bg-blue-50 rounded-xl text-xs font-black border-none shadow-inner">
                             <option v-for="c in ['景點','住宿','美食','購物','航班','其他']" :key="c" :value="c">{{c}}</option>
                         </select>
                     </div>
                     <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                        <label class="text-[8px] font-black text-blue-400 uppercase mb-2 block tracking-widest">交通資訊</label>
+                        <label class="text-[8px] font-black text-blue-400 uppercase mb-2 block tracking-widest tracking-widest">交通工具與距離</label>
                         <div class="grid grid-cols-3 gap-2">
                             <select v-model="form.transport" class="p-2 bg-white rounded-lg text-[10px] font-bold border-none shadow-sm"><option value="car">🚗 汽車</option><option value="walk">🚶‍♂️ 步行</option><option value="bus">🚌 大眾</option></select>
-                            <input v-model="form.transTime" placeholder="分鐘" type="number" class="p-2 bg-white rounded-lg text-[10px] font-bold border-none shadow-sm text-center">
+                            <input v-model="form.transTime" placeholder="分" type="number" class="p-2 bg-white rounded-lg text-[10px] font-bold border-none shadow-sm text-center">
                             <input v-model="form.transDist" placeholder="km" class="p-2 bg-white rounded-lg text-[10px] font-bold border-none shadow-sm text-center">
                         </div>
                     </div>
@@ -384,16 +389,9 @@
                     <textarea v-model="form.note" placeholder="詳細備註..." class="w-full p-3 bg-blue-50 rounded-xl text-xs h-24 border-none shadow-inner"></textarea>
                 </div>
 
-                <div v-if="modal.type === 'hotel'" class="space-y-4">
-                    <input v-model="form.name" placeholder="飯店名稱" class="w-full p-3 bg-blue-50 rounded-xl font-black text-slate-800 text-xs border-none shadow-inner">
-                    <input v-model="form.date" placeholder="住宿日期 (如 6/15 - 6/17)" class="w-full p-3 bg-blue-50 rounded-xl border-none shadow-inner text-xs font-bold">
-                    <input v-model="form.address" placeholder="飯店地址" class="w-full p-3 bg-blue-50 rounded-xl border-none shadow-inner text-xs font-bold">
-                    <input v-model="form.mapUrl" placeholder="Google Maps 導航連結" class="w-full p-3 bg-blue-50 rounded-xl border-none shadow-inner text-[10px]">
-                </div>
-
                 <div class="flex flex-col space-y-3 mt-8">
                     <button @click="saveData" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black shadow-lg btn-active text-sm uppercase tracking-widest">儲存更新 Save 🦴</button>
-                    <!-- 強效取消按鈕 -->
+                    <!-- 修復取消按鈕 -->
                     <button @click="closeModal" class="w-full py-2 text-gray-400 font-black text-[10px] uppercase">取消</button>
                 </div>
             </div>
@@ -408,7 +406,7 @@ const { createApp, ref, computed, onMounted } = Vue;
 let firebaseConfig = {};
 try {
     firebaseConfig = JSON.parse(__firebase_config);
-} catch(e) { console.error("Firebase Config Missing", e); }
+} catch(e) { console.error("Firebase Config Missing"); }
 
 // 初始化 Firebase
 if (firebaseConfig.apiKey) {
@@ -434,7 +432,6 @@ createApp({
             { id: 'info', name: '設定', icon: '🐕' }
         ];
 
-        // --- 修正報錯：在此定義漏掉的變數 ---
         const newDateInput = ref('');
         const newPrepInput = ref('');
         const newTodoInput = ref('');
@@ -447,6 +444,7 @@ createApp({
         const bookings = ref({ outbound: {}, inbound: {} });
         const accommodations = ref([]);
 
+        // 初始化本地資料
         const loadFromLocalStorage = () => {
             try {
                 const saved = localStorage.getItem(MASTER_KEY);
@@ -469,10 +467,7 @@ createApp({
                 accommodations.value = Array.isArray(data.accommodations) ? data.accommodations : [];
                 
                 if (dates.value.length > 0) selectedDate.value = dates.value[0].fullDate;
-            } catch(e) { 
-                console.error("Local Recovery Failed", e);
-                preparations.value = { 行李: [], 待辦: [] };
-            }
+            } catch(e) { console.error("Local Recovery Failed"); }
         };
         loadFromLocalStorage();
 
@@ -494,7 +489,7 @@ createApp({
                 };
                 localStorage.setItem(MASTER_KEY, JSON.stringify(payload));
                 await db.doc(`artifacts/${appId}/public/data/shared_trip`).set(payload);
-            } catch (e) { console.error("Sync Error", e); } finally { isSyncing.value = false; }
+            } catch (e) { console.error("Sync Error"); } finally { isSyncing.value = false; }
         };
 
         const listenToCloud = () => {
@@ -520,7 +515,7 @@ createApp({
                     if (dates.value.length > 0 && !selectedDate.value) selectedDate.value = dates.value[0].fullDate;
                     localStorage.setItem(MASTER_KEY, JSON.stringify(data));
                 }
-            }, (error) => { console.warn("Cloud Sync Inactive", error); });
+            }, (error) => { console.warn("Sync Unstable"); });
         };
 
         onMounted(() => {
@@ -532,7 +527,7 @@ createApp({
                         await auth.signInAnonymously();
                     }
                     listenToCloud();
-                } catch(e) { console.warn("Firebase Auth Fail", e); }
+                } catch(e) { }
             };
             initCloud();
 
@@ -605,37 +600,27 @@ createApp({
         const showModal = (type, title = '新增項目') => {
             modal.value = { show: true, type, title, isEdit: false, targetId: null };
             if (type === 'itinerary') form.value = { category: '景點', transport: 'car', transTime: '15', date: selectedDate.value };
-            else if (type === 'hotel') form.value = { name: '', date: '', address: '', mapUrl: '' };
             else form.value = {};
         };
         const closeModal = () => { modal.value.show = false; };
         
         const editItem = (item) => { modal.value = { show: true, type: 'itinerary', title: '編輯行程', isEdit: true, targetId: item.id }; form.value = { ...item }; };
-        const editHotel = (hotel) => { modal.value = { show: true, type: 'hotel', title: '編輯住宿', isEdit: true, targetId: hotel.id }; form.value = { ...hotel }; };
         
         const saveData = () => {
             try {
                 if (modal.value.isEdit) {
-                    if (modal.value.type === 'hotel') {
-                        const idx = accommodations.value.findIndex(h => h.id === modal.value.targetId);
-                        if (idx !== -1) accommodations.value[idx] = { ...form.value };
-                    } else {
-                        const idx = itineraries.value.findIndex(i => i.id === modal.value.targetId);
-                        if (idx !== -1) itineraries.value[idx] = { ...form.value };
-                    }
+                    const idx = itineraries.value.findIndex(i => i.id === modal.value.targetId);
+                    if (idx !== -1) itineraries.value[idx] = { ...form.value };
                 } else {
-                    const newId = Date.now();
-                    if (modal.value.type === 'itinerary') itineraries.value.push({ ...form.value, id: newId });
-                    else if (modal.value.type === 'hotel') accommodations.value.push({ ...form.value, id: newId });
+                    itineraries.value.push({ ...form.value, id: Date.now() });
                 }
                 closeModal(); syncToCloud();
-            } catch(e) { console.error("Save Failed", e); closeModal(); }
+            } catch(e) { closeModal(); }
         };
 
         const removeItem = (type, id) => { 
             if(confirm('確定要刪除嗎？🐾')) { 
-                if (type === 'itinerary') itineraries.value = itineraries.value.filter(i => i.id !== id);
-                if (type === 'hotel') accommodations.value = accommodations.value.filter(h => h.id !== id);
+                itineraries.value = itineraries.value.filter(i => i.id !== id);
                 syncToCloud(); 
             } 
         };
@@ -647,7 +632,7 @@ createApp({
         return {
             isSyncing, currentTab, selectedDate, tripName, dates, tabs, hearts, itineraries, preparations, expenses, bookings, members, accommodations,
             filteredItinerary, newDateInput, newPrepInput, newTodoInput,
-            modal, form, showModal, closeModal, editItem, editHotel, saveData, togglePrep, addPrep, addDate, addMember, triggerAvatarUpload, handleAvatarUpload,
+            modal, form, showModal, closeModal, editItem, saveData, togglePrep, addPrep, addDate, addMember, triggerAvatarUpload, handleAvatarUpload,
             uploadItineraryImg, syncToCloud, openGoogleMaps, removeItem, getTransIcon
         };
     }
