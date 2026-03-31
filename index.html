@@ -2,8 +2,8 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>狗狗旅遊手冊 - 雲端同步版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>狗狗旅遊手冊 - 手機優化雲端版</title>
     <!-- Web App Icons -->
     <link rel="apple-touch-icon" href="https://img.icons8.com/fluent/180/000000/dog.png">
     <link rel="icon" href="https://img.icons8.com/fluent/48/000000/dog.png">
@@ -34,101 +34,104 @@
             font-family: 'Noto+Sans+TC', sans-serif;
             background-color: var(--ice-blue);
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+            width: 100%;
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
+        /* 凍結頁首 */
         .sticky-header {
             position: sticky;
             top: 0;
             z-index: 100;
-            height: 120px;
+            height: 100px; /* 稍微縮小高度讓內容更多 */
         }
         
         .sticky-date-bar {
             position: sticky;
-            top: 120px;
+            top: 100px;
             z-index: 90;
             background-color: white;
-            margin-left: -1rem;
-            margin-right: -1rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding: 0.75rem 1rem;
             border-bottom: 1px solid #e2e8f0;
         }
 
+        /* 行程卡片 */
         .itinerary-card {
             background: white;
-            border-radius: 1.5rem;
-            border-left: 10px solid var(--dog-blue);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.05);
+            border-radius: 1.25rem;
+            border-left: 8px solid var(--dog-blue);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
             position: relative;
-            padding: 1.25rem;
+            padding: 1rem;
+            width: 100%;
         }
         
         .time-pill {
             background-color: var(--pill-blue-bg);
             color: var(--pill-blue-text);
-            padding: 4px 12px;
-            border-radius: 10px;
+            padding: 3px 10px;
+            border-radius: 8px;
             font-weight: 900;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             display: inline-block;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .location-pill {
             background-color: var(--trip-pink);
             color: #F43F5E;
-            padding: 2px 12px;
+            padding: 2px 10px;
             border-radius: 99px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 800;
             display: inline-flex;
             align-items: center;
             gap: 4px;
         }
 
+        /* 交通路徑 */
         .travel-path {
             position: relative;
-            margin: -0.5rem 0 -0.5rem 3.5rem;
-            padding: 1.5rem 0;
-            border-left: 3px dashed #CBD5E1;
-            min-height: 70px;
+            margin-left: 2rem; /* 配合邊條位置 */
+            padding: 1rem 0;
+            border-left: 2px dashed #CBD5E1;
+            min-height: 50px;
             display: flex;
             align-items: center;
         }
         .travel-info-pill {
-            margin-left: 1.5rem;
+            margin-left: 1rem;
             background: white;
-            border: 1.5px solid #E2E8F0;
-            padding: 6px 14px;
-            border-radius: 14px;
-            font-size: 11px;
+            border: 1px solid #E2E8F0;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 10px;
             font-weight: 900;
             color: #64748B;
             display: flex;
             align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .path-paw {
             position: absolute;
-            left: -11px;
+            left: -8px;
             top: 50%;
             transform: translateY(-50%);
             background: var(--ice-blue);
-            padding: 4px 0;
-            font-size: 14px;
+            padding: 2px 0;
+            font-size: 12px;
         }
 
         .dashed-note {
-            border: 2px dashed #FEF3C7;
+            border: 1.5px dashed #FEF3C7;
             background-color: var(--trip-yellow);
-            border-radius: 14px;
-            padding: 14px;
-            margin-top: 12px;
-            font-size: 0.85rem;
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.8rem;
             color: #92400E;
-            line-height: 1.6;
+            line-height: 1.5;
         }
         .dashed-note::before { content: '🐾 '; font-weight: bold; }
 
@@ -139,31 +142,32 @@
             z-index: 999;
             color: var(--heart-color);
             animation: float-around linear infinite;
-            opacity: 0.5;
+            opacity: 0.4;
         }
         @keyframes float-around {
             0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.5; }
-            100% { transform: translate(80px, 100vh) rotate(360deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            100% { transform: translate(60px, 100vh) rotate(360deg); opacity: 0; }
         }
 
+        /* 成員頭像 */
         .member-avatar-box {
-            width: 70px;
-            height: 70px;
-            border-radius: 22px;
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
             background: #f8fafc;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-            margin: 0 auto 8px;
-            border: 3px solid white;
+            font-size: 28px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            margin: 0 auto 6px;
+            border: 2px solid white;
             overflow: hidden;
             position: relative;
         }
         .member-avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-        .avatar-upload-hint { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.4); color: white; font-size: 9px; padding: 3px 0; font-weight: bold; }
+        .avatar-upload-hint { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.4); color: white; font-size: 8px; padding: 2px 0; font-weight: bold; }
 
         .loading-overlay {
             position: fixed;
@@ -175,153 +179,173 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* 手機按鈕效果 */
+        .btn-active:active { transform: scale(0.95); transition: transform 0.1s; }
+        
+        /* 底部安全區 */
+        .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
     </style>
 </head>
 <body class="max-w-md mx-auto shadow-2xl min-h-screen relative overflow-x-hidden pb-24">
 
 <div id="app">
-    <!-- 雲端讀取遮罩 -->
+    <!-- 讀取畫面 -->
     <div v-if="isLoading" class="loading-overlay">
-        <div class="text-4xl animate-bounce mb-4">🐕</div>
-        <div class="text-blue-500 font-black tracking-widest uppercase text-xs">正在從雲端同步進度...</div>
+        <div class="text-5xl animate-bounce mb-4">🐕</div>
+        <div class="text-blue-500 font-black tracking-widest uppercase text-[10px]">Syncing with Cloud...</div>
     </div>
 
-    <!-- 背景特效 -->
+    <!-- 愛心飄浮 -->
     <div v-for="h in hearts" :key="h.id" class="heart-float" :style="h.style">❤️</div>
 
     <!-- 頁首 Banner -->
-    <header class="sticky-header w-full overflow-hidden bg-gradient-to-b from-blue-500 to-blue-300 flex items-center px-6 shadow-md">
-        <div class="relative z-10 flex items-center space-x-4">
-            <div class="bg-white/90 backdrop-blur-md w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-lg">🐕</div>
+    <header class="sticky-header w-full overflow-hidden bg-gradient-to-br from-blue-500 to-blue-300 flex items-center px-6 shadow-md">
+        <div class="relative z-10 flex items-center space-x-3">
+            <div class="bg-white/90 backdrop-blur-sm w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-lg">🐕</div>
             <div>
-                <h1 class="text-white text-xl font-black drop-shadow-md">{{ tripName }}</h1>
-                <p class="text-white/80 text-[10px] font-black tracking-widest uppercase">Cloud Sync Pro 🐾</p>
+                <h1 class="text-white text-lg font-black leading-none mb-1">{{ tripName }}</h1>
+                <p class="text-white/70 text-[8px] font-black tracking-widest uppercase">Mobile Travel Pro 🐾</p>
             </div>
         </div>
-        <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-10 text-6xl font-black text-white pointer-events-none italic uppercase tracking-tighter">CLOUD</div>
+        <div class="absolute right-2 top-1/2 -translate-y-1/2 opacity-10 text-5xl font-black text-white pointer-events-none italic uppercase">WOOF</div>
     </header>
 
     <!-- 主內容區 -->
-    <main class="-mt-4 bg-white rounded-t-[40px] p-4 min-h-screen relative shadow-[0_-12px_30px_rgba(0,0,0,0.08)] border-t border-blue-50/50">
+    <main class="-mt-4 bg-white rounded-t-[32px] min-h-screen relative shadow-[0_-10px_25px_rgba(0,0,0,0.06)] border-t border-blue-50/50">
         <transition name="fade" mode="out-in">
             <!-- 1. 行程表 -->
-            <div v-if="currentTab === 'itinerary'" key="itinerary">
-                <div class="sticky-date-bar pt-4 pb-4">
-                    <div class="flex space-x-3 overflow-x-auto no-scrollbar px-1">
+            <div v-if="currentTab === 'itinerary'" key="itinerary" class="pb-10">
+                <div class="sticky-date-bar">
+                    <div class="flex space-x-3 overflow-x-auto no-scrollbar py-1">
                         <div v-for="d in dates" :key="d.fullDate" 
                              @click="selectedDate = d.fullDate"
-                             :class="['flex-shrink-0 w-20 h-22 rounded-3xl flex flex-col items-center justify-center transition-all border-2', selectedDate === d.fullDate ? 'bg-blue-500 text-white border-blue-200 shadow-lg scale-105' : 'bg-white text-gray-400 border-gray-100 shadow-sm']">
-                            <span class="text-[10px] font-black opacity-80 mb-1">週{{ d.weekday }}</span>
-                            <span class="text-xl font-black">{{ d.displayDate }}</span>
+                             class="flex-shrink-0 w-16 h-20 rounded-2xl flex flex-col items-center justify-center transition-all border-2 btn-active"
+                             :class="selectedDate === d.fullDate ? 'bg-blue-500 text-white border-blue-200 shadow-lg scale-105' : 'bg-white text-gray-300 border-gray-50 shadow-sm'">
+                            <span class="text-[9px] font-black opacity-80 mb-1">週{{ d.weekday }}</span>
+                            <span class="text-lg font-black">{{ d.displayDate }}</span>
                         </div>
-                        <div v-if="dates.length === 0" @click="currentTab = 'info'" class="flex-shrink-0 w-20 h-22 rounded-3xl flex items-center justify-center bg-white text-gray-300 border-2 border-dashed border-gray-100 text-[10px] font-black text-center">
-                            設定日期 🐾
+                        <div v-if="dates.length === 0" @click="currentTab = 'info'" class="flex-shrink-0 w-16 h-20 rounded-2xl flex items-center justify-center bg-gray-50 text-gray-400 border-2 border-dashed border-gray-100 text-[10px] font-black text-center btn-active">
+                            設定<br>日期
                         </div>
                     </div>
                 </div>
 
-                <div id="itinerary-list" class="space-y-0 mt-6 px-1">
+                <div id="itinerary-list" class="space-y-0 mt-4 px-4">
                     <div v-for="(item, index) in filteredItinerary" :key="item.id">
+                        <!-- 交通路徑線 -->
                         <div v-if="index > 0" class="travel-path">
                             <div class="path-paw">🐾</div>
                             <div class="travel-info-pill">
                                 <span>{{ getTransIcon(item.transport) }}</span>
                                 <span class="mx-2">{{ item.transTime || '15' }}m</span>
-                                <span v-if="item.transDist" class="text-blue-300 font-bold">/ {{ item.transDist }}km</span>
+                                <span v-if="item.transDist" class="text-blue-300 font-black">/ {{ item.transDist }}km</span>
                             </div>
                         </div>
+
+                        <!-- 行程卡片 -->
                         <div class="itinerary-card group">
                             <div class="time-pill">{{ item.time || '未定' }}</div>
-                            <button @click="removeItem('itinerary', item.id)" class="absolute top-4 right-4 text-gray-300 hover:text-red-400 transition-colors">✕</button>
-                            <div class="flex justify-between items-start mb-3">
-                                <h3 @click="editItem(item)" class="text-lg font-black text-slate-800 cursor-pointer flex-1">{{ item.name }}</h3>
-                                <div class="drag-handle p-1 text-gray-200 cursor-move ml-2">⠿</div>
+                            <button @click="removeItem('itinerary', item.id)" class="absolute top-3 right-3 text-gray-300 hover:text-red-400 p-2">✕</button>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 @click="editItem(item)" class="text-md font-black text-slate-800 cursor-pointer flex-1 leading-tight">{{ item.name }}</h3>
+                                <div class="drag-handle p-2 text-gray-200 cursor-move">⠿</div>
                             </div>
-                            <div class="flex items-center space-x-3 mb-2">
+                            <div class="flex items-center space-x-2 mb-2">
                                 <div class="location-pill"><span>📍</span><span>{{ item.category || '景點' }}</span></div>
-                                <button v-if="item.mapUrl" @click="openGoogleMaps(item)" class="bg-blue-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full">MAP</button>
+                                <button v-if="item.mapUrl" @click="openGoogleMaps(item)" class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full btn-active">MAP</button>
                             </div>
-                            <div v-if="item.img" class="my-4 rounded-2xl overflow-hidden h-44 shadow-sm border border-blue-50">
+                            <div v-if="item.img" class="my-3 rounded-xl overflow-hidden h-40 shadow-sm border border-blue-50">
                                 <img :src="item.img" class="w-full h-full object-cover">
                             </div>
                             <div v-if="item.note" class="dashed-note"><p>{{ item.note }}</p></div>
                         </div>
                     </div>
                 </div>
-                <button v-if="dates.length > 0" @click="showModal('itinerary')" class="fixed bottom-24 right-6 w-16 h-16 bg-blue-500 text-white rounded-full shadow-2xl flex items-center justify-center z-50 text-3xl border-4 border-white">➕</button>
+                
+                <div v-if="filteredItinerary.length === 0 && dates.length > 0" class="text-center py-20 opacity-20">
+                    <div class="text-5xl mb-2">🦴</div>
+                    <div class="text-[10px] font-black tracking-widest">還沒有行程規劃喔</div>
+                </div>
+
+                <button v-if="dates.length > 0" @click="showModal('itinerary')" class="fixed bottom-24 right-6 w-14 h-14 bg-blue-500 text-white rounded-full shadow-2xl flex items-center justify-center z-50 text-2xl border-4 border-white btn-active">➕</button>
             </div>
 
             <!-- 2. 準備清單 -->
-            <div v-if="currentTab === 'prep'" key="prep" class="space-y-6">
-                <div class="bg-white rounded-[35px] p-7 shadow-sm border border-blue-50">
-                    <h3 class="text-blue-900 font-black text-sm mb-5 flex items-center">🧳 行李打包清單</h3>
-                    <div class="space-y-3">
+            <div v-if="currentTab === 'prep'" key="prep" class="p-4 space-y-6">
+                <div class="bg-white rounded-[24px] p-6 shadow-sm border border-blue-50">
+                    <h3 class="text-blue-900 font-black text-xs mb-4 flex items-center">🧳 行李打包清單</h3>
+                    <div class="space-y-2">
                         <div v-for="(item, idx) in preparations.行李" :key="idx" class="flex items-center justify-between py-2 border-b border-blue-50 last:border-0">
-                            <div @click="togglePrep('行李', idx)" class="flex items-center space-x-4 cursor-pointer flex-1">
-                                <span class="text-xl">{{ item.done ? '🦴' : '⚪' }}</span>
-                                <span :class="['text-sm font-bold', item.done ? 'text-blue-200 line-through' : 'text-slate-700']">{{ item.text }}</span>
+                            <div @click="togglePrep('行李', idx)" class="flex items-center space-x-3 cursor-pointer flex-1">
+                                <span class="text-lg">{{ item.done ? '🦴' : '⚪' }}</span>
+                                <span :class="['text-xs font-bold', item.done ? 'text-blue-200 line-through' : 'text-slate-700']">{{ item.text }}</span>
                             </div>
-                            <button @click="preparations.行李.splice(idx, 1); syncToCloud();" class="text-red-200 px-3 text-lg">✕</button>
+                            <button @click="preparations.行李.splice(idx, 1); syncToCloud();" class="text-red-200 p-2">✕</button>
                         </div>
                     </div>
-                    <div class="mt-6 flex space-x-2">
-                        <input v-model="newPrepInput" @keyup.enter="addPrep('行李')" placeholder="新增行李..." class="flex-1 bg-blue-50 border-none rounded-2xl p-4 text-sm font-bold shadow-inner">
-                        <button @click="addPrep('行李')" class="bg-blue-500 text-white px-6 rounded-2xl text-sm font-black shadow-lg">加</button>
+                    <div class="mt-4 flex space-x-2">
+                        <input v-model="newPrepInput" @keyup.enter="addPrep('行李')" placeholder="新增行李..." class="flex-1 bg-blue-50 border-none rounded-xl p-3 text-xs font-bold shadow-inner">
+                        <button @click="addPrep('行李')" class="bg-blue-500 text-white px-4 rounded-xl text-xs font-black btn-active">加</button>
                     </div>
                 </div>
 
-                <div class="bg-blue-50 rounded-[35px] p-7 border border-blue-100">
-                    <h3 class="text-blue-600 font-black text-sm mb-5 flex items-center">✅ 旅前待辦事項</h3>
-                    <div class="space-y-3">
+                <div class="bg-blue-50 rounded-[24px] p-6 border border-blue-100">
+                    <h3 class="text-blue-600 font-black text-xs mb-4 flex items-center">✅ 旅前待辦事項</h3>
+                    <div class="space-y-2">
                         <div v-for="(item, idx) in preparations.待辦" :key="idx" class="flex items-center justify-between py-2 border-b border-white/50 last:border-0">
-                            <div @click="togglePrep('待辦', idx)" class="flex items-center space-x-4 cursor-pointer flex-1">
-                                <span class="text-xl">{{ item.done ? '⭐' : '⚪' }}</span>
-                                <span :class="['text-sm font-bold', item.done ? 'text-blue-300 line-through' : 'text-blue-800']">{{ item.text }}</span>
+                            <div @click="togglePrep('待辦', idx)" class="flex items-center space-x-3 cursor-pointer flex-1">
+                                <span class="text-lg">{{ item.done ? '⭐' : '⚪' }}</span>
+                                <span :class="['text-xs font-bold', item.done ? 'text-blue-300 line-through' : 'text-blue-800']">{{ item.text }}</span>
                             </div>
-                            <button @click="preparations.待辦.splice(idx, 1); syncToCloud();" class="text-red-300 px-3 text-lg">✕</button>
+                            <button @click="preparations.待辦.splice(idx, 1); syncToCloud();" class="text-red-300 p-2">✕</button>
                         </div>
                     </div>
-                    <div class="mt-6 flex space-x-2">
-                        <input v-model="newTodoInput" @keyup.enter="addPrep('待辦')" placeholder="新增待辦..." class="flex-1 bg-white border-none rounded-2xl p-4 text-sm font-bold shadow-inner">
-                        <button @click="addPrep('待辦')" class="bg-blue-400 text-white px-6 rounded-2xl text-sm font-black shadow-lg">加</button>
+                    <div class="mt-4 flex space-x-2">
+                        <input v-model="newTodoInput" @keyup.enter="addPrep('待辦')" placeholder="新增待辦..." class="flex-1 bg-white border-none rounded-xl p-3 text-xs font-bold shadow-inner">
+                        <button @click="addPrep('待辦')" class="bg-blue-400 text-white px-4 rounded-xl text-xs font-black btn-active">加</button>
                     </div>
                 </div>
             </div>
 
             <!-- 5. 設定成員 -->
-            <div v-if="currentTab === 'info'" key="info" class="space-y-6 pb-12">
-                <div class="bg-white p-7 rounded-[40px] border border-blue-50 shadow-sm">
-                    <h3 class="text-slate-800 font-black text-base mb-6 flex items-center">🐕 成員照片管理</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div v-for="(m, idx) in members" :key="idx" class="relative bg-white rounded-3xl p-5 border border-slate-100 text-center shadow-sm">
-                            <div @click="triggerAvatarUpload(idx)" class="member-avatar-box cursor-pointer hover:border-blue-300 transition-all">
+            <div v-if="currentTab === 'info'" key="info" class="p-4 space-y-6 pb-20">
+                <div class="bg-white p-6 rounded-[32px] border border-blue-50 shadow-sm">
+                    <h3 class="text-slate-800 font-black text-xs mb-5 flex items-center">🐕 成員照片管理</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div v-for="(m, idx) in members" :key="idx" class="relative bg-white rounded-2xl p-4 border border-slate-50 text-center shadow-sm">
+                            <div @click="triggerAvatarUpload(idx)" class="member-avatar-box cursor-pointer hover:border-blue-300 btn-active">
                                 <img v-if="m.img" :src="m.img" class="w-full h-full object-cover">
                                 <span v-else>{{ m.icon }}</span>
-                                <div class="avatar-upload-hint">更換照片</div>
+                                <div class="avatar-upload-hint">換照片</div>
                                 <input :id="'avatar-input-' + idx" type="file" @change="handleAvatarUpload($event, m)" class="hidden" accept="image/*">
                             </div>
-                            <input v-model="m.name" @change="syncToCloud" class="w-full bg-transparent border-none text-center font-black text-slate-800 text-sm focus:ring-0 p-0 mt-2">
-                            <button v-if="members.length > 1" @click="members.splice(idx, 1); syncToCloud();" class="absolute -top-1 -right-1 w-6 h-6 bg-red-400 text-white rounded-full text-[11px] flex items-center justify-center shadow-md">✕</button>
+                            <input v-model="m.name" @change="syncToCloud" class="w-full bg-transparent border-none text-center font-black text-slate-800 text-[11px] focus:ring-0 p-0 mt-1">
+                            <button v-if="members.length > 1" @click="members.splice(idx, 1); syncToCloud();" class="absolute -top-1 -right-1 w-5 h-5 bg-red-400 text-white rounded-full text-[9px] flex items-center justify-center shadow-md">✕</button>
                         </div>
-                        <button @click="addMember" class="border-2 border-dashed border-blue-100 rounded-[35px] p-5 flex flex-col items-center justify-center text-blue-300 hover:bg-blue-50 transition-colors"><span class="text-3xl mb-1">➕</span><span class="text-[11px] font-black uppercase tracking-widest">Add Member</span></button>
+                        <button @click="addMember" class="border-2 border-dashed border-blue-100 rounded-[24px] p-4 flex flex-col items-center justify-center text-blue-300 btn-active">
+                            <span class="text-2xl mb-1">➕</span>
+                            <span class="text-[9px] font-black uppercase tracking-widest">Add Member</span>
+                        </button>
                     </div>
                 </div>
-                <div class="bg-white p-7 rounded-[40px] border border-blue-50 shadow-sm space-y-6">
+
+                <div class="bg-white p-6 rounded-[32px] border border-blue-50 shadow-sm space-y-4">
                     <div>
-                        <label class="text-[10px] text-blue-400 font-black uppercase mb-2 block tracking-widest">旅程名稱 Trip Name</label>
-                        <input v-model="tripName" @change="syncToCloud" class="w-full p-4 bg-blue-50 rounded-2xl border-none font-black text-slate-800 text-sm shadow-inner">
+                        <label class="text-[9px] text-blue-400 font-black uppercase mb-1 block tracking-widest">旅程名稱 Trip Name</label>
+                        <input v-model="tripName" @change="syncToCloud" class="w-full p-3 bg-blue-50 rounded-xl border-none font-black text-slate-800 text-sm shadow-inner">
                     </div>
-                    <div class="border-t border-blue-50 pt-6">
-                        <label class="text-[10px] text-blue-400 font-black uppercase mb-4 block tracking-widest">日期設定 Manage Dates</label>
-                        <div class="flex flex-wrap gap-2 mb-5">
-                            <div v-for="(d, idx) in dates" :key="idx" class="bg-blue-50 border border-blue-100 px-4 py-2 rounded-2xl flex items-center text-xs font-black text-blue-600 shadow-sm">
+                    <div class="border-t border-blue-50 pt-4">
+                        <label class="text-[9px] text-blue-400 font-black uppercase mb-3 block tracking-widest">日期管理 Manage Dates</label>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <div v-for="(d, idx) in dates" :key="idx" class="bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-xl flex items-center text-[10px] font-black text-blue-600">
                                 <span>{{ d.displayDate }} ({{ d.weekday }})</span>
-                                <button @click="dates.splice(idx, 1); syncToCloud();" class="ml-3 text-red-400 font-bold">✕</button>
+                                <button @click="dates.splice(idx, 1); syncToCloud();" class="ml-2 text-red-400 font-bold">✕</button>
                             </div>
                         </div>
                         <div class="flex space-x-2">
-                            <input type="date" v-model="newDateInput" class="flex-1 p-4 bg-blue-50 rounded-2xl text-sm font-bold border-none shadow-inner">
-                            <button @click="addDate" class="bg-blue-500 text-white px-6 rounded-2xl text-sm font-black shadow-lg">新增</button>
+                            <input type="date" v-model="newDateInput" class="flex-1 p-3 bg-blue-50 rounded-xl text-xs font-bold border-none shadow-inner">
+                            <button @click="addDate" class="bg-blue-500 text-white px-4 rounded-xl text-xs font-black btn-active">新增</button>
                         </div>
                     </div>
                 </div>
@@ -329,53 +353,57 @@
         </transition>
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md h-22 flex items-center justify-around px-2 border-t border-slate-100 z-[200] rounded-t-[40px]">
-        <button v-for="t in tabs" :key="t.id" @click="currentTab = t.id" class="flex flex-col items-center" :class="currentTab === t.id ? 'text-blue-600 -translate-y-2.5' : 'text-gray-400'">
-            <div class="text-3xl mb-1">{{ t.icon }}</div>
-            <span class="text-[10px] font-black uppercase tracking-widest">{{ t.name }}</span>
-            <div v-if="currentTab === t.id" class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></div>
+    <!-- 底部導航 (優化手機排列) -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md h-20 flex items-center justify-around px-1 border-t border-slate-100 z-[200] rounded-t-[28px] shadow-lg safe-area-bottom">
+        <button v-for="t in tabs" :key="t.id" @click="currentTab = t.id" 
+                class="flex flex-col items-center transition-all flex-1 py-2" 
+                :class="currentTab === t.id ? 'text-blue-600 -translate-y-2' : 'text-gray-400'">
+            <div class="text-2xl mb-0.5">{{ t.icon }}</div>
+            <span class="text-[8px] font-black uppercase tracking-widest">{{ t.name }}</span>
+            <div v-if="currentTab === t.id" class="w-1 h-1 bg-blue-500 rounded-full mt-1"></div>
         </button>
     </nav>
 
-    <!-- 彈出編輯視窗 -->
+    <!-- 彈出編輯視窗 (手機尺寸優化) -->
     <transition name="fade">
-        <div v-if="modal.show" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[300] flex items-center justify-center p-6">
-            <div class="bg-white w-full rounded-[50px] p-10 max-h-[85vh] overflow-y-auto relative shadow-2xl border-4 border-blue-50">
-                <h3 class="text-xl font-black text-slate-800 mb-8 text-center uppercase tracking-widest">{{ modal.title }}</h3>
-                <div v-if="modal.type === 'itinerary'" class="space-y-5">
-                    <div class="h-36 bg-blue-50 rounded-[30px] border-4 border-dashed border-blue-100 flex flex-col items-center justify-center overflow-hidden relative">
+        <div v-if="modal.show" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-sm rounded-[32px] p-6 max-h-[90vh] overflow-y-auto relative shadow-2xl border-2 border-blue-50">
+                <h3 class="text-md font-black text-slate-800 mb-6 text-center uppercase tracking-widest">{{ modal.title }}</h3>
+                
+                <div v-if="modal.type === 'itinerary'" class="space-y-4">
+                    <div class="h-32 bg-blue-50 rounded-2xl border-2 border-dashed border-blue-100 flex flex-col items-center justify-center overflow-hidden relative btn-active">
                         <img v-if="form.img" :src="form.img" class="w-full h-full object-cover">
-                        <span v-else class="text-4xl opacity-20">📸</span>
+                        <span v-else class="text-3xl opacity-20">📸</span>
                         <input type="file" @change="uploadItineraryImg" class="absolute inset-0 opacity-0 cursor-pointer z-10">
                     </div>
-                    <input v-model="form.name" placeholder="景點名稱" class="w-full p-4 bg-blue-50 rounded-2xl text-sm font-black border-none shadow-inner">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input v-model="form.time" placeholder="預計時間" class="p-4 bg-blue-50 rounded-2xl text-sm font-bold border-none shadow-inner">
-                        <select v-model="form.category" class="p-4 bg-blue-50 rounded-2xl text-sm font-black border-none shadow-inner"><option v-for="c in ['景點','住宿','美食','購物','航班','其他']">{{c}}</option></select>
+                    <input v-model="form.name" placeholder="景點名稱" class="w-full p-3 bg-blue-50 rounded-xl text-xs font-black border-none shadow-inner">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input v-model="form.time" placeholder="時間 (如 13:05)" class="p-3 bg-blue-50 rounded-xl text-xs font-bold border-none shadow-inner">
+                        <select v-model="form.category" class="p-3 bg-blue-50 rounded-xl text-xs font-black border-none shadow-inner"><option v-for="c in ['景點','住宿','美食','購物','航班','其他']">{{c}}</option></select>
                     </div>
-                    <div class="bg-blue-50 p-4 rounded-3xl border border-blue-100">
-                        <label class="text-[10px] font-black text-blue-400 uppercase mb-2 block tracking-widest">與上一點的交通資訊</label>
+                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                        <label class="text-[8px] font-black text-blue-400 uppercase mb-2 block tracking-widest">與上一點的交通資訊</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <select v-model="form.transport" class="p-3 bg-white rounded-xl text-xs font-bold border-none shadow-sm"><option value="car">🚗 汽車</option><option value="walk">🚶‍♂️ 步行</option><option value="bus">🚌 大眾</option></select>
-                            <input v-model="form.transTime" placeholder="時間(m)" type="number" class="p-3 bg-white rounded-xl text-xs font-bold border-none shadow-sm">
-                            <input v-model="form.transDist" placeholder="距離(km)" class="p-3 bg-white rounded-xl text-xs font-bold border-none shadow-sm">
+                            <select v-model="form.transport" class="p-2 bg-white rounded-lg text-[10px] font-bold border-none shadow-sm"><option value="car">🚗 汽車</option><option value="walk">🚶‍♂️ 步行</option><option value="bus">🚌 大眾</option></select>
+                            <input v-model="form.transTime" placeholder="時間(m)" type="number" class="p-2 bg-white rounded-lg text-[10px] font-bold border-none shadow-sm text-center">
+                            <input v-model="form.transDist" placeholder="距離(km)" class="p-2 bg-white rounded-lg text-[10px] font-bold border-none shadow-sm text-center">
                         </div>
                     </div>
-                    <input v-model="form.mapUrl" placeholder="Google Maps 分享連結" class="w-full p-4 bg-blue-50 rounded-2xl text-[11px] border-none shadow-inner">
-                    <textarea v-model="form.note" placeholder="詳細備註內容..." class="w-full p-4 bg-blue-50 rounded-2xl text-sm h-32 border-none shadow-inner"></textarea>
+                    <input v-model="form.mapUrl" placeholder="Google Maps 連結" class="w-full p-3 bg-blue-50 rounded-xl text-[10px] border-none shadow-inner">
+                    <textarea v-model="form.note" placeholder="詳細備註內容..." class="w-full p-3 bg-blue-50 rounded-xl text-xs h-24 border-none shadow-inner"></textarea>
                 </div>
 
-                <div v-if="modal.type === 'hotel'" class="space-y-5">
-                    <input v-model="form.name" placeholder="住宿飯店名稱" class="w-full p-5 bg-blue-50 rounded-2xl font-black text-slate-800 text-sm border-none shadow-inner">
-                    <input v-model="form.date" placeholder="日期 (如 6/15 - 6/17)" class="w-full p-5 bg-blue-50 rounded-2xl border-none shadow-inner text-sm font-bold">
-                    <input v-model="form.address" placeholder="飯店地址" class="w-full p-5 bg-blue-50 rounded-2xl border-none shadow-inner text-sm font-bold">
-                    <input v-model="form.mapUrl" placeholder="Google Maps 導航連結" class="w-full p-5 bg-blue-50 rounded-2xl border-none shadow-inner text-[11px]">
+                <div v-if="modal.type === 'hotel'" class="space-y-4">
+                    <input v-model="form.name" placeholder="住宿飯店名稱" class="w-full p-3 bg-blue-50 rounded-xl font-black text-slate-800 text-xs border-none shadow-inner">
+                    <input v-model="form.date" placeholder="日期 (如 6/15 - 6/17)" class="w-full p-3 bg-blue-50 rounded-xl border-none shadow-inner text-xs font-bold">
+                    <input v-model="form.address" placeholder="飯店地址" class="w-full p-3 bg-blue-50 rounded-xl border-none shadow-inner text-xs font-bold">
+                    <input v-model="form.mapUrl" placeholder="Google Maps 導航連結" class="w-full p-3 bg-blue-50 rounded-xl border-none shadow-inner text-[10px]">
                 </div>
 
-                <div class="flex flex-col space-y-4 mt-12">
-                    <button @click="saveData" class="w-full py-6 bg-blue-600 text-white rounded-[30px] font-black shadow-xl active:scale-95 transition-transform tracking-widest uppercase">儲存更新 Save 🦴</button>
-                    <button v-if="modal.isEdit" @click="confirmDelete" class="w-full py-3 text-red-400 text-xs font-black uppercase">刪除此項目</button>
-                    <button @click="modal.show = false" class="w-full py-3 text-gray-400 font-black text-xs uppercase">取消</button>
+                <div class="flex flex-col space-y-3 mt-8">
+                    <button @click="saveData" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black shadow-lg btn-active tracking-widest text-sm">儲存更新 Save 🦴</button>
+                    <button v-if="modal.isEdit" @click="removeItem(modal.type, modal.targetId)" class="w-full py-2 text-red-400 text-[10px] font-black uppercase">刪除此項目</button>
+                    <button @click="modal.show = false" class="w-full py-2 text-gray-400 font-black text-[10px] uppercase">取消</button>
                 </div>
             </div>
         </div>
@@ -438,7 +466,7 @@ createApp({
                     accommodations: JSON.parse(JSON.stringify(accommodations.value)),
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
                 });
-            } catch (e) { console.error("同步失敗", e); }
+            } catch (e) { console.error("Sync Error", e); }
         };
 
         const loadFromCloud = async () => {
@@ -458,28 +486,26 @@ createApp({
                     accommodations.value = data.accommodations || [];
                     if (dates.value.length > 0 && !selectedDate.value) selectedDate.value = dates.value[0].fullDate;
                 }
-            } catch (e) { console.error("讀取失敗", e); }
+            } catch (e) { console.error("Load Error", e); }
             isLoading.value = false;
         };
 
         onMounted(async () => {
-            // 認證
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                 await auth.signInWithCustomToken(__initial_auth_token);
             } else {
                 await auth.signInAnonymously();
             }
-            
             await loadFromCloud();
 
-            // 背景愛心
+            // 背景特效
             setInterval(() => {
                 const id = Date.now();
-                hearts.value.push({ id, style: { left: Math.random() * 100 + '%', animationDuration: 6 + Math.random() * 4 + 's', fontSize: 12 + Math.random() * 10 + 'px' }});
-                if (hearts.value.length > 5) hearts.value.shift();
+                hearts.value.push({ id, style: { left: Math.random() * 100 + '%', animationDuration: 6 + Math.random() * 4 + 's', fontSize: 10 + Math.random() * 8 + 'px' }});
+                if (hearts.value.length > 6) hearts.value.shift();
             }, 6000);
 
-            // 排序功能
+            // 拖曳排序
             const el = document.getElementById('itinerary-list');
             if (el) {
                 Sortable.create(el, { animation: 150, handle: '.drag-handle', onEnd: (evt) => {
@@ -552,13 +578,16 @@ createApp({
             }
             modal.value.show = false; syncToCloud();
         };
-        const removeItem = (type, id) => { if(confirm('要刪除嗎？')) { 
-            if (type === 'itinerary') itineraries.value = itineraries.value.filter(i => i.id !== id);
-            if (type === 'hotel') accommodations.value = accommodations.value.filter(h => h.id !== id);
-            syncToCloud(); 
-        }};
+        const removeItem = (type, id) => { 
+            if(confirm('要刪除嗎？')) { 
+                if (type === 'itinerary') itineraries.value = itineraries.value.filter(i => i.id !== id);
+                if (type === 'hotel') accommodations.value = accommodations.value.filter(h => h.id !== id);
+                modal.value.show = false;
+                syncToCloud(); 
+            }
+        };
         const uploadItineraryImg = (e) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { form.value.img = ev.target.result; }; reader.readAsDataURL(file); }};
-        const openGoogleMaps = (item) => { if (item && item.mapUrl) window.open(item.mapUrl, '_blank'); else alert('請貼上地圖連結喔！'); };
+        const openGoogleMaps = (item) => { if (item && item.mapUrl) window.open(item.mapUrl, '_blank'); else alert('請編輯行程貼上地圖連結喔！🐾'); };
         const getTransIcon = (t) => t === 'walk' ? '🚶‍♂️' : t === 'bus' ? '🚌' : '🚗';
 
         return {
