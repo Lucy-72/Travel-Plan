@@ -164,6 +164,19 @@
             object-fit: cover;
         }
 
+        .avatar-upload {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px dashed #0ea5e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #f0f9ff;
+            cursor: pointer;
+        }
+
         .input-standard {
             width: 100%;
             background-color: #f8fafc;
@@ -508,9 +521,15 @@
             <h3 class="font-black text-slate-800 text-xl mb-6">團員管理</h3>
             <div class="space-y-4">
                 <div v-for="(m, idx) in members" :key="m.id" class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl">
-                    <img :src="m.avatar || defaultAvatar" class="w-12 h-12 rounded-full object-cover">
+                    <!-- 點擊頭像即可上傳相簿圖片 -->
+                    <div class="avatar-upload flex-shrink-0" @click="triggerAvatarUpload(idx)">
+                        <img v-if="m.avatar" :src="m.avatar" class="w-full h-full object-cover">
+                        <i v-else class="fa-solid fa-camera text-dog-blue-300"></i>
+                        <input type="file" :id="'avatar-input-'+idx" hidden accept="image/*" @change="handleAvatarUpload($event, idx)">
+                    </div>
                     <div class="flex-1">
                         <input v-model="m.name" class="bg-transparent border-none font-bold outline-none w-full">
+                        <p class="text-[9px] text-slate-400">點擊大頭照圓圈更換照片</p>
                     </div>
                     <button @click="members.splice(idx, 1)" class="text-red-300 p-2"><i class="fa-solid fa-circle-xmark"></i></button>
                 </div>
@@ -655,6 +674,41 @@
                 }));
             }, { deep: true });
 
+            // 圖片處理邏輯 (壓縮以節省儲存空間)
+            const handleImageResize = (file, callback) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_SIZE = 300; // 限制頭像解析度
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > h) { if (w > MAX_SIZE) { h *= MAX_SIZE / w; w = MAX_SIZE; } } 
+                        else { if (h > MAX_SIZE) { w *= MAX_SIZE / h; h = MAX_SIZE; } }
+                        canvas.width = w; canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        callback(canvas.toDataURL('image/jpeg', 0.7));
+                    };
+                };
+            };
+
+            const triggerAvatarUpload = (idx) => {
+                document.getElementById('avatar-input-'+idx).click();
+            };
+
+            const handleAvatarUpload = (e, idx) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handleImageResize(file, (base64) => {
+                        members.value[idx].avatar = base64;
+                    });
+                }
+            };
+
             // 天氣抓取邏輯
             const fetchWeather = async () => {
                 const city = settings.value.city;
@@ -675,7 +729,7 @@
                         temp: Math.round(cw.temperature),
                         range: `${Math.round(daily.temperature_2m_max[0])}° / ${Math.round(daily.temperature_2m_min[0])}°`,
                         rain: `${daily.precipitation_probability_max[0]}%`,
-                        wind: `${Math.round(cw.windspeed / 3.6)}級`, // km/h to approximate level
+                        wind: `${Math.round(cw.windspeed / 3.6)}級`, 
                         sunrise: daily.sunrise[0].split('T')[1].substring(0, 5),
                         advice: getAdvice(cw.temperature, cw.weathercode)
                     };
@@ -755,6 +809,7 @@
                     else bookings.value.hotels.push({id: Date.now(), name: '飯店', checkIn: '07/15', checkOut: '07/17', address: '澎湖縣...'});
                 },
                 addDate, updateWeekday, fetchWeather, openAddExpense, saveExpense, getExpenseIcon,
+                triggerAvatarUpload, handleAvatarUpload,
                 clearStorage: () => { if(confirm('確定清除所有存檔？')) { localStorage.removeItem(storageKey); location.reload(); } },
                 getCategoryColor: (c) => ({ sightseeing: 'bg-green-500', food: 'bg-orange-500', transport: 'bg-dog-blue-500' }[c] || 'bg-slate-400'),
                 getCategoryIcon: (c) => ({ sightseeing: 'fa-solid fa-camera', food: 'fa-solid fa-utensils', transport: 'fa-solid fa-plane' }[c] || 'fa-solid fa-paw')
