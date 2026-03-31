@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>狗狗主題旅遊計畫 - 自定義版</title>
+    <title>狗狗旅遊超級管家 - 全功能版</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,7 +27,7 @@
     </script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
         body {
             background-color: #e0f2fe; 
             -webkit-tap-highlight-color: transparent;
@@ -40,7 +40,7 @@
             margin: 0 auto;
             min-height: 100vh;
             background-color: #ffffff; 
-            box-shadow: 0 0 40px rgba(0, 119, 255, 0.1);
+            box-shadow: 0 0 50px rgba(14, 165, 233, 0.15);
             position: relative;
             padding-bottom: 90px;
         }
@@ -49,79 +49,73 @@
             background-color: #ffffff; 
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); 
-            border-bottom-left-radius: 40px; 
-            border-bottom-right-radius: 40px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1); 
+            border-bottom-left-radius: 45px; 
+            border-bottom-right-radius: 45px;
             z-index: 10; 
         }
         
         .header-image-container {
             width: 100%;
-            height: 220px; 
+            height: 240px; 
             overflow: hidden;
-            background-color: #0ea5e9;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0c4a6e 100%);
         }
         
         .header-image-container img {
             width: 100%;
             height: 100%;
             object-fit: cover; 
-            opacity: 0.9;
+            opacity: 0.8;
         }
         
         .paw-layer {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="white" opacity="0.1"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-7 2c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm14 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm-7 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>');
-            background-size: 80px 80px;
-            animation: pawMove 20s linear infinite;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="white" opacity="0.15"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-7 2c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm14 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm-7 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>');
+            background-size: 100px 100px;
+            animation: pawMove 25s linear infinite;
             z-index: 5;
             pointer-events: none;
         }
 
         @keyframes pawMove {
             from { background-position: 0 0; }
-            to { background-position: 160px 160px; }
+            to { background-position: 200px 200px; }
         }
         
         .trip-title-overlay {
             position: absolute;
-            bottom: 60px;
-            left: 20px;
+            bottom: 75px;
+            left: 24px;
             z-index: 20;
             color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            text-shadow: 0 3px 15px rgba(0,0,0,0.4);
             cursor: pointer;
         }
 
         .side-tab-bar {
             position: absolute;
-            bottom: 15px; 
-            right: 20px;
+            bottom: 20px; 
+            right: 24px;
             z-index: 30;
             display: flex;
-            gap: 10px; 
+            gap: 12px; 
         }
         
         .tab-button {
-            width: 45px; 
-            height: 45px;
-            border-radius: 15px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem; 
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 48px; height: 48px;
+            border-radius: 18px; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); 
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
         .tab-button.active {
             background-color: #0ea5e9;
             color: #ffffff;
-            transform: translateY(-5px) scale(1.1);
+            transform: translateY(-8px) rotate(-5deg);
         }
         
         .tab-button:not(.active) {
@@ -129,49 +123,40 @@
             color: #bae6fd;
         }
 
-        .app-main {
-            padding-top: 20px !important; 
-        }
-        
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .card-shadow {
-            box-shadow: 0 8px 30px rgba(14, 165, 233, 0.08);
-            transition: transform 0.2s ease;
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.4s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fab-shadow {
-            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
+        .countdown-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 4px 10px;
+            font-size: 10px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 8px;
         }
 
         .date-selector-sticky {
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #f0f9ff; 
-            z-index: 20; 
-            top: 0; 
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 20; top: 0; 
         }
 
-        .member-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 3px solid #e0f2fe;
-            object-fit: cover;
+        .card-shadow {
+            box-shadow: 0 10px 35px rgba(14, 165, 233, 0.08);
         }
-        
-        .dog-badge {
-            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+
+        .avatar-upload {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px dashed #0ea5e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #f0f9ff;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -179,242 +164,263 @@
 
 <div id="app" class="app-container">
 
-    <!-- 頂部頁眉 -->
+    <!-- 頂部頁面 -->
     <div class="header-bg">
         <div class="header-image-container">
-            <img :src="tripCover" alt="Trip Banner">
+            <img :src="settings.tripCover" alt="Banner">
         </div>
         
         <div class="paw-layer"></div> 
         
         <div class="trip-title-overlay" @click="showTitleModal = true">
             <h1 class="text-2xl font-black flex items-center">
-                {{ tripTitle }}
-                <i class="fa-solid fa-pen-to-square text-sm ml-2 opacity-70"></i>
+                {{ settings.tripTitle }}
+                <i class="fa-solid fa-bone text-sm ml-2 opacity-70"></i>
             </h1>
-            <p class="text-xs opacity-90 tracking-widest mt-1">DOG TRAVEL LOG • {{ currentYear }}</p>
+            <div class="countdown-badge">
+                <i class="fa-solid fa-clock-rotate-left mr-2"></i>
+                <span v-if="countdownDays > 0">距離出發還有 {{ countdownDays }} 天</span>
+                <span v-else-if="countdownDays === 0">就是今天！汪汪！</span>
+                <span v-else>回憶滿載中</span>
+            </div>
         </div>
         
-        <!-- 分頁切換 -->
         <div class="side-tab-bar">
             <button @click="currentTab = 'itinerary'" :class="{'active': currentTab === 'itinerary'}" class="tab-button">
-                <i class="fa-solid fa-paw"></i>
+                <i class="fa-solid fa-map-location-dot"></i>
             </button>
             <button @click="currentTab = 'info'" :class="{'active': currentTab === 'info'}" class="tab-button">
-                <i class="fa-solid fa-dog"></i>
+                <i class="fa-solid fa-sliders"></i>
             </button>
             <button @click="currentTab = 'shopping'" :class="{'active': currentTab === 'shopping'}" class="tab-button">
-                <i class="fa-solid fa-bone"></i>
+                <i class="fa-solid fa-basket-shopping"></i>
             </button>
             <button @click="currentTab = 'expenses'" :class="{'active': currentTab === 'expenses'}" class="tab-button">
-                <i class="fa-solid fa-coins"></i>
+                <i class="fa-solid fa-hand-holding-dollar"></i>
             </button>
         </div>
     </div>
 
     <!-- 主內容區 -->
-    <main class="p-4 app-main">
+    <main class="p-4">
         
-        <!-- 成員頭像列表 -->
-        <div class="flex -space-x-3 mb-6 px-1">
-            <div v-for="m in members" :key="m.id" class="relative group">
-                <img :src="m.avatar" :alt="m.name" class="member-avatar shadow-md" :title="m.name">
-                <div class="absolute -bottom-1 -right-1 bg-white rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
-                    <i class="fa-solid fa-paw text-[10px] text-dog-blue-500"></i>
+        <!-- 成員列表 -->
+        <div class="flex -space-x-2 mb-6 overflow-x-auto hide-scrollbar py-2">
+            <div v-for="m in members" :key="m.id" class="flex-shrink-0 relative group">
+                <img :src="m.avatar || defaultAvatar" class="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover">
+                <div class="absolute -bottom-1 -right-1 bg-dog-blue-500 rounded-full w-4 h-4 flex items-center justify-center text-[8px] text-white">
+                    <i class="fa-solid fa-paw"></i>
                 </div>
             </div>
-            <button @click="currentTab = 'info'" class="w-[50px] h-[50px] rounded-full bg-dog-blue-50 border-2 border-dashed border-dog-blue-200 flex items-center justify-center text-dog-blue-400 hover:bg-dog-blue-100 transition-colors">
-                <i class="fa-solid fa-plus text-sm"></i>
+            <button @click="currentTab = 'info'" class="w-12 h-12 rounded-full bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 ml-3 flex-shrink-0">
+                <i class="fa-solid fa-plus text-xs"></i>
             </button>
         </div>
 
         <!-- 1. 行程分頁 -->
         <div v-if="currentTab === 'itinerary'" class="animate-fade-in">
-            <!-- 日期選擇器 -->
-            <div class="flex overflow-x-auto hide-scrollbar space-x-3 pb-4 mb-2 snap-x px-1 sticky date-selector-sticky pt-2 -mx-4 px-4">
+            <!-- 日期選擇 -->
+            <div class="flex overflow-x-auto hide-scrollbar space-x-3 pb-4 mb-4 snap-x px-1 sticky date-selector-sticky pt-3 -mx-4 px-4 border-b border-dog-blue-50">
                 <div v-for="(day, index) in dates" :key="index" 
                      @click="selectedDateIndex = index"
-                     class="snap-center flex-shrink-0 w-[65px] h-[75px] rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 border shadow-sm"
+                     class="snap-center flex-shrink-0 min-w-[75px] h-[85px] rounded-[28px] flex flex-col items-center justify-center cursor-pointer transition-all border shadow-sm"
                      :class="selectedDateIndex === index ? 'bg-dog-blue-500 text-white border-dog-blue-500 shadow-lg scale-105' : 'bg-white text-slate-400 border-slate-100'">
-                    <span class="text-sm font-black uppercase">{{ day.weekday }}</span> 
-                    <span class="text-[10px] opacity-80 font-medium">{{ day.displayDate }}</span> 
+                    <span class="text-[10px] font-bold opacity-70 mb-1">{{ day.weekday }}</span>
+                    <span class="text-sm font-black">{{ day.displayDate }}</span> 
                 </div>
             </div>
 
-            <!-- 天氣資訊 (模擬) -->
-            <div class="mb-6 bg-dog-blue-50 border border-dog-blue-100 rounded-3xl p-4 flex justify-between items-center card-shadow">
-                <div class="flex items-center text-dog-blue-600 space-x-4">
-                    <i class="fa-solid fa-snowflake text-4xl"></i>
-                    <div>
-                        <span class="text-2xl font-black">-2/3°C</span>
-                        <p class="text-[10px] font-medium opacity-70">本日狗狗適合外出</p>
+            <!-- 天氣 -->
+            <div v-if="weather" class="mb-8 bg-gradient-to-r from-dog-blue-50 to-white border border-dog-blue-100 rounded-[35px] p-5 flex justify-between items-center card-shadow">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-dog-blue-500 text-3xl">
+                        <i :class="getWeatherIcon(weather.code)"></i>
                     </div>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs font-bold text-dog-blue-900 bg-white px-3 py-1 rounded-full shadow-sm">
-                        降雪 60%
-                    </span>
+                    <div>
+                        <div class="flex items-center">
+                            <span class="text-2xl font-black text-dog-blue-900 mr-2">{{ weather.temp }}°</span>
+                            <span class="text-[10px] bg-dog-blue-500 text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">{{ settings.city }}</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1">體感適宜狗狗散步</p>
+                    </div>
                 </div>
             </div>
 
             <!-- 行程清單 -->
             <div class="space-y-6">
                 <div v-for="(item, idx) in currentItinerary" :key="item.id" class="relative">
-                    <div v-if="idx > 0" class="absolute -top-6 left-6 w-0.5 h-6 bg-dog-blue-100"></div>
+                    <div v-if="idx > 0" class="absolute -top-6 left-7 w-0.5 h-6 bg-dog-blue-100"></div>
                     
-                    <div class="bg-white rounded-[32px] p-5 card-shadow relative overflow-hidden border border-dog-blue-50 flex items-start">
+                    <div class="bg-white rounded-[35px] p-6 card-shadow border border-dog-blue-50 flex items-start">
                         <div class="mr-4 flex flex-col items-center min-w-[55px]">
-                            <div class="w-12 h-12 rounded-2xl text-white shadow-lg flex items-center justify-center text-lg mb-1" :class="getCategoryColor(item.category)">
+                            <div class="w-14 h-14 rounded-2xl text-white shadow-lg flex items-center justify-center text-xl mb-2" :class="getCategoryColor(item.category)">
                                 <i :class="getCategoryIcon(item.category)"></i>
                             </div>
-                            <span v-if="item.startTime" class="text-[11px] font-black text-slate-400 mt-1">{{ item.startTime }}</span>
+                            <span class="text-[11px] font-black text-slate-400">{{ item.startTime || '--:--' }}</span>
                         </div>
 
                         <div class="flex-1">
-                            <h3 class="text-lg font-bold text-slate-800 leading-tight pr-10">{{ item.name }}</h3>
-                            <div class="text-xs text-slate-500 space-y-2 mt-3">
+                            <h3 class="text-lg font-black text-slate-800 leading-tight pr-12">{{ item.name }}</h3>
+                            <div class="text-xs text-slate-500 space-y-2 mt-4">
                                 <p v-if="item.address" class="flex items-start font-medium"><i class="fa-solid fa-location-dot w-4 text-dog-blue-500 mt-0.5"></i> {{ item.address }}</p>
-                                <p v-if="item.note" class="text-dog-blue-600 bg-dog-blue-50/70 p-3 rounded-2xl border border-dog-blue-100/50 mt-2 italic">
-                                    <i class="fa-solid fa-quote-left opacity-30 mr-1"></i>{{ item.note }}
-                                </p>
+                                <p v-if="item.note" class="text-dog-blue-600 bg-dog-blue-50/50 p-4 rounded-3xl border-l-4 border-dog-blue-400 mt-3 italic">{{ item.note }}</p>
                             </div>
                         </div>
 
-                        <!-- 行程控制鈕 -->
-                        <div class="absolute top-4 right-4 flex flex-col gap-2">
+                        <div class="absolute top-6 right-6 flex flex-col gap-3">
                             <button @click="openMap(item.mapUrl || item.address || item.name)" 
-                                    class="w-9 h-9 rounded-full flex items-center justify-center text-sm transition-all shadow-md"
-                                    :class="item.mapUrl ? 'bg-dog-blue-600 text-white hover:bg-dog-blue-700' : 'bg-dog-blue-50 text-dog-blue-500 hover:bg-dog-blue-500 hover:text-white'">
-                                <i class="fa-solid fa-location-arrow"></i>
+                                    class="w-10 h-10 rounded-2xl flex items-center justify-center text-lg shadow-md active:scale-90"
+                                    :class="item.mapUrl ? 'bg-dog-blue-600 text-white' : 'bg-dog-blue-50 text-dog-blue-400'">
+                                <i class="fa-solid fa-map"></i>
                             </button>
-                            <button @click="editItem(item)" class="w-9 h-9 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center text-sm hover:bg-slate-200 transition-all shadow-md">
-                                <i class="fa-solid fa-pen-to-square"></i>
+                            <button @click="editItinerary(item)" class="w-10 h-10 rounded-2xl bg-slate-50 text-slate-300 flex items-center justify-center text-sm active:scale-90">
+                                <i class="fa-solid fa-pencil"></i>
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <div v-if="currentItinerary.length === 0" class="text-center py-24 opacity-30">
-                    <i class="fa-solid fa-dog text-7xl mb-4"></i>
-                    <p class="text-sm font-bold tracking-widest uppercase">No Plans Yet</p>
+                    <i class="fa-solid fa-dog text-8xl mb-6"></i>
+                    <p class="font-black tracking-widest uppercase">本日暫無行程計畫</p>
                 </div>
             </div>
         </div>
 
-        <!-- 2. 資訊/管理分頁 -->
-        <div v-if="currentTab === 'info'" class="space-y-6 animate-fade-in">
-            <!-- 成員管理 -->
-            <div class="bg-white rounded-[32px] p-6 card-shadow border border-dog-blue-50">
-                <h3 class="font-bold text-slate-800 mb-5 flex items-center">
-                    <i class="fa-solid fa-users text-dog-blue-500 mr-2"></i> 出遊團員
-                </h3>
-                <div class="space-y-3">
-                    <div v-for="(m, idx) in members" :key="m.id" class="flex items-center justify-between p-4 bg-slate-50 rounded-3xl">
-                        <div class="flex items-center space-x-4">
-                            <img :src="m.avatar" class="w-12 h-12 rounded-full object-cover shadow-sm">
-                            <p class="font-bold text-slate-700">{{ m.name }}</p>
-                        </div>
-                        <button @click="removeMember(idx)" class="text-red-300 hover:text-red-500 transition-colors px-2">
-                            <i class="fa-solid fa-circle-xmark text-lg"></i>
-                        </button>
+        <!-- 2. 設定分頁 -->
+        <div v-if="currentTab === 'info'" class="space-y-6 animate-fade-in pb-10">
+            
+            <!-- 基礎設定 -->
+            <div class="bg-white rounded-[40px] p-7 card-shadow border border-dog-blue-100">
+                <h3 class="font-black text-slate-800 mb-6 flex items-center"><i class="fa-solid fa-gear text-dog-blue-500 mr-3"></i> 基本設定</h3>
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">倒數出發日</label>
+                        <input type="date" v-model="settings.targetDate" class="w-full bg-slate-50 rounded-2xl p-4 outline-none border-none">
                     </div>
-                    <button @click="showMemberModal = true" class="w-full py-4 border-2 border-dashed border-dog-blue-200 rounded-[32px] text-dog-blue-500 font-bold text-sm hover:bg-dog-blue-50 transition-all flex items-center justify-center">
-                        <i class="fa-solid fa-user-plus mr-2"></i> 新增成員
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">顯示城市天氣</label>
+                        <select v-model="settings.city" @change="fetchWeather" class="w-full bg-slate-50 rounded-2xl p-4 outline-none border-none">
+                            <option value="札幌">札幌</option>
+                            <option value="東京">東京</option>
+                            <option value="大阪">大阪</option>
+                            <option value="台北">台北</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成員管理 (支援上傳) -->
+            <div class="bg-white rounded-[40px] p-7 card-shadow border border-dog-blue-100">
+                <h3 class="font-black text-slate-800 mb-6 flex items-center"><i class="fa-solid fa-camera-retro text-dog-blue-500 mr-3"></i> 團員與頭像</h3>
+                <div class="space-y-4">
+                    <div v-for="(m, idx) in members" :key="m.id" class="flex items-center gap-4 p-4 bg-slate-50 rounded-[30px]">
+                        <!-- 上傳頭像區域 -->
+                        <div class="avatar-upload" @click="triggerAvatarUpload(idx)">
+                            <img v-if="m.avatar" :src="m.avatar" class="w-full h-full object-cover">
+                            <i v-else class="fa-solid fa-plus text-dog-blue-300"></i>
+                            <input type="file" :id="'avatar-input-'+idx" hidden accept="image/*" @change="handleAvatarUpload($event, idx)">
+                        </div>
+                        <div class="flex-1">
+                            <input v-model="m.name" class="bg-transparent border-none font-bold text-slate-700 w-full outline-none">
+                            <p class="text-[9px] text-slate-400 uppercase">點擊圓圈上傳相簿照片</p>
+                        </div>
+                        <button @click="removeMember(idx)" class="text-red-300"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                    <button @click="addMember" class="w-full py-4 bg-dog-blue-50 text-dog-blue-500 rounded-3xl font-black text-xs">+ 新增成員</button>
+                </div>
+            </div>
+
+            <!-- 日期維護 -->
+            <div class="bg-white rounded-[40px] p-7 card-shadow border border-dog-blue-100">
+                <h3 class="font-black text-slate-800 mb-6 flex items-center"><i class="fa-solid fa-calendar-check text-dog-blue-500 mr-3"></i> 日期維護</h3>
+                <div class="space-y-3">
+                    <div v-for="(d, idx) in dates" :key="idx" class="flex items-center gap-2 p-3 bg-slate-50 rounded-2xl">
+                        <input type="date" v-model="d.fullDate" @change="updateWeekday(idx)" class="flex-1 bg-transparent border-none text-sm font-bold outline-none">
+                        <div class="bg-dog-blue-500 text-white text-[10px] px-3 py-1 rounded-full font-black min-w-[50px] text-center">
+                            {{ d.weekday }}
+                        </div>
+                        <button @click="removeDate(idx)" class="text-slate-300"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                    <button @click="addDate" class="w-full py-4 bg-dog-blue-50 text-dog-blue-500 rounded-3xl font-black text-xs">+ 新增天數</button>
+                </div>
+            </div>
+            
+            <div class="text-center pt-6">
+                <button @click="clearStorage" class="text-[10px] text-red-300 underline font-medium tracking-widest uppercase">清除所有存檔資料</button>
+            </div>
+        </div>
+
+        <!-- 3. 購物清單 (支援上傳) -->
+        <div v-if="currentTab === 'shopping'" class="animate-fade-in">
+            <div class="grid grid-cols-2 gap-4">
+                <div v-for="(item, idx) in shoppingList" :key="idx" class="bg-white rounded-[35px] p-4 card-shadow border border-dog-blue-50 relative group">
+                    <div class="aspect-square bg-dog-blue-50 rounded-[28px] mb-4 overflow-hidden border border-dog-blue-100 flex items-center justify-center cursor-pointer" @click="triggerShoppingUpload(idx)">
+                        <img v-if="item.image" :src="item.image" class="w-full h-full object-cover">
+                        <div v-else class="text-center">
+                            <i class="fa-solid fa-bone text-dog-blue-200 text-3xl mb-1"></i>
+                            <p class="text-[8px] text-dog-blue-300 font-bold uppercase">上傳照片</p>
+                        </div>
+                        <input type="file" :id="'shopping-input-'+idx" hidden accept="image/*" @change="handleShoppingUpload($event, idx)">
+                    </div>
+                    <input v-model="item.name" placeholder="商品名稱" class="w-full border-none text-sm font-black text-slate-800 text-center outline-none bg-transparent">
+                    <button @click="removeShoppingItem(idx)" class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
-            </div>
-
-            <!-- 日期管理 -->
-            <div class="bg-white rounded-[32px] p-6 card-shadow border border-dog-blue-50">
-                <h3 class="font-bold text-slate-800 mb-5 flex items-center">
-                    <i class="fa-solid fa-calendar-days text-dog-blue-500 mr-2"></i> 行程日期管理
-                </h3>
-                <div class="space-y-3">
-                    <div v-for="(d, idx) in dates" :key="idx" class="flex items-center gap-2">
-                        <input v-model="d.fullDate" placeholder="YYYY/MM/DD" class="flex-1 bg-slate-50 border-none rounded-2xl p-3 text-xs focus:ring-1 focus:ring-dog-blue-500">
-                        <input v-model="d.weekday" placeholder="週幾" class="w-16 bg-slate-50 border-none rounded-2xl p-3 text-xs text-center focus:ring-1 focus:ring-dog-blue-500">
-                        <button @click="removeDate(idx)" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>
-                    <button @click="addDate" class="w-full py-3 bg-dog-blue-50 text-dog-blue-600 rounded-2xl font-bold text-xs mt-2">+ 新增日期</button>
-                </div>
+                <button @click="addShoppingItem" class="aspect-square rounded-[35px] border-4 border-dashed border-dog-blue-100 flex flex-col items-center justify-center text-dog-blue-200 hover:bg-dog-blue-50 transition-all">
+                    <i class="fa-solid fa-plus text-2xl mb-2"></i>
+                    <p class="text-xs font-black uppercase">新增清單</p>
+                </button>
             </div>
         </div>
 
-        <!-- 3. 購物與 4. 花費 (保持結構，省略詳細程式碼以利聚焦) -->
-        <div v-if="currentTab === 'shopping'" class="animate-fade-in text-center py-20 opacity-40">
-            <i class="fa-solid fa-bone text-6xl mb-4"></i>
-            <p>購物清單功能（點擊下方新增）</p>
-        </div>
-        <div v-if="currentTab === 'expenses'" class="animate-fade-in text-center py-20 opacity-40">
-            <i class="fa-solid fa-coins text-6xl mb-4"></i>
-            <p>花費記錄功能（點擊下方新增）</p>
+        <!-- 4. 花費暫略 -->
+        <div v-if="currentTab === 'expenses'" class="animate-fade-in py-20 text-center opacity-30">
+            <i class="fa-solid fa-coins text-7xl mb-4"></i>
+            <p class="font-black uppercase tracking-widest">花費統計模組</p>
         </div>
 
     </main>
 
-    <!-- 浮動按鈕 -->
-    <button v-if="currentTab === 'itinerary' || currentTab === 'shopping' || currentTab === 'expenses'" @click="handleAddClick" class="fixed bottom-8 right-8 w-16 h-16 bg-dog-blue-500 rounded-3xl fab-shadow text-white text-3xl flex items-center justify-center hover:rotate-90 transition-all z-40">
+    <!-- 浮動新增行程 -->
+    <button v-if="currentTab === 'itinerary'" @click="openAddItinerary" class="fixed bottom-8 right-8 w-16 h-16 bg-dog-blue-500 rounded-[24px] shadow-xl text-white text-3xl flex items-center justify-center z-40 active:scale-90 transition-all">
         <i class="fa-solid fa-plus"></i>
     </button>
 
-    <!-- Modal 彈窗區 -->
-    
-    <!-- 行程編輯 Modal -->
-    <div v-if="showItineraryModal" class="fixed inset-0 bg-dog-blue-900/70 z-50 flex items-center justify-center p-6 backdrop-blur-sm">
-        <div class="bg-white rounded-[40px] w-full max-w-md p-8 shadow-2xl max-h-[85vh] overflow-y-auto animate-fade-in">
-            <h3 class="font-black text-xl mb-8 text-center text-dog-blue-900">{{ isEditMode ? '修改狗狗計畫' : '新增計畫' }}</h3>
+    <!-- 行程彈窗 -->
+    <div v-if="showItineraryModal" class="fixed inset-0 bg-dog-blue-900/80 z-50 flex items-center justify-center p-6 backdrop-blur-md">
+        <div class="bg-white rounded-[45px] w-full max-w-md p-8 shadow-2xl max-h-[85vh] overflow-y-auto animate-fade-in">
+            <h3 class="font-black text-xl mb-8 text-center text-dog-blue-900">{{ isEditMode ? '修改計畫' : '新增計畫' }}</h3>
             <div class="space-y-5">
-                <div class="flex gap-3">
-                    <select v-model="tempItinerary.category" class="w-1/3 bg-slate-50 rounded-2xl p-4 outline-none border-none focus:ring-2 focus:ring-dog-blue-500">
+                <div class="flex gap-4">
+                    <select v-model="tempItem.category" class="w-1/3 bg-slate-50 rounded-2xl p-4 outline-none border-none font-bold">
                         <option value="sightseeing">景點</option>
                         <option value="food">美食</option>
                         <option value="shopping">購物</option>
                         <option value="transport">交通</option>
                     </select>
-                    <input v-model="tempItinerary.startTime" placeholder="時間 (如 10:00)" class="w-2/3 bg-slate-50 rounded-2xl p-4 outline-none border-none focus:ring-2 focus:ring-dog-blue-500">
+                    <input v-model="tempItem.startTime" placeholder="時間 (12:00)" class="w-2/3 bg-slate-50 rounded-2xl p-4 outline-none border-none font-bold">
                 </div>
-                <input v-model="tempItinerary.name" placeholder="行程名稱 (例如：小樽運河)" class="w-full bg-slate-50 rounded-2xl p-4 outline-none border-none focus:ring-2 focus:ring-dog-blue-500 font-bold">
-                <input v-model="tempItinerary.address" placeholder="地點名稱 (Google 搜尋用)" class="w-full bg-slate-50 rounded-2xl p-4 outline-none border-none focus:ring-2 focus:ring-dog-blue-500">
-                
-                <div class="bg-dog-blue-50 p-4 rounded-2xl border border-dog-blue-200">
-                    <label class="block text-[10px] font-black text-dog-blue-600 mb-2 uppercase tracking-widest">Google Map 分享連結</label>
-                    <input v-model="tempItinerary.mapUrl" placeholder="貼上 Google Map 分享網址..." class="w-full bg-white rounded-xl p-3 text-xs outline-none focus:ring-1 focus:ring-dog-blue-500">
-                </div>
-
-                <textarea v-model="tempItinerary.note" placeholder="有什麼想叮嚀狗狗或團員的嗎？" class="w-full bg-slate-50 rounded-2xl p-4 outline-none h-24 text-sm"></textarea>
+                <input v-model="tempItem.name" placeholder="行程標題" class="w-full bg-slate-50 rounded-2xl p-4 font-black text-slate-800 outline-none border-none">
+                <input v-model="tempItem.address" placeholder="地點或地址" class="w-full bg-slate-50 rounded-2xl p-4 text-sm outline-none border-none">
+                <input v-model="tempItem.mapUrl" placeholder="Google Map 分享網址" class="w-full bg-dog-blue-50/50 rounded-2xl p-4 text-xs outline-none border-none italic text-dog-blue-600">
+                <textarea v-model="tempItem.note" placeholder="備註內容..." class="w-full bg-slate-50 rounded-2xl p-4 h-28 text-sm outline-none border-none"></textarea>
             </div>
-            <div class="flex gap-4 mt-10">
-                <button @click="showItineraryModal = false" class="flex-1 py-4 rounded-2xl bg-slate-100 text-slate-500 font-black">取消</button>
-                <button @click="saveItinerary" class="flex-1 py-4 rounded-2xl bg-dog-blue-500 text-white font-black shadow-lg shadow-dog-blue-500/30">確認存入</button>
+            <div class="flex gap-4 mt-8">
+                <button @click="showItineraryModal = false" class="flex-1 py-4 rounded-2xl bg-slate-100 text-slate-400 font-bold">取消</button>
+                <button @click="saveItinerary" class="flex-1 py-4 rounded-2xl bg-dog-blue-500 text-white font-bold">儲存</button>
             </div>
-            <button v-if="isEditMode" @click="deleteItinerary" class="w-full mt-4 text-red-400 text-xs font-bold hover:text-red-600">刪除此行程</button>
+            <button v-if="isEditMode" @click="deleteItinerary" class="w-full mt-4 text-red-300 text-[10px] font-bold">刪除行程</button>
         </div>
     </div>
 
-    <!-- 成員新增 Modal -->
-    <div v-if="showMemberModal" class="fixed inset-0 bg-dog-blue-900/70 z-50 flex items-center justify-center p-6 backdrop-blur-sm">
-        <div class="bg-white rounded-[40px] w-full max-w-sm p-8 shadow-2xl animate-fade-in">
-            <h3 class="font-black text-lg mb-8 text-center">加入新的團員</h3>
-            <div class="space-y-4 mb-8">
-                <input v-model="newMember.name" placeholder="團員名稱" class="w-full bg-slate-50 rounded-2xl p-4 outline-none border-none">
-                <input v-model="newMember.avatar" placeholder="頭像網址 (可留空)" class="w-full bg-slate-50 rounded-2xl p-4 text-xs outline-none border-none">
-            </div>
-            <div class="flex gap-4">
-                <button @click="showMemberModal = false" class="flex-1 py-4 rounded-2xl bg-slate-100 text-slate-500 font-bold">取消</button>
-                <button @click="addMember" class="flex-1 py-4 rounded-2xl bg-dog-blue-500 text-white font-bold">確定新增</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 行程名稱修改 Modal -->
-    <div v-if="showTitleModal" class="fixed inset-0 bg-dog-blue-900/70 z-50 flex items-center justify-center p-6 backdrop-blur-sm">
-        <div class="bg-white rounded-[40px] w-full max-w-sm p-8 shadow-2xl animate-fade-in">
-            <h3 class="font-black text-lg mb-8 text-center">修改行程主題</h3>
-            <input v-model="tempTripTitle" placeholder="旅遊名稱" class="w-full bg-slate-50 rounded-2xl p-4 outline-none text-center font-black text-xl mb-8">
-            <div class="flex gap-4">
-                <button @click="showTitleModal = false" class="flex-1 py-4 rounded-2xl bg-slate-100 text-slate-500 font-bold">取消</button>
-                <button @click="saveTripTitle" class="flex-1 py-4 rounded-2xl bg-dog-blue-500 text-white font-bold">儲存</button>
-            </div>
+    <!-- 行程名稱修改 -->
+    <div v-if="showTitleModal" class="fixed inset-0 bg-dog-blue-900/80 z-50 flex items-center justify-center p-6 backdrop-blur-md">
+        <div class="bg-white rounded-[40px] w-full max-w-sm p-8 shadow-2xl animate-fade-in text-center">
+            <h3 class="font-black text-lg mb-8">修改冒險名稱</h3>
+            <input v-model="settings.tripTitle" class="w-full bg-slate-50 rounded-2xl p-4 text-center font-black text-xl mb-8 outline-none border-none">
+            <button @click="showTitleModal = false" class="w-full py-4 rounded-2xl bg-dog-blue-500 text-white font-black">完成</button>
         </div>
     </div>
 
@@ -425,156 +431,125 @@
 
     createApp({
         setup() {
-            // --- 核心設定 ---
-            const tripTitle = ref('我們的北海道之旅');
-            const tempTripTitle = ref('');
-            const showTitleModal = ref(false);
-            const currentYear = ref(2026);
-            const tripCover = ref('https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1350&q=80');
+            const storageKey = 'DOG_TRIP_MASTER_V2';
+            const cityCoords = { '札幌': { lat: 43.06, lon: 141.35 }, '東京': { lat: 35.68, lon: 139.69 }, '大阪': { lat: 34.69, lon: 135.50 }, '台北': { lat: 25.03, lon: 121.56 } };
 
-            // --- 日期管理 ---
-            const dates = ref([
-                { fullDate: '2026/02/01', weekday: '週一', displayDate: '02/01' },
-                { fullDate: '2026/02/02', weekday: '週二', displayDate: '02/02' },
-                { fullDate: '2026/02/03', weekday: '週三', displayDate: '02/03' }
-            ]);
-            const selectedDateIndex = ref(0);
-
-            // 監聽日期變動，自動更新顯示用日期
-            watch(dates, (newVal) => {
-                newVal.forEach(d => {
-                    const parts = d.fullDate.split('/');
-                    if(parts.length === 3) d.displayDate = `${parts[1]}/${parts[2]}`;
-                });
-            }, { deep: true });
-
-            const addDate = () => {
-                dates.value.push({ fullDate: '2026/MM/DD', weekday: '週?', displayDate: 'MM/DD' });
-            };
-            const removeDate = (idx) => {
-                if(dates.value.length > 1) dates.value.splice(idx, 1);
+            // 載入存檔
+            const data = JSON.parse(localStorage.getItem(storageKey)) || {
+                settings: { tripTitle: '狗狗北海道之旅', targetDate: '2026-03-30', city: '札幌', tripCover: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200' },
+                members: [{ id: 1, name: '爸爸', avatar: '' }, { id: 2, name: '狗狗', avatar: '' }],
+                dates: [{ fullDate: '2026-03-30', weekday: '週一', displayDate: '03/30' }],
+                itineraryData: {},
+                shoppingList: []
             };
 
-            // --- 成員管理 ---
-            const members = ref([
-                { id: 1, name: '主揪', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80' },
-                { id: 2, name: '狗狗小成員', avatar: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=100&q=80' }
-            ]);
-            const showMemberModal = ref(false);
-            const newMember = ref({ name: '', avatar: '' });
+            const settings = ref(data.settings);
+            const members = ref(data.members);
+            const dates = ref(data.dates);
+            const itineraryData = ref(data.itineraryData);
+            const shoppingList = ref(data.shoppingList);
 
-            // --- 行程資料 ---
-            // 結構：每個日期索引對應一個陣列
-            const itineraryData = ref({
-                0: [{ id: 101, name: '新千歲機場', category: 'transport', startTime: '13:15', address: '新千歲機場', note: '到達後先領行李', mapUrl: '' }],
-                1: [{ id: 201, name: '小樽運河', category: 'sightseeing', startTime: '10:00', address: '小樽運河', note: '這邊拍照超美', mapUrl: 'https://maps.app.goo.gl/qX8sYtJ4VvR2' }],
-                2: []
-            });
-
-            // --- 狀態管理 ---
             const currentTab = ref('itinerary');
+            const selectedDateIndex = ref(0);
+            const showTitleModal = ref(false);
             const showItineraryModal = ref(false);
             const isEditMode = ref(false);
-            const tempItinerary = ref({});
+            const tempItem = ref({});
+            const weather = ref(null);
+            const defaultAvatar = 'https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?w=100';
 
-            // --- 方法 ---
-            const getCategoryColor = (cat) => {
-                const map = { sightseeing: 'bg-green-500', food: 'bg-orange-500', shopping: 'bg-pink-500', transport: 'bg-blue-500' };
-                return map[cat] || 'bg-slate-400';
+            // 自動存檔
+            watch([settings, members, dates, itineraryData, shoppingList], () => {
+                localStorage.setItem(storageKey, JSON.stringify({ settings: settings.value, members: members.value, dates: dates.value, itineraryData: itineraryData.value, shoppingList: shoppingList.value }));
+            }, { deep: true });
+
+            // 圖片處理 (讀取並壓縮以防緩存爆滿)
+            const handleImageResize = (file, callback) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_SIZE = 300; // 最大解析度
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > h) { if (w > MAX_SIZE) { h *= MAX_SIZE / w; w = MAX_SIZE; } } 
+                        else { if (h > MAX_SIZE) { w *= MAX_SIZE / h; h = MAX_SIZE; } }
+                        canvas.width = w; canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        callback(canvas.toDataURL('image/jpeg', 0.7)); // 存為較小的 jpeg
+                    };
+                };
             };
 
-            const getCategoryIcon = (cat) => {
-                const map = { sightseeing: 'fa-solid fa-camera', food: 'fa-solid fa-utensils', shopping: 'fa-solid fa-bag-shopping', transport: 'fa-solid fa-bus' };
-                return map[cat] || 'fa-solid fa-paw';
+            const triggerAvatarUpload = (idx) => document.getElementById('avatar-input-'+idx).click();
+            const handleAvatarUpload = (e, idx) => {
+                if (e.target.files[0]) handleImageResize(e.target.files[0], (base64) => members.value[idx].avatar = base64);
             };
 
-            const handleAddClick = () => {
-                if(currentTab.value === 'itinerary') {
-                    isEditMode.value = false;
-                    tempItinerary.value = { category: 'sightseeing', name: '', startTime: '', address: '', note: '', mapUrl: '' };
-                    showItineraryModal.value = true;
+            const triggerShoppingUpload = (idx) => document.getElementById('shopping-input-'+idx).click();
+            const handleShoppingUpload = (e, idx) => {
+                if (e.target.files[0]) handleImageResize(e.target.files[0], (base64) => shoppingList.value[idx].image = base64);
+            };
+
+            const updateWeekday = (idx) => {
+                const d = new Date(dates.value[idx].fullDate);
+                if (!isNaN(d)) {
+                    dates.value[idx].weekday = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'][d.getDay()];
+                    dates.value[idx].displayDate = `${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getDate().toString().padStart(2,'0')}`;
                 }
             };
 
+            const fetchWeather = async () => {
+                const c = cityCoords[settings.value.city];
+                try {
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current_weather=true`);
+                    const json = await res.json();
+                    weather.value = { temp: Math.round(json.current_weather.temperature), code: json.current_weather.weathercode };
+                } catch (err) {}
+            };
+
+            const openAddItinerary = () => { isEditMode.value = false; tempItem.value = { category: 'sightseeing', name: '', startTime: '', address: '', note: '', mapUrl: '' }; showItineraryModal.value = true; };
+            const editItinerary = (item) => { isEditMode.value = true; tempItem.value = { ...item }; showItineraryModal.value = true; };
             const saveItinerary = () => {
-                if(!tempItinerary.value.name) return;
-                
-                // 初始化該日期的陣列
-                if(!itineraryData.value[selectedDateIndex.value]) {
-                    itineraryData.value[selectedDateIndex.value] = [];
-                }
-
-                if(isEditMode.value) {
-                    const idx = itineraryData.value[selectedDateIndex.value].findIndex(i => i.id === tempItinerary.value.id);
-                    if(idx !== -1) itineraryData.value[selectedDateIndex.value][idx] = { ...tempItinerary.value };
+                if (!itineraryData.value[selectedDateIndex.value]) itineraryData.value[selectedDateIndex.value] = [];
+                if (isEditMode.value) {
+                    const idx = itineraryData.value[selectedDateIndex.value].findIndex(i => i.id === tempItem.value.id);
+                    itineraryData.value[selectedDateIndex.value][idx] = { ...tempItem.value };
                 } else {
-                    const newItem = { ...tempItinerary.value, id: Date.now() };
-                    itineraryData.value[selectedDateIndex.value].push(newItem);
+                    tempItem.value.id = Date.now();
+                    itineraryData.value[selectedDateIndex.value].push({ ...tempItem.value });
                 }
                 showItineraryModal.value = false;
             };
+            const deleteItinerary = () => { itineraryData.value[selectedDateIndex.value] = itineraryData.value[selectedDateIndex.value].filter(i => i.id !== tempItem.value.id); showItineraryModal.value = false; };
 
-            const editItem = (item) => {
-                isEditMode.value = true;
-                tempItinerary.value = { ...item };
-                showItineraryModal.value = true;
-            };
+            const addMember = () => members.value.push({ id: Date.now(), name: '團員', avatar: '' });
+            const addDate = () => dates.value.push({ fullDate: '', weekday: '週?', displayDate: 'MM/DD' });
+            const addShoppingItem = () => shoppingList.value.push({ name: '', image: '' });
+            const removeMember = (idx) => members.value.splice(idx, 1);
+            const removeDate = (idx) => dates.value.splice(idx, 1);
+            const removeShoppingItem = (idx) => shoppingList.value.splice(idx, 1);
 
-            const deleteItinerary = () => {
-                if(confirm('確定要刪除這個計畫嗎？')) {
-                    itineraryData.value[selectedDateIndex.value] = itineraryData.value[selectedDateIndex.value].filter(i => i.id !== tempItinerary.value.id);
-                    showItineraryModal.value = false;
-                }
-            };
-
-            const openMap = (target) => {
-                if(!target) return;
-                // 如果是網址，直接開啟
-                if(target.startsWith('http')) {
-                    window.open(target, '_blank');
-                } else {
-                    // 如果是名稱，進行搜尋
-                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(target)}`, '_blank');
-                }
-            };
-
-            const saveTripTitle = () => {
-                if(tempTripTitle.value.trim()) tripTitle.value = tempTripTitle.value;
-                showTitleModal.value = false;
-            };
-
-            const addMember = () => {
-                if(newMember.value.name.trim()) {
-                    members.value.push({
-                        id: Date.now(),
-                        name: newMember.value.name,
-                        avatar: newMember.value.avatar || 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=100&q=80'
-                    });
-                    newMember.value = { name: '', avatar: '' };
-                    showMemberModal.value = false;
-                }
-            };
-
-            const removeMember = (idx) => {
-                if(confirm('要移除這位成員嗎？')) members.value.splice(idx, 1);
-            };
-
+            const countdownDays = computed(() => Math.ceil((new Date(settings.value.targetDate) - new Date()) / 86400000));
             const currentItinerary = computed(() => itineraryData.value[selectedDateIndex.value] || []);
+            const openMap = (u) => window.open(u.startsWith('http') ? u : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(u)}`, '_blank');
+            const clearStorage = () => { if(confirm('確定清除所有存檔？')) { localStorage.removeItem(storageKey); location.reload(); } };
 
-            onMounted(() => {
-                tempTripTitle.value = tripTitle.value;
-            });
+            onMounted(() => { fetchWeather(); dates.value.forEach((_, i) => updateWeekday(i)); });
 
             return {
-                tripTitle, tempTripTitle, showTitleModal, currentYear, tripCover, saveTripTitle,
-                dates, selectedDateIndex, addDate, removeDate,
-                members, showMemberModal, newMember, addMember, removeMember,
-                itineraryData, currentItinerary, currentTab,
-                showItineraryModal, isEditMode, tempItinerary, saveItinerary, editItem, deleteItinerary,
-                openMap, getCategoryColor, getCategoryIcon, handleAddClick
-            }
+                settings, members, dates, itineraryData, shoppingList, currentTab, selectedDateIndex, showTitleModal, showItineraryModal, tempItem, isEditMode, weather, countdownDays, currentItinerary, defaultAvatar,
+                triggerAvatarUpload, handleAvatarUpload, triggerShoppingUpload, handleShoppingUpload, updateWeekday, fetchWeather, openAddItinerary, editItinerary, saveItinerary, deleteItinerary, addMember, addDate, addShoppingItem, removeMember, removeDate, removeShoppingItem, openMap, clearStorage,
+                getCategoryColor: (c) => ({ sightseeing: 'bg-green-500', food: 'bg-orange-500', shopping: 'bg-pink-500', transport: 'bg-dog-blue-600' }[c] || 'bg-slate-400'),
+                getCategoryIcon: (c) => ({ sightseeing: 'fa-solid fa-camera', food: 'fa-solid fa-utensils', shopping: 'fa-solid fa-bone', transport: 'fa-solid fa-plane' }[c] || 'fa-solid fa-paw'),
+                getWeatherIcon: (c) => (c === 0 ? 'fa-solid fa-sun' : c < 4 ? 'fa-solid fa-cloud-sun' : c < 70 ? 'fa-solid fa-cloud-rain' : 'fa-solid fa-snowflake')
+            };
         }
-    }).mount('#app')
+    }).mount('#app');
 </script>
 </body>
 </html>
