@@ -15,31 +15,42 @@
         [v-cloak] { display: none; }
         body { font-family: 'Noto Sans TC', sans-serif; background-color: #f7f9f4; color: #2d3748; -webkit-tap-highlight-color: transparent; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* 截圖還原樣式 */
         .day-card.active { background: #3ba2e3; color: white; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(59, 162, 227, 0.2); border-color: #3ba2e3; }
+        .weather-card { background: #3ba2e3; border-radius: 40px; color: white; box-shadow: 0 20px 40px rgba(59, 162, 227, 0.15); }
+        .countdown-card { background: #41888a; border-radius: 40px; color: white; }
+        .expense-card { background: #f4d06f; border-radius: 40px; color: #4a4a4a; }
+        .ticket-card { background: white; border-radius: 40px; box-shadow: 0 15px 45px rgba(0,0,0,0.04); }
+        
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 10px 30px 10px; border-top: 1px solid #e2e8f0; z-index: 100; }
         .fab { position: fixed; bottom: 120px; right: 25px; width: 65px; height: 65px; background: #f4d06f; color: #4a4a4a; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; box-shadow: 0 8px 20px rgba(244, 208, 111, 0.3); z-index: 90; }
-        .ticket-card { background: white; border-radius: 40px; box-shadow: 0 15px 40px rgba(0,0,0,0.05); }
+        
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
-        .weather-card { background: #3ba2e3; border-radius: 45px; color: white; box-shadow: 0 20px 40px rgba(59, 162, 227, 0.2); }
-        .expense-card { background: #f4d06f; border-radius: 45px; color: #4a4a4a; box-shadow: 0 20px 40px rgba(244, 208, 111, 0.2); }
+        .input-standard { width: 100%; background-color: #f8fafc; border-radius: 1.25rem; padding: 1rem; outline: none; border: 2px solid transparent; transition: border-color 0.2s; font-weight: 500; }
+        .input-standard:focus { border-color: #3ba2e3; }
     </style>
 </head>
 <body>
 
 <div id="app" v-cloak>
-    <!-- 載入中畫面 -->
-    <div v-if="loading" class="h-screen flex flex-col items-center justify-center text-sky-500 gap-4">
-        <i class="fa-solid fa-dog fa-bounce text-6xl"></i>
-        <p class="font-black">同步雲端行程中...</p>
+    <!-- 雲端連線中 -->
+    <div v-if="loading" class="h-screen flex flex-col items-center justify-center text-[#41888a] gap-5">
+        <i class="fa-solid fa-dog fa-bounce text-7xl"></i>
+        <div class="text-center">
+            <p class="font-black text-xl">正在同步雲端資料...</p>
+            <p class="text-xs opacity-50 mt-1">與另一半即時連線中</p>
+        </div>
     </div>
 
     <div v-else class="max-w-[480px] mx-auto min-h-screen relative pb-40">
-        <!-- 頂部 Header -->
+        
+        <!-- Header: 截圖版型 -->
         <header class="p-6 flex justify-between items-start">
             <div>
-                <h1 class="text-3xl font-black text-[#41888a]">{{ settings.tripTitle }}</h1>
+                <h1 class="text-3xl font-black text-[#41888a] tracking-tight">{{ settings.tripTitle }}</h1>
                 <p class="text-slate-400 text-sm font-bold mt-1 flex items-center gap-1">
-                    <i class="fa-solid fa-plane text-[#41888a]"></i> {{ settings.city }} • {{ dates.length }}日遊
+                    <i class="fa-solid fa-plane text-[#41888a]"></i> {{ currentYear }} {{ settings.city }} • {{ dates.length }}日遊
                 </p>
             </div>
             <div class="flex -space-x-2">
@@ -47,30 +58,31 @@
             </div>
         </header>
 
-        <!-- 主要內容 -->
+        <!-- 主要分頁切換 -->
         <main class="px-6 space-y-8">
-            
-            <!-- 1. 行程分頁 -->
+
+            <!-- 1. 行程分頁 (還原截圖) -->
             <div v-if="currentTab === 'itinerary'" class="space-y-6">
-                <!-- 日期選擇 -->
-                <div class="flex items-center gap-2 text-slate-800 font-black mb-2">
-                    <i class="fa-regular fa-calendar-check text-[#41888a]"></i> 行程日期
+                <div class="flex items-center justify-between px-1">
+                    <h3 class="font-black text-slate-800 flex items-center gap-2"><i class="fa-regular fa-calendar-check text-[#41888a]"></i> 行程日期</h3>
+                    <div class="bg-sky-50 text-sky-500 text-[10px] font-black px-3 py-1 rounded-full">釜山 Busan</div>
                 </div>
+                
                 <div class="flex overflow-x-auto gap-4 py-2 hide-scrollbar">
-                    <div v-for="(d, i) in dates" :key="d.id" @click="selectedDateIndex = i" class="day-card flex-shrink-0 w-[78px] h-[105px] rounded-[24px] bg-white border border-slate-100 flex flex-col items-center justify-center transition-all cursor-pointer" :class="{'active': selectedDateIndex === i}">
+                    <div v-for="(d, i) in dates" :key="d.id" @click="selectedDateIndex = i" class="day-card flex-shrink-0 w-20 h-24 rounded-[28px] bg-white border border-slate-100 flex flex-col items-center justify-center transition-all cursor-pointer" :class="{'active': selectedDateIndex === i}">
                         <span class="text-[10px] font-black opacity-60 uppercase mb-1">Day {{ i+1 }}</span>
                         <span class="text-xl font-black">{{ d.displayDate }}</span>
                         <span class="text-[11px] font-bold">{{ d.weekday }}</span>
                     </div>
                 </div>
 
-                <!-- 天氣卡片 (截圖版型) -->
+                <!-- 天氣卡片 (截圖藍色版) -->
                 <div class="weather-card p-8 relative overflow-hidden">
                     <i class="fa-solid fa-sun absolute -top-8 -right-8 opacity-10 text-[180px]"></i>
                     <div class="flex justify-between items-start relative z-10">
                         <div>
                             <p class="text-[11px] font-black uppercase opacity-80 mb-1 tracking-widest"><i class="fa-solid fa-location-dot"></i> {{ settings.city }} CITY</p>
-                            <h2 class="text-4xl font-black">{{ weather.code < 3 ? '晴朗無雲' : '多雲' }} <i class="fa-solid fa-sun ml-1 text-yellow-300"></i></h2>
+                            <h2 class="text-4xl font-black">{{ weather.code < 3 ? '晴朗無雲' : '多雲時晴' }} <i class="fa-solid fa-sun ml-1 text-yellow-300"></i></h2>
                         </div>
                         <div class="text-right">
                             <p class="text-6xl font-black tracking-tighter">{{ weather.temp }}°</p>
@@ -84,8 +96,8 @@
                             <p class="text-sm font-black">{{ w.v }}</p>
                         </div>
                     </div>
-                    <div class="bg-white rounded-3xl p-5 flex items-center gap-4 text-slate-600 shadow-inner relative z-10">
-                        <div class="w-11 h-11 rounded-full bg-yellow-400 flex items-center justify-center text-white shadow-sm shrink-0"><i class="fa-solid fa-shirt"></i></div>
+                    <div class="bg-white rounded-[30px] p-5 flex items-center gap-4 text-slate-600 shadow-inner relative z-10">
+                        <div class="w-11 h-11 rounded-full bg-yellow-400 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-shirt"></i></div>
                         <div>
                             <p class="text-[9px] font-black opacity-40 uppercase tracking-widest">OUTFIT ADVICE 穿搭建議</p>
                             <p class="text-xs font-bold leading-relaxed">{{ weather.advice }}</p>
@@ -93,87 +105,88 @@
                     </div>
                 </div>
 
-                <!-- 倒數進度條 -->
-                <div class="bg-[#d2f3eb] rounded-[38px] p-7 border border-[#41888a]/10 flex flex-col gap-5">
+                <!-- 倒數進度 (截圖綠色版) -->
+                <div class="countdown-card p-8 flex flex-col gap-5">
                     <div class="flex justify-between items-end">
-                        <div class="bg-[#41888a] text-white px-5 py-2.5 rounded-2xl text-[11px] font-black flex items-center gap-2 shadow-lg"><i class="fa-solid fa-plane"></i> 距離出發</div>
-                        <div class="text-[#41888a] font-black"><span class="text-5xl tracking-tighter">{{ countdown }}</span> <span class="text-lg">天 1時</span></div>
+                        <div class="bg-white/20 text-white px-5 py-2.5 rounded-2xl text-[11px] font-black flex items-center gap-2"><i class="fa-solid fa-plane"></i> 距離出發</div>
+                        <div class="text-white font-black"><span class="text-6xl tracking-tighter">{{ countdown }}</span> <span class="text-lg">天 1時</span></div>
                     </div>
-                    <div class="h-3.5 bg-white/50 rounded-full overflow-hidden shadow-inner">
-                        <div class="h-full bg-[#41888a] transition-all duration-1000" :style="{width: (Math.max(5, (30-countdown)/30*100)) + '%'}"></div>
+                    <div class="h-4 bg-black/10 rounded-full overflow-hidden shadow-inner">
+                        <div class="h-full bg-white transition-all duration-1000" :style="{width: (Math.max(5, (30-countdown)/30*100)) + '%'}"></div>
                     </div>
                 </div>
 
-                <!-- 行程列表 -->
-                <div class="space-y-4">
-                    <h3 class="font-black text-slate-800 text-xl flex items-center gap-3 px-2 mt-8">當日行程</h3>
-                    <div v-for="item in currentItinerary" :key="item.id" class="bg-white rounded-[35px] p-7 shadow-sm border border-slate-100 flex items-start gap-5">
+                <!-- 當日行程 -->
+                <div class="space-y-4 pt-4">
+                    <h3 class="font-black text-slate-800 text-xl flex items-center gap-3 px-2">當日行程</h3>
+                    <div v-for="item in currentDayItinerary" :key="item.id" class="bg-white rounded-[35px] p-7 shadow-sm border border-slate-100 flex items-start gap-5">
                         <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0" :class="getCategoryColor(item.category)"><i class="fa-solid" :class="getCategoryIcon(item.category)"></i></div>
                         <div class="flex-1">
                             <div class="flex justify-between items-start">
-                                <h4 class="font-black text-xl text-slate-800 tracking-tight">{{ item.name }}</h4>
+                                <h4 class="font-black text-xl text-slate-800">{{ item.name }}</h4>
                                 <span class="text-[11px] font-black text-slate-300">{{ item.startTime }}</span>
                             </div>
                             <p class="text-xs text-slate-400 font-bold mt-2"><i class="fa-solid fa-location-dot text-sky-400"></i> {{ item.address }}</p>
-                            <div v-if="item.mapUrl" class="mt-3"><a :href="item.mapUrl" target="_blank" class="inline-flex items-center gap-2 text-[11px] font-black text-sky-500 bg-sky-50 px-4 py-2 rounded-xl active:scale-95"><i class="fa-solid fa-navigation"></i> Google 地圖連結</a></div>
+                            <div v-if="item.mapUrl" class="mt-3"><a :href="item.mapUrl" target="_blank" class="inline-flex items-center gap-2 text-[11px] font-black text-sky-500 bg-sky-50 px-4 py-2 rounded-xl"><i class="fa-solid fa-navigation"></i> Google 地圖連結</a></div>
                         </div>
-                        <button @click="deleteItem('itinerary', item.id)" class="text-slate-200 mt-1"><i class="fa-solid fa-trash-can"></i></button>
+                        <button @click="deleteItem('itinerary', item.id)" class="text-slate-200"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
+                    <div v-if="currentDayItinerary.length === 0" class="text-center py-20 opacity-20"><i class="fa-solid fa-dog text-6xl"></i></div>
                 </div>
             </div>
 
-            <!-- 2. 預定分頁 -->
+            <!-- 2. 預定分頁 (截圖版型) -->
             <div v-if="currentTab === 'booking'" class="space-y-6">
                 <div class="flex bg-white rounded-full p-2 border border-slate-100 shadow-sm overflow-hidden">
-                    <button v-for="t in [{id:'flight',l:'機票',i:'fa-plane'},{id:'hotel',l:'住宿',i:'fa-hotel'},{id:'car',l:'租車',i:'fa-car'},{id:'pass',l:'憑證',i:'fa-id-card'}]" @click="bookingSubTab = t.id" class="flex-1 py-3 rounded-full text-xs font-black flex items-center justify-center gap-2 transition-all" :class="bookingSubTab === t.id ? 'bg-[#98c09b] text-white shadow-md' : 'text-slate-400'">
+                    <button v-for="t in [{id:'flight',l:'機票',i:'fa-plane'},{id:'hotel',l:'住宿',i:'fa-hotel'},{id:'car',l:'租車',i:'fa-car'}]" @click="bookingSubTab = t.id" class="flex-1 py-3 rounded-full text-xs font-black flex items-center justify-center gap-2 transition-all" :class="bookingSubTab === t.id ? 'bg-[#98c09b] text-white shadow-md' : 'text-slate-400'">
                         <i class="fa-solid" :class="t.i"></i> {{ t.l }}
                     </button>
                 </div>
 
-                <!-- 航班卡片 (截圖版型) -->
+                <!-- 航班票卡 -->
                 <div v-if="bookingSubTab === 'flight'" class="space-y-6">
-                    <div v-for="(f, i) in bookings.flights" class="bg-white rounded-[45px] shadow-xl border border-slate-50 overflow-hidden relative">
-                        <div class="p-6 flex justify-between items-center text-[11px] font-black text-slate-300 uppercase tracking-widest px-10">
-                            <span>釜山航空</span> <span class="bg-slate-50 text-slate-300 px-3 py-1 rounded-lg">同一張訂單</span>
+                    <div v-for="(f, i) in bookings.flights" class="ticket-card overflow-hidden">
+                        <div class="p-6 flex justify-between items-center text-[11px] font-black text-slate-300 uppercase px-10">
+                            <span>釜山航空</span> <span class="bg-slate-50 px-3 py-1 rounded-lg">同一張訂單</span>
                         </div>
                         <div class="px-10 pb-10 space-y-8">
-                            <div class="bg-slate-50 rounded-[28px] py-6 text-center border-2 border-slate-100/50">
+                            <div class="bg-slate-50 rounded-[30px] py-7 text-center border-2 border-slate-100">
                                 <h2 class="text-6xl font-black text-slate-800 tracking-tighter">{{ f.flightNo }}</h2>
                             </div>
                             <div class="flex justify-between items-center">
                                 <div class="text-center"><p class="text-3xl font-black text-slate-800 uppercase">{{ f.from }}</p><p class="text-xl font-bold text-slate-800">{{ f.depTime }}</p><span class="bg-green-100 text-green-600 text-[9px] font-black px-3 py-1 rounded-full mt-2 inline-block">高雄</span></div>
-                                <div class="flex-1 px-5 relative flex flex-col items-center"><span class="text-[9px] font-bold text-slate-300 mb-2">02h25m</span><div class="w-full h-px border-t-2 border-dashed border-slate-200 relative"><i class="fa-solid fa-plane absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sky-400 rotate-90 text-2xl"></i></div><span class="text-[9px] font-bold text-slate-300 mt-2">{{ f.date }}</span></div>
+                                <div class="flex-1 px-5 flex flex-col items-center"><span class="text-[9px] font-bold text-slate-300 mb-2">02h25m</span><div class="w-full h-px border-t-2 border-dashed border-slate-200 relative"><i class="fa-solid fa-plane absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sky-400 rotate-90 text-2xl"></i></div><span class="text-[9px] font-bold text-slate-300 mt-2">{{ f.date }}</span></div>
                                 <div class="text-center"><p class="text-3xl font-black text-slate-800 uppercase">{{ f.to }}</p><p class="text-xl font-bold text-slate-800">{{ f.arrTime }}</p><span class="bg-orange-100 text-orange-600 text-[9px] font-black px-3 py-1 rounded-full mt-2 inline-block">釜山</span></div>
                             </div>
                             <div class="grid grid-cols-2 gap-4 border-t-2 border-slate-50 pt-8">
-                                <div class="text-center border-r-2 border-slate-50"><p class="text-[10px] font-black text-slate-300 uppercase mb-1 tracking-widest">BAGGAGE</p><p class="font-black text-slate-700 flex items-center justify-center gap-2"><i class="fa-solid fa-suitcase text-teal-400"></i> {{ f.baggage }}</p></div>
-                                <div class="text-center"><p class="text-[10px] font-black text-slate-300 uppercase mb-1 tracking-widest">AIRCRAFT</p><p class="font-black text-slate-700 flex items-center justify-center gap-2"><i class="fa-solid fa-plane-up text-orange-400"></i> {{ f.aircraft }}</p></div>
+                                <div class="text-center border-r-2 border-slate-50"><p class="text-[10px] font-black text-slate-300 uppercase mb-1">BAGGAGE</p><p class="font-black text-slate-700 flex items-center justify-center gap-2"><i class="fa-solid fa-suitcase text-teal-400"></i> {{ f.baggage }}</p></div>
+                                <div class="text-center"><p class="text-[10px] font-black text-slate-300 uppercase mb-1">AIRCRAFT</p><p class="font-black text-slate-700 flex items-center justify-center gap-2"><i class="fa-solid fa-plane-up text-orange-400"></i> {{ f.aircraft }}</p></div>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-slate-50/50 p-4 rounded-3xl"><p class="text-[9px] font-bold text-slate-300 uppercase mb-1">Price & Type</p><p class="text-sm font-black text-slate-700">NT${{ f.price }}</p><span class="text-[9px] font-bold text-slate-300">同一張訂單</span></div>
-                                <div class="bg-slate-50/50 p-4 rounded-3xl"><p class="text-[9px] font-bold text-slate-300 uppercase mb-1">Purchased</p><p class="text-sm font-black text-slate-700">{{ f.buyDate }}</p><span class="text-[9px] font-bold text-slate-300">via 官網</span></div>
+                                <div class="bg-slate-50 p-4 rounded-3xl"><p class="text-[9px] font-bold text-slate-300 mb-1">NT${{ f.price }}</p><span class="text-[9px] font-bold text-slate-300">同一張訂單</span></div>
+                                <div class="bg-slate-50 p-4 rounded-3xl"><p class="text-[9px] font-bold text-slate-300 mb-1">Purchased {{ f.buyDate }}</p><span class="text-[9px] font-bold text-slate-300">via 官網</span></div>
                             </div>
-                            <button @click="bookings.flights.splice(i,1); cloudSave('bookings', bookings, 'main')" class="w-full py-4 bg-slate-50 rounded-2xl font-black text-slate-400 text-sm"><i class="fa-solid fa-pen-to-square mr-2"></i> 編輯航班資訊</button>
+                            <button @click="bookings.flights.splice(i,1); cloudSave('bookings', bookings, 'main')" class="w-full py-4 text-red-300 font-bold text-xs uppercase tracking-widest">移除航班紀錄</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. 記帳分頁 (截圖版型) -->
+            <!-- 3. 記帳分頁 (還原黃色版) -->
             <div v-if="currentTab === 'expenses'" class="space-y-7 animate-in fade-in">
-                <div class="flex bg-white rounded-full p-2 border border-slate-100 shadow-sm overflow-hidden mb-8">
-                    <button class="flex-1 py-3 rounded-full text-xs font-black flex items-center justify-center gap-2 text-slate-400"><i class="fa-solid fa-pen"></i> 記帳</button>
+                <div class="flex bg-white rounded-full p-2 border border-slate-100 shadow-sm overflow-hidden">
+                    <button @click="openModal" class="flex-1 py-3 rounded-full text-xs font-black flex items-center justify-center gap-2 text-slate-400"><i class="fa-solid fa-pen"></i> 記帳</button>
                     <button class="flex-1 py-3 rounded-full text-xs font-black flex items-center justify-center gap-2 bg-[#98c09b] text-white shadow-md"><i class="fa-solid fa-list"></i> 明細</button>
                 </div>
                 
-                <div class="expense-card p-10 text-slate-800 shadow-xl relative overflow-hidden">
+                <div class="expense-card p-10 relative overflow-hidden">
                     <i class="fa-solid fa-wallet absolute -top-8 -right-8 opacity-10 text-[180px] rotate-12"></i>
                     <p class="text-xs font-black opacity-60 uppercase tracking-widest">總支出 (TWD)</p>
                     <h2 class="text-7xl font-black tracking-tighter my-6">NT$ {{ totalExp }}</h2>
                     <div class="flex gap-4 relative z-10">
                         <div class="bg-white/30 backdrop-blur-md rounded-[28px] p-5 flex-1 shadow-inner">
                             <p class="text-[10px] font-black opacity-60 uppercase mb-1">韓元支出</p>
-                            <p class="text-xl font-black tracking-tight">₩ {{ (totalExp * 41.6).toLocaleString() }}</p>
+                            <p class="text-xl font-black tracking-tight">₩ {{ (totalExp * 41).toLocaleString() }}</p>
                         </div>
                         <div class="bg-white/30 backdrop-blur-md rounded-[28px] p-5 flex-1 shadow-inner">
                             <p class="text-[10px] font-black opacity-60 uppercase mb-1">匯率 (預設)</p>
@@ -184,8 +197,8 @@
 
                 <div class="space-y-6">
                     <h3 class="font-black text-xl text-slate-800 px-2 mt-8">帳務明細</h3>
-                    <div class="flex gap-3 overflow-x-auto hide-scrollbar py-1">
-                        <button class="bg-[#98c09b] text-white px-5 py-2.5 rounded-2xl text-xs font-black shadow-md">全體</button>
+                    <div class="flex gap-3 overflow-x-auto hide-scrollbar">
+                        <button class="bg-[#98c09b] text-white px-5 py-2.5 rounded-2xl text-xs font-black">全體</button>
                         <button v-for="m in members" class="bg-white text-slate-400 px-5 py-2.5 rounded-2xl text-xs font-black border border-slate-100">{{ m.name }}</button>
                     </div>
                     <div v-for="ex in expenses" :key="ex.id" class="bg-white rounded-[35px] p-6 shadow-sm border border-slate-100 flex items-center gap-5">
@@ -193,34 +206,34 @@
                             <img :src="getMemberAvatar(ex.payer)" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1">
-                            <h4 class="font-black text-xl text-slate-800 leading-tight">{{ ex.name }}</h4>
+                            <h4 class="font-black text-xl text-slate-800">{{ ex.name }}</h4>
                             <div class="flex items-center gap-2 mt-2">
                                 <span class="bg-slate-50 text-slate-400 text-[10px] font-black px-3 py-1 rounded-full uppercase">{{ ex.payer }}</span>
                                 <span class="bg-slate-50 text-slate-400 text-[10px] font-black px-3 py-1 rounded-full uppercase">現金</span>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-2xl font-black text-slate-800">₩ {{ Number(ex.amount * 41.6).toLocaleString() }}</p>
+                            <p class="text-2xl font-black text-slate-800">₩ {{ (ex.amount * 41).toLocaleString() }}</p>
                             <p class="text-[10px] font-bold text-slate-300">≈ NT$ {{ ex.amount }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. 成員設定分頁 -->
-            <div v-if="currentTab === 'info'" class="space-y-8 pb-10">
+            <!-- 4. 設定分頁 -->
+            <div v-if="currentTab === 'info'" class="space-y-8 pb-10 animate-in fade-in">
                 <section class="bg-white rounded-[40px] p-8 border border-slate-100 space-y-6">
-                    <h3 class="font-black text-xl flex items-center gap-3"><i class="fa-solid fa-gear text-sky-500"></i> 行程核心設定</h3>
+                    <h3 class="font-black text-xl flex items-center gap-3 text-slate-800">核心設定</h3>
                     <div class="space-y-5">
-                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-2 uppercase">行程標題</label><input v-model="settings.tripTitle" @blur="cloudSave('settings', settings, 'global')" class="input-standard font-bold text-lg"></div>
-                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-2 uppercase">目的地 (抓取天氣用)</label><input v-model="settings.city" @blur="cloudSave('settings', settings, 'global')" class="input-standard font-bold text-sky-600"></div>
-                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-2 uppercase">出發日期</label><input type="date" v-model="settings.targetDate" @change="cloudSave('settings', settings, 'global')" class="input-standard font-bold"></div>
+                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-2">旅遊標題</label><input v-model="settings.tripTitle" @blur="cloudSave('settings', settings, 'global')" class="input-standard font-bold text-lg"></div>
+                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-2">城市 (抓取天氣)</label><input v-model="settings.city" @blur="cloudSave('settings', settings, 'global')" class="input-standard font-bold text-sky-600"></div>
+                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-2">出發日期</label><input type="date" v-model="settings.targetDate" @change="cloudSave('settings', settings, 'global')" class="input-standard font-bold"></div>
                     </div>
                 </section>
 
                 <section class="bg-white rounded-[40px] p-8 border border-slate-100">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-black text-xl">行程日期維護</h3>
+                        <h3 class="font-black text-xl text-slate-800">行程日期維護</h3>
                         <button @click="addDate" class="text-xs font-black bg-sky-50 text-sky-500 px-4 py-2 rounded-full">+ 新增</button>
                     </div>
                     <div class="space-y-4">
@@ -233,7 +246,7 @@
                 </section>
 
                 <section class="bg-white rounded-[40px] p-8 border border-slate-100">
-                    <h3 class="font-black text-xl mb-6">成員管理</h3>
+                    <h3 class="font-black text-xl mb-6 text-slate-800">團員與頭像</h3>
                     <div class="space-y-5">
                         <div v-for="m in members" :key="m.id" class="flex items-center gap-5 bg-slate-50 p-5 rounded-[32px] group">
                             <div class="relative w-16 h-16 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-white shadow-md" @click="triggerAvatar(m.id)">
@@ -241,16 +254,16 @@
                                 <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity"><i class="fa-solid fa-camera"></i></div>
                                 <input type="file" :id="'file-'+m.id" hidden @change="e => uploadAvatar(e, m.id)" accept="image/*">
                             </div>
-                            <input v-model="m.name" @blur="saveMember(m)" class="flex-1 bg-transparent border-none font-black text-lg outline-none">
+                            <input v-model="m.name" @blur="saveMember(m)" class="flex-1 bg-transparent border-none font-black text-lg outline-none text-slate-800">
                             <button @click="deleteItem('members', m.id)" class="text-red-200"><i class="fa-solid fa-xmark text-2xl"></i></button>
                         </div>
-                        <button @click="addMember" class="w-full py-5 border-2 border-dashed border-slate-200 rounded-[35px] text-slate-400 font-bold hover:bg-slate-100 transition-all">+ 新增成員</button>
+                        <button @click="addMember" class="w-full py-5 border-2 border-dashed border-slate-200 rounded-[35px] text-slate-400 font-bold">+ 新增成員</button>
                     </div>
                 </section>
             </div>
         </main>
 
-        <!-- 懸浮新增按鈕 FAB -->
+        <!-- 懸浮新增按鈕 -->
         <button v-if="['itinerary','expenses'].includes(currentTab)" @click="openModal" class="fab">
             <i class="fa-solid fa-plus mr-1"></i> 新增
         </button>
@@ -263,10 +276,10 @@
             </button>
         </nav>
 
-        <!-- 彈窗區 -->
+        <!-- 彈窗: 行程 -->
         <div v-if="modals.itinerary" class="modal-overlay" @click.self="modals.itinerary = false">
             <div class="bg-white rounded-[45px] w-full max-w-md p-10 shadow-2xl space-y-6">
-                <h3 class="text-2xl font-black text-slate-800">新增計畫計畫</h3>
+                <h3 class="text-2xl font-black text-slate-800">新增行程計畫</h3>
                 <div class="flex gap-4">
                     <select v-model="tempItem.category" class="w-1/3 bg-slate-50 rounded-2xl p-4 font-bold outline-none">
                         <option value="sightseeing">景點</option><option value="food">美食</option><option value="transport">交通</option>
@@ -275,15 +288,15 @@
                 </div>
                 <input placeholder="標題" v-model="tempItem.name" class="w-full bg-slate-50 rounded-2xl p-4 font-black">
                 <input placeholder="地點" v-model="tempItem.address" class="w-full bg-slate-50 rounded-2xl p-4">
-                <input placeholder="Google 地圖連結" v-model="tempItem.mapUrl" class="w-full bg-sky-50 rounded-2xl p-4 text-xs font-bold text-sky-500">
-                <textarea placeholder="備註..." v-model="tempItem.note" class="w-full bg-slate-50 rounded-2xl p-4 h-24"></textarea>
+                <input placeholder="Google Map 連結" v-model="tempItem.mapUrl" class="w-full bg-sky-50 rounded-2xl p-4 text-xs font-bold text-sky-500">
                 <div class="flex gap-4 pt-4">
                     <button @click="modals.itinerary = false" class="flex-1 py-4 bg-slate-100 rounded-2xl font-bold">取消</button>
-                    <button @click="confirmAddItinerary" class="flex-1 py-4 bg-sky-500 text-white rounded-2xl font-black">儲存</button>
+                    <button @click="confirmAddItinerary" class="flex-1 py-4 bg-sky-500 text-white rounded-2xl font-black">儲存計畫</button>
                 </div>
             </div>
         </div>
 
+        <!-- 彈窗: 記帳 -->
         <div v-if="modals.expense" class="modal-overlay" @click.self="modals.expense = false">
             <div class="bg-white rounded-[45px] w-full max-w-md p-10 shadow-2xl space-y-6">
                 <h3 class="text-2xl font-black text-slate-800">記一筆支出</h3>
@@ -293,13 +306,13 @@
                     </select>
                     <input type="number" placeholder="金額" v-model="tempItem.amount" class="w-2/3 bg-slate-50 rounded-2xl p-4 font-black text-2xl">
                 </div>
-                <input placeholder="標題" v-model="tempItem.name" class="w-full bg-slate-50 rounded-2xl p-4 font-black">
+                <input placeholder="名稱 (如：飲料)" v-model="tempItem.name" class="w-full bg-slate-50 rounded-2xl p-4 font-black">
                 <select v-model="tempItem.payer" class="w-full bg-slate-50 rounded-2xl p-4 font-bold text-slate-500">
                     <option v-for="m in members" :key="m.id" :value="m.name">{{ m.name }} 支付</option>
                 </select>
                 <div class="flex gap-4 pt-4">
                     <button @click="modals.expense = false" class="flex-1 py-4 bg-slate-100 rounded-2xl font-bold">取消</button>
-                    <button @click="confirmAddExpense" class="flex-1 py-4 bg-[#98c09b] text-white rounded-2xl font-black">確認存入</button>
+                    <button @click="confirmAddExpense" class="flex-1 py-4 bg-[#98c09b] text-white rounded-2xl font-black">存入明細</button>
                 </div>
             </div>
         </div>
@@ -307,7 +320,7 @@
     </div>
 </div>
 
-<!-- Firebase 雲端引擎 (模組化導入) -->
+<!-- Firebase 雲端模組 -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -317,7 +330,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'dog-trip-stable-v12';
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'dog-trip-master-v15';
 
     const { createApp, ref, computed, onMounted } = Vue;
 
@@ -327,7 +340,6 @@
             const currentTab = ref('itinerary');
             const bookingSubTab = ref('flight');
             const selectedDateIndex = ref(0);
-            
             const settings = ref({ tripTitle: '北國猛男哈米達', targetDate: '2026-03-10', city: '釜山' });
             const members = ref([]);
             const dates = ref([]);
@@ -338,7 +350,7 @@
             const expenses = ref([]);
             const weather = ref({ code: 0, temp: 13, range: '5°/13°', rain: '0%', wind: '2級', sunrise: '06:45', advice: '抵達首日天氣晴朗，早晚溫差大，建議洋蔥式穿搭。' });
             const modals = ref({ itinerary: false, expense: false });
-            const tempItem = ref({});
+            const tempItem = ref({ category: 'food', name: '', amount: '', payer: '' });
 
             onMounted(async () => {
                 const initAuth = async () => {
@@ -366,7 +378,7 @@
             };
 
             const updateWeather = async () => {
-                const map = { '釜山': { lat: 35.17, lon: 129.07 }, '台北': { lat: 25.03, lon: 121.56 }, '澎湖': { lat: 23.57, lon: 119.57 } };
+                const map = { '釜山': { lat: 35.17, lon: 129.07 }, '首爾': { lat: 37.56, lon: 126.97 }, '澎湖': { lat: 23.57, lon: 119.57 } };
                 const c = map[settings.value.city]; if(!c) return;
                 try {
                     const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,sunrise,precipitation_probability_max&timezone=auto`);
@@ -403,10 +415,15 @@
                 };
             };
             const deleteItem = (col, id) => confirm('確定刪除？') && deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
+            
             const openModal = () => {
-                tempItem.value = { category: 'sightseeing', name: '', startTime: '', address: '', note: '', mapUrl: '', amount: 0, payer: members.value[0]?.name || '主揪' };
-                modals.value[currentTab.value === 'itinerary' ? 'itinerary' : 'expense'] = true;
+                tempItem.value = { category: 'food', name: '', amount: '', payer: members.value[0]?.name || '主揪', startTime: '', address: '', mapUrl: '', note: '' };
+                modals.value.itinerary = false;
+                modals.value.expense = false;
+                if(currentTab.value === 'itinerary') modals.value.itinerary = true;
+                if(currentTab.value === 'expenses') modals.value.expense = true;
             };
+
             const confirmAddItinerary = () => {
                 addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'itinerary'), { ...tempItem.value, dateIndex: selectedDateIndex.value });
                 modals.value.itinerary = false;
