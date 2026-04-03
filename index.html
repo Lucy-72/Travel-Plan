@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>狗狗旅遊管家 - 全功能編輯版</title>
+    <title>狗狗旅遊管家 - 雲端即時同步版</title>
     
     <!-- 載入外部資源 -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -38,16 +38,17 @@
         .input-std:focus { border-color: #3ba2e3; }
         
         .check-item.done { opacity: 0.5; background: #f1f5f9; }
-        [v-cloak] { display: none; }
+        [v-cloak] { display: none !important; }
     </style>
 </head>
 <body class="dot-bg">
 
 <div id="app" v-cloak>
-    <!-- 1. 載入與錯誤防護 -->
+    <!-- 1. 載入動畫 -->
     <div v-if="loading" class="h-screen flex flex-col items-center justify-center text-[#41888a] gap-5">
         <i class="fa-solid fa-dog fa-bounce text-7xl"></i>
-        <p class="font-black text-xl tracking-widest">連線中...</p>
+        <p class="font-black text-xl tracking-widest">正在連線雲端資料庫...</p>
+        <p class="text-[10px] text-slate-400 uppercase">Cloud Syncing with Partner</p>
     </div>
 
     <!-- 2. 主程式內容 -->
@@ -129,7 +130,7 @@
                     </div>
                 </div>
 
-                <!-- 航班機票 (可編輯) -->
+                <!-- 航班機票 -->
                 <div class="space-y-5">
                     <div class="flex justify-between items-center px-2">
                         <h3 class="font-black text-xl text-slate-800 flex items-center gap-2"><i class="fa-solid fa-ticket text-[#41888a]"></i> 交通票券</h3>
@@ -137,8 +138,8 @@
                     </div>
                     <div v-for="(f, i) in bookings.flights" :key="i" class="ticket-card overflow-hidden">
                         <div class="p-6 flex justify-between items-center text-[10px] font-black text-slate-300 px-10 border-b border-dashed border-slate-100">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-plane-departure text-sky-400"></i> {{ f.airline || '自定義航空' }}</span>
-                            <button @click="editFlight(i)" class="bg-slate-50 text-sky-500 px-3 py-1 rounded-lg">編輯資訊</button>
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-plane-departure text-sky-400"></i> {{ f.airline || '航班資訊' }}</span>
+                            <button @click="editFlight(i)" class="bg-slate-50 text-sky-500 px-3 py-1 rounded-lg">編輯</button>
                         </div>
                         <div class="p-10 space-y-8">
                             <div class="bg-slate-50 rounded-[35px] py-8 text-center border-2 border-slate-100 shadow-inner">
@@ -155,7 +156,7 @@
                                 <div class="text-center"><p class="text-3xl font-black text-slate-800 leading-none uppercase">{{ f.to }}</p><p class="text-xl font-bold text-slate-800 mt-2 tracking-tighter">{{ f.arrTime }}</p></div>
                             </div>
                         </div>
-                        <button @click="deleteItem('flight', i)" class="absolute top-2 right-2 text-red-100 p-2"><i class="fa-solid fa-circle-xmark"></i></button>
+                        <button @click="deleteFlight(i)" class="absolute top-2 right-2 text-red-100 p-2"><i class="fa-solid fa-circle-xmark"></i></button>
                     </div>
                 </div>
 
@@ -170,9 +171,9 @@
                             <div class="w-7 h-7 rounded-xl border-2 flex items-center justify-center shrink-0" :class="item.done ? 'bg-sky-500 border-sky-500 text-white' : 'border-slate-200'">
                                 <i v-if="item.done" class="fa-solid fa-check text-xs"></i>
                             </div>
-                            <input v-if="!item.done" v-model="item.name" @blur="saveAppData" @click.stop class="flex-1 bg-transparent border-none font-bold text-slate-700 outline-none">
+                            <input v-if="!item.done" v-model="item.name" @blur="saveChecklist" @click.stop class="flex-1 bg-transparent border-none font-bold text-slate-700 outline-none">
                             <span v-else class="flex-1 font-bold text-slate-400 line-through tracking-tight">{{ item.name }}</span>
-                            <button @click.stop="checklist.splice(idx,1); saveAppData()" class="text-red-100"><i class="fa-solid fa-xmark"></i></button>
+                            <button @click.stop="deleteChecklistItem(idx)" class="text-red-100"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                     </div>
                 </div>
@@ -219,9 +220,9 @@
                 <section class="bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm space-y-6">
                     <h3 class="font-black text-xl text-slate-800">基本行程設定</h3>
                     <div class="space-y-4">
-                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-1 uppercase tracking-widest">行程標題</label><input v-model="settings.tripTitle" @blur="saveAppData" class="input-std text-lg text-[#41888a]"></div>
-                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-1 uppercase tracking-widest">城市 (氣象連動)</label><input v-model="settings.city" @blur="saveAppData" class="input-std text-sky-600"></div>
-                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-1 uppercase tracking-widest">出發日期</label><input type="date" v-model="settings.targetDate" @change="saveAppData" class="input-std"></div>
+                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-1 uppercase tracking-widest">行程標題</label><input v-model="settings.tripTitle" @blur="saveSettings" class="input-std text-lg text-[#41888a]"></div>
+                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-1 uppercase tracking-widest">城市 (氣象連動)</label><input v-model="settings.city" @blur="saveSettings" class="input-std text-sky-600"></div>
+                        <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-1 uppercase tracking-widest">出發日期</label><input type="date" v-model="settings.targetDate" @change="saveSettings" class="input-std"></div>
                     </div>
                 </section>
 
@@ -258,7 +259,7 @@
             </div>
         </main>
 
-        <!-- 快速新增按鈕 -->
+        <!-- 懸浮按鈕 -->
         <button v-if="['itinerary','expenses'].includes(currentTab)" @click="openModal(currentTab === 'itinerary' ? 'itinerary' : 'expense')" class="fab">
             <i class="fa-solid fa-plus mr-1"></i> 新增
         </button>
@@ -281,7 +282,7 @@
                 </div>
                 <input placeholder="地點或計畫名稱" v-model="tempItem.name" class="w-full bg-slate-50 rounded-2xl p-4 font-black outline-none text-lg">
                 <input placeholder="具體地址" v-model="tempItem.address" class="w-full bg-slate-50 rounded-2xl p-4 font-medium outline-none">
-                <input placeholder="貼上 Google Map 分享連結" v-model="tempItem.mapUrl" class="w-full bg-sky-50 rounded-2xl p-4 text-xs font-bold text-sky-600 outline-none">
+                <input placeholder="Google Map 分享連結" v-model="tempItem.mapUrl" class="w-full bg-sky-50 rounded-2xl p-4 text-xs font-bold text-sky-600 outline-none">
                 <div class="flex gap-4 pt-4">
                     <button @click="closeModals" class="flex-1 py-4 bg-slate-100 rounded-2xl font-bold">取消</button>
                     <button @click="confirmAddItinerary" class="flex-1 py-4 bg-[#3ba2e3] text-white rounded-2xl font-black shadow-lg">儲存行程</button>
@@ -297,7 +298,7 @@
                     <select v-model="tempItem.category" class="w-1/3 bg-slate-50 rounded-2xl p-4 font-bold border-none outline-none"><option value="food">餐飲</option><option value="shopping">購物</option><option value="other">其他</option></select>
                     <input type="number" placeholder="金額 (TWD)" v-model="tempItem.amount" class="w-2/3 bg-slate-50 rounded-2xl p-4 font-black text-3xl outline-none">
                 </div>
-                <input placeholder="消費內容 (如:宵夜)" v-model="tempItem.name" class="w-full bg-slate-50 rounded-2xl p-4 font-black outline-none text-lg">
+                <input placeholder="消費內容" v-model="tempItem.name" class="w-full bg-slate-50 rounded-2xl p-4 font-black outline-none text-lg">
                 <select v-model="tempItem.payer" class="w-full bg-slate-50 rounded-2xl p-4 font-bold text-slate-500 border-none outline-none">
                     <option v-for="m in members" :key="m.id" :value="m.name">{{ m.name }} 支付</option>
                 </select>
@@ -308,7 +309,7 @@
             </div>
         </div>
 
-        <!-- 彈窗: 編輯航班 (NEW) -->
+        <!-- 彈窗: 編輯航班 -->
         <div v-if="modals.flight" class="modal-overlay" @click.self="closeModals">
             <div class="bg-white rounded-[50px] w-full max-w-md p-10 shadow-2xl space-y-5">
                 <h3 class="text-2xl font-black text-[#41888a]">編輯航班資訊</h3>
@@ -334,8 +335,8 @@
 <!-- Firebase 雲端引擎 -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, collection, onSnapshot, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, collection, onSnapshot, addDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const { createApp, ref, computed, onMounted } = Vue;
 
@@ -347,103 +348,102 @@
             const selectedDateIndex = ref(0);
             
             // 資料初始狀態
-            const settings = ref({ tripTitle: '北國猛男哈米達', targetDate: '2026-03-10', city: '釜山' });
+            const settings = ref({ tripTitle: '北國猛男釜山行', targetDate: '2026-03-10', city: '釜山' });
             const members = ref([{id:'m1', name:'哈米', avatar:''}]);
             const dates = ref([{id:'d1', fullDate:'2026-03-10', weekday:'二', displayDate:'03/10'}]);
             const itinerary = ref([]);
             const bookings = ref({ flights: [{ airline: '釜山航空', flightNo:'BX 796', from:'KHH', to:'PUS', depTime:'15:00', arrTime:'18:25', date:'2026/03/10' }] });
             const expenses = ref([]);
-            const checklist = ref([{name:'護照', done:false}, {name:'網路卡', done:false}, {name:'狗狗水壺', done:false}]);
-            const weather = ref({ code: 0, temp: 13, range: '5°/13°', rain: '0%', wind: '2級', sunrise: '06:45', advice: '早晚溫差大，穿件外套吧！' });
+            const checklist = ref([{name:'護照', done:false}, {name:'網路卡', done:false}]);
+            const weather = ref({ code: 0, temp: 13, range: '5°/13°', advice: '早晚溫差大，穿件外套吧！' });
             
             const modals = ref({ itinerary: false, expense: false, flight: false });
             const tempItem = ref({});
             const editIndex = ref(-1);
 
             let db = null;
-            const appId = 'dog-travel-pro-final-999';
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'dog-travel-master-v1';
 
+            // 啟動連線邏輯
             const initApp = async () => {
-                setTimeout(() => { if(loading.value) { loading.value = false; loadLocal(); } }, 2000);
                 try {
-                    let config = null;
-                    if (typeof __firebase_config !== 'undefined') config = JSON.parse(__firebase_config);
-                    
-                    if (config) {
-                        const app = initializeApp(config);
-                        const auth = getAuth(app);
-                        db = getFirestore(app);
+                    const firebaseConfig = JSON.parse(__firebase_config);
+                    const app = initializeApp(firebaseConfig);
+                    const auth = getAuth(app);
+                    db = getFirestore(app);
+
+                    // 認證流程優先權
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
                         await signInAnonymously(auth);
-                        onAuthStateChanged(auth, u => { if(u) startSync(); });
-                    } else { throw new Error(); }
-                } catch (e) { loadLocal(); loading.value = false; }
+                    }
+
+                    onAuthStateChanged(auth, u => {
+                        if (u) startSync();
+                    });
+                } catch (e) {
+                    console.error("雲端初始化失敗，切換至離線模式", e);
+                    loading.value = false;
+                }
             };
 
             const startSync = () => {
-                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global'), d => { if(d.exists()) settings.value = d.data(); updateWeather(); loading.value = false; });
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'members'), s => { members.value = s.docs.map(d=>({id:d.id,...d.data()})); });
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'dates'), s => { dates.value = s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.fullDate.localeCompare(b.fullDate)); });
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'itinerary'), s => { itinerary.value = s.docs.map(d=>({id:d.id,...d.data()})); });
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'expenses'), s => { expenses.value = s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.id-a.id); });
-                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'bookings', 'flights'), d => { if(d.exists()) bookings.value.flights = d.data().list; });
-                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'prep', 'checklist'), d => { if(d.exists()) checklist.value = d.data().list; });
+                const docRef = (col, name) => doc(db, 'artifacts', appId, 'public', 'data', col, name);
+                const colRef = (name) => collection(db, 'artifacts', appId, 'public', 'data', name);
+
+                // 全域設定同步
+                onSnapshot(docRef('settings', 'global'), d => { 
+                    if(d.exists()) settings.value = d.data(); 
+                    updateWeather(); 
+                    loading.value = false; 
+                }, e => console.error("Sync Error Settings:", e));
+
+                // 成員同步
+                onSnapshot(colRef('members'), s => { 
+                    members.value = s.docs.map(d=>({id:d.id,...d.data()})); 
+                }, e => console.error("Sync Error Members:", e));
+
+                // 日期同步
+                onSnapshot(colRef('dates'), s => { 
+                    dates.value = s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.fullDate.localeCompare(b.fullDate)); 
+                }, e => console.error("Sync Error Dates:", e));
+
+                // 行程同步
+                onSnapshot(colRef('itinerary'), s => { 
+                    itinerary.value = s.docs.map(d=>({id:d.id,...d.data()})); 
+                }, e => console.error("Sync Error Itinerary:", e));
+
+                // 記帳同步
+                onSnapshot(colRef('expenses'), s => { 
+                    expenses.value = s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.id-a.id); 
+                }, e => console.error("Sync Error Expenses:", e));
+
+                // 機票同步
+                onSnapshot(docRef('bookings', 'flights'), d => { 
+                    if(d.exists()) bookings.value.flights = d.data().list; 
+                });
+
+                // 清單同步
+                onSnapshot(docRef('prep', 'checklist'), d => { 
+                    if(d.exists()) checklist.value = d.data().list; 
+                });
             };
 
-            const saveAppData = () => {
-                if(db) {
-                    setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global'), settings.value);
-                    setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'prep', 'checklist'), { list: checklist.value });
-                    setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'bookings', 'flights'), { list: bookings.value.flights });
-                } else {
-                    const bundle = { settings: settings.value, members: members.value, dates: dates.value, itinerary: itinerary.value, expenses: expenses.value, checklist: checklist.value, flights: bookings.value.flights };
-                    localStorage.setItem('dog_trip_v2_data', JSON.stringify(bundle));
-                }
-            };
+            // 資料修改儲存
+            const cloudDoc = (col, name) => doc(db, 'artifacts', appId, 'public', 'data', col, name);
+            const cloudCol = (name) => collection(db, 'artifacts', appId, 'public', 'data', name);
 
-            const loadLocal = () => {
-                const data = localStorage.getItem('dog_trip_v2_data');
-                if(data) {
-                    const p = JSON.parse(data);
-                    settings.value = p.settings || settings.value;
-                    members.value = p.members || members.value;
-                    dates.value = p.dates || dates.value;
-                    itinerary.value = p.itinerary || itinerary.value;
-                    expenses.value = p.expenses || expenses.value;
-                    checklist.value = p.checklist || checklist.value;
-                    bookings.value.flights = p.flights || bookings.value.flights;
-                }
-            };
+            const saveSettings = () => setDoc(cloudDoc('settings', 'global'), settings.value);
+            const saveChecklist = () => setDoc(cloudDoc('prep', 'checklist'), { list: checklist.value });
+            const saveFlights = () => setDoc(cloudDoc('bookings', 'flights'), { list: bookings.value.flights });
 
-            const updateWeather = async () => {
-                const map = { '釜山': { lat: 35.17, lon: 129.07 }, '台北': { lat: 25.03, lon: 121.56 }, '澎湖': { lat: 23.57, lon: 119.57 } };
-                const c = map[settings.value.city]; if(!c) return;
-                try {
-                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=auto`);
-                    const j = await res.json();
-                    weather.value = { code: j.current_weather.weathercode, temp: Math.round(j.current_weather.temperature), range: `${Math.round(j.daily.temperature_2m_min[0])}°/${Math.round(j.daily.temperature_2m_max[0])}°`, advice: '釜山溫差大，狗狗也要穿暖暖喔！' };
-                } catch(e){}
-            };
+            const addDate = () => addDoc(cloudCol('dates'), { fullDate: '2026-03-10', weekday: '?', displayDate: '03/10' });
+            const updateDate = (d) => setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', d.id), d);
 
-            const addDate = async () => {
-                const d = { fullDate: '2026-03-10', weekday: '?', displayDate: '03/10' };
-                if(db) await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'dates'), d);
-                else { dates.value.push({id: Date.now().toString(), ...d}); saveAppData(); }
-            };
+            const addMember = () => addDoc(cloudCol('members'), { name: '新成員', avatar: '' });
+            const saveMember = (m) => setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'members', m.id), m);
 
-            const updateDate = (d) => {
-                const dobj = new Date(d.fullDate);
-                d.weekday = ['日','一','二','三','四','五','六'][dobj.getDay()];
-                d.displayDate = (dobj.getMonth()+1).toString().padStart(2,'0')+'/'+dobj.getDate().toString().padStart(2,'0');
-                if(db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', d.id), d); else saveAppData();
-            };
-
-            const addMember = async () => {
-                const m = { name: '新成員', avatar: '' };
-                if(db) await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'members'), m);
-                else { members.value.push({id: Date.now().toString(), ...m}); saveAppData(); }
-            };
-            const saveMember = (m) => { if(db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'members', m.id), m); else saveAppData(); };
-            const triggerAvatar = (id) => document.getElementById('file-'+id).click();
             const uploadAvatar = (e, id) => {
                 const r = new FileReader(); r.readAsDataURL(e.target.files[0]);
                 r.onload = (ev) => {
@@ -458,36 +458,43 @@
                 };
             };
 
-            const deleteItem = async (col, id) => {
-                if(confirm('確定刪除？')) {
-                    if(col === 'flight') { bookings.value.flights.splice(id, 1); saveAppData(); return; }
-                    if(db) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
-                    else {
-                        if(col === 'itinerary') itinerary.value = itinerary.value.filter(x=>x.id!==id);
-                        if(col === 'expenses') expenses.value = expenses.value.filter(x=>x.id!==id);
-                        if(col === 'dates') dates.value = dates.value.filter(x=>x.id!==id);
-                        if(col === 'members') members.value = members.value.filter(x=>x.id!==id);
-                        saveAppData();
-                    }
-                }
+            const deleteItem = (col, id) => confirm('確定刪除？') && deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', col, id));
+
+            const confirmAddItinerary = async () => {
+                if(!tempItem.value.name) return;
+                await addDoc(cloudCol('itinerary'), { ...tempItem.value, dateIndex: selectedDateIndex.value });
+                closeModals();
             };
 
+            const confirmAddExpense = async () => {
+                if(!tempItem.value.amount) return;
+                await addDoc(cloudCol('expenses'), { ...tempItem.value, id: Date.now() });
+                closeModals();
+            };
+
+            const updateWeather = async () => {
+                const map = { '釜山': { lat: 35.17, lon: 129.07 }, '台北': { lat: 25.03, lon: 121.56 } };
+                const c = map[settings.value.city]; if(!c) return;
+                try {
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=auto`);
+                    const j = await res.json();
+                    weather.value = { code: j.current_weather.weathercode, temp: Math.round(j.current_weather.temperature), range: `${Math.round(j.daily.temperature_2m_min[0])}°/${Math.round(j.daily.temperature_2m_max[0])}°`, advice: '天氣抓取成功！記得帶狗狗跑跑喔！' };
+                } catch(e){}
+            };
+
+            const triggerAvatar = (id) => document.getElementById('file-'+id).click();
             const openModal = (type) => {
                 tempItem.value = { category: type === 'expense' ? 'food' : 'sightseeing', name: '', amount: '', payer: members.value[0]?.name || '哈米', startTime: '', address: '' };
                 modals.value[type] = true;
             };
             const closeModals = () => { modals.value.itinerary = false; modals.value.expense = false; modals.value.flight = false; };
-            
-            const confirmAddItinerary = async () => { if(!tempItem.value.name) return; const item = { ...tempItem.value, dateIndex: selectedDateIndex.value }; if(db) await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'itinerary'), item); else { itinerary.value.push({id: Date.now().toString(), ...item}); saveAppData(); } closeModals(); };
-            const confirmAddExpense = async () => { if(!tempItem.value.amount) return; const item = { ...tempItem.value, id: Date.now() }; if(db) await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'expenses'), item); else { expenses.value.push(item); saveAppData(); } closeModals(); };
-            
-            // 編輯與新增航班功能
-            const editFlight = (idx) => { editIndex.value = idx; tempItem.value = JSON.parse(JSON.stringify(bookings.value.flights[idx])); modals.value.flight = true; };
+            const editFlight = (idx) => { editIndex.value = idx; tempItem.value = { ...bookings.value.flights[idx] }; modals.value.flight = true; };
             const addFlight = () => { editIndex.value = -1; tempItem.value = { airline: '', flightNo: '', from: '', to: '', depTime: '', arrTime: '', date: '' }; modals.value.flight = true; };
-            const confirmSaveFlight = () => { if(editIndex.value === -1) bookings.value.flights.push(tempItem.value); else bookings.value.flights[editIndex.value] = tempItem.value; saveAppData(); closeModals(); };
-
-            const toggleCheck = (idx) => { checklist.value[idx].done = !checklist.value[idx].done; saveAppData(); };
-            const addChecklistItem = () => { checklist.value.push({name: '行李物品', done: false}); saveAppData(); };
+            const confirmSaveFlight = () => { if(editIndex.value === -1) bookings.value.flights.push(tempItem.value); else bookings.value.flights[editIndex.value] = tempItem.value; saveFlights(); closeModals(); };
+            const deleteFlight = (idx) => { if(confirm('刪除航班？')) { bookings.value.flights.splice(idx, 1); saveFlights(); } };
+            const toggleCheck = (idx) => { checklist.value[idx].done = !checklist.value[idx].done; saveChecklist(); };
+            const addChecklistItem = () => { checklist.value.push({name: '新物品', done: false}); saveChecklist(); };
+            const deleteChecklistItem = (idx) => { checklist.value.splice(idx, 1); saveChecklist(); };
 
             onMounted(() => initApp());
 
@@ -499,7 +506,7 @@
                 getCategoryColor: c => ({sightseeing:'bg-green-500', food:'bg-orange-500', transport:'bg-sky-500'}[c]||'bg-slate-400'),
                 getCategoryIcon: c => ({sightseeing:'fa-camera', food:'fa-utensils', transport:'fa-plane'}[c]||'fa-paw'),
                 getMemberAvatar: n => members.value.find(m=>m.name===n)?.avatar || 'https://via.placeholder.com/100',
-                addDate, updateDate, saveAppData, addMember, saveMember, triggerAvatar, uploadAvatar, deleteItem, openModal, closeModals, confirmAddItinerary, confirmAddExpense, toggleCheck, addChecklistItem, editFlight, addFlight, confirmSaveFlight
+                addDate, updateDate, saveSettings, addMember, saveMember, triggerAvatar, uploadAvatar, deleteItem, openModal, closeModals, confirmAddItinerary, confirmAddExpense, toggleCheck, addChecklistItem, deleteChecklistItem, editFlight, addFlight, confirmSaveFlight, deleteFlight, saveChecklist
             };
         }
     }).mount('#app');
