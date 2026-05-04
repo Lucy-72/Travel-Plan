@@ -26,7 +26,7 @@
         
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* 視覺風格還原 */
+        /* 視覺風格 */
         .day-card.active { 
             background: #3ba2e3; color: white; 
             transform: translateY(-5px); 
@@ -71,8 +71,8 @@
         }
 
         .input-std { 
-            width: 100%; background: #f8fafc; border-radius: 1.25rem; 
-            padding: 1rem 1.25rem; outline: none; border: 2px solid transparent; font-weight: bold; 
+            width: 100%; background: #f8fafc; border-radius: 1rem; 
+            padding: 0.8rem 1rem; outline: none; border: 2px solid transparent; font-weight: bold; 
         }
         .input-std:focus { border-color: #3ba2e3; }
         
@@ -165,7 +165,7 @@
                         </div>
                         <div class="flex-1">
                             <div class="flex justify-between items-start">
-                                <h4 class="font-black text-2xl text-slate-800 tracking-tight">{{ item.name }}</h4>
+                                <h4 class="font-black text-2xl text-slate-800 leading-tight tracking-tight">{{ item.name }}</h4>
                                 <span class="text-xs font-black text-slate-300">{{ item.startTime }}</span>
                             </div>
                             <p class="text-sm text-slate-400 font-medium mt-2 flex items-center gap-2">
@@ -235,12 +235,13 @@
                         <button @click="addChecklistItem" class="text-sm font-black text-sky-50 bg-sky-50 px-5 py-2 rounded-2xl">+ 新增</button>
                     </div>
                     <div class="grid grid-cols-1 gap-4">
-                        <div v-for="(item, idx) in checklist" :key="item.id" @click="toggleCheck(item)" class="flex items-center gap-5 p-5 rounded-[28px] transition-all cursor-pointer" :class="item.done ? 'opacity-40 bg-slate-50' : 'bg-white border border-slate-100 shadow-sm'">
+                        <div v-for="(item, idx) in checklist" :key="item.id" @click="toggleCheck(item)" class="flex items-center gap-4 p-4 rounded-3xl cursor-pointer transition-all" :class="item.done ? 'opacity-40 bg-slate-50' : 'bg-white border border-slate-100 shadow-sm'">
                             <div class="w-8 h-8 rounded-xl border-2 flex items-center justify-center shrink-0" :class="item.done ? 'bg-sky-500 border-sky-500 text-white' : 'border-slate-200'">
                                 <i v-if="item.done" class="fa-solid fa-check text-xs"></i>
                             </div>
-                            <input v-model="item.name" @blur="updateChecklistItem(item)" @click.stop class="flex-1 bg-transparent border-none font-bold text-slate-700 outline-none p-0 focus:ring-0 text-lg" :class="item.done ? 'line-through' : ''">
-                            <button @click.stop="deleteItem('checklist', item.id)" class="text-slate-200 hover:text-red-400"><i class="fa-solid fa-xmark"></i></button>
+                            <!-- 行李名稱修改框 -->
+                            <input v-model="item.name" @blur="updateChecklistItem(item)" @click.stop class="flex-1 bg-transparent border-none font-bold text-slate-700 outline-none p-0 focus:ring-0 text-lg" :class="item.done ? 'line-through text-slate-400' : ''">
+                            <button @click.stop="deleteItem('checklist', item.id)" class="text-slate-200 hover:text-red-400 p-2"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                     </div>
                 </div>
@@ -286,7 +287,7 @@
             <div v-if="currentTab === 'info'" class="space-y-9 pb-10">
                 <section class="bg-white rounded-[45px] p-9 border border-slate-100 shadow-sm space-y-7">
                     <h3 class="font-black text-2xl text-slate-800">旅遊基本設定</h3>
-                    <div class="space-y-5">
+                    <div class="space-y-4">
                         <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-2 uppercase tracking-widest">當前城市 (天氣自動抓取)</label><input v-model="settings.city" @blur="handleCityChange" class="input-std text-sky-600"></div>
                         <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-2 uppercase tracking-widest">行程標題</label><input v-model="settings.tripTitle" @blur="saveSettings" class="input-std text-[#41888a]"></div>
                         <div><label class="text-[11px] font-black text-slate-300 block mb-2 px-2 uppercase tracking-widest">目標幣別/匯率</label>
@@ -306,30 +307,34 @@
                         <h3 class="font-black text-2xl text-slate-800">天數維護</h3>
                         <button @click="addDate" class="text-xs font-black bg-sky-50 text-sky-600 px-6 py-3 rounded-2xl shadow-sm">+ 新增</button>
                     </div>
-                    <div class="space-y-5">
-                        <div v-for="(d, i) in dates" :key="d.id" class="flex items-center gap-5 bg-slate-50 p-6 rounded-[30px] group">
-                            <span class="text-xs font-black text-sky-400 w-10 text-center uppercase">D{{ i+1 }}</span>
-                            <input type="date" v-model="d.fullDate" @change="updateDayInfo(d)" class="flex-1 bg-transparent font-black outline-none text-slate-700 text-lg">
-                            <button @click="deleteItem('dates', d.id)" class="text-slate-200 hover:text-red-400"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="space-y-4">
+                        <div v-for="(d, i) in dates" :key="d.id" class="flex items-center gap-4 bg-slate-50 p-5 rounded-[28px]">
+                            <span class="text-xs font-black text-sky-400 w-8 text-center uppercase">D{{ i+1 }}</span>
+                            <!-- 日期選擇修正 -->
+                            <input type="date" v-model="d.fullDate" @change="updateDayInfo(d)" class="flex-1 bg-transparent font-black outline-none text-slate-700 text-lg p-0">
+                            <button @click="deleteItem('dates', d.id)" class="text-red-200 p-2"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                 </section>
 
                 <section class="bg-white rounded-[45px] p-9 border border-slate-100 shadow-sm">
                     <div class="flex justify-between items-center mb-8 px-2">
-                        <h3 class="font-black text-2xl text-slate-800">成員頭像維護</h3>
+                        <h3 class="font-black text-2xl text-slate-800">成員與頭像</h3>
                         <button @click="addMember" class="text-xs font-black bg-sky-50 text-sky-600 px-6 py-3 rounded-2xl shadow-sm">+ 新增成員</button>
                     </div>
                     <div class="space-y-6">
                         <div v-for="m in members" :key="m.id" class="flex items-center gap-6 bg-slate-50 p-6 rounded-[35px] group">
+                            <!-- 頭像上傳修正 -->
                             <div class="relative w-16 h-16 shrink-0 cursor-pointer overflow-hidden rounded-full border-4 border-white shadow-md bg-white" @click="triggerAvatar(m.id)">
                                 <img v-if="m.avatar" :src="m.avatar" class="w-full h-full object-cover">
                                 <div v-else class="w-full h-full flex items-center justify-center text-slate-300 text-3xl"><i class="fa-solid fa-user"></i></div>
                                 <div class="absolute inset-0 bg-black/40 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-camera"></i></div>
                                 <input type="file" :id="'file-'+m.id" hidden @change="e => uploadAvatar(e, m.id)" accept="image/*">
                             </div>
-                            <div class="flex-1"><input v-model="m.name" @blur="saveMember(m)" class="bg-transparent border-none font-black text-2xl outline-none text-slate-800 w-full p-0"></div>
-                            <button @click="deleteItem('members', m.id)" class="text-slate-200 hover:text-red-400"><i class="fa-solid fa-circle-xmark text-3xl"></i></button>
+                            <div class="flex-1">
+                                <input v-model="m.name" @blur="saveMember(m)" @change="saveMember(m)" class="bg-transparent border-none font-black text-2xl outline-none text-slate-800 w-full p-0">
+                            </div>
+                            <button @click="deleteItem('members', m.id)" class="text-red-200 p-2"><i class="fa-solid fa-circle-xmark text-3xl"></i></button>
                         </div>
                     </div>
                 </section>
@@ -345,7 +350,7 @@
         <nav class="bottom-nav">
             <button v-for="t in [{id:'itinerary',l:'行程',i:'fa-calendar-days'},{id:'prep',l:'準備',i:'fa-suitcase-rolling'},{id:'expenses',l:'記帳',i:'fa-wallet'},{id:'info',l:'設定',i:'fa-users-gear'}]" :key="t.id" @click="currentTab = t.id" class="flex flex-col items-center gap-1.5 transition-all" :class="currentTab === t.id ? 'text-[#41888a] scale-110' : 'text-slate-300'">
                 <i class="fa-solid text-2xl" :class="t.i"></i>
-                <span class="text-[10px] font-black uppercase">{{ t.l }}</span>
+                <span class="text-[10px] font-black uppercase tracking-tighter">{{ t.l }}</span>
             </button>
         </nav>
 
@@ -355,16 +360,16 @@
                 <h3 class="text-3xl font-black text-[#41888a]">新增計畫</h3>
                 <div class="flex gap-4">
                     <select v-model="tempItem.category" class="w-1/3 bg-slate-50 rounded-2xl p-4 font-bold border-none outline-none"><option value="sightseeing">相機</option><option value="food">餐飲</option><option value="transport">交通</option></select>
-                    <input placeholder="時間 (15:00)" v-model="tempItem.startTime" class="w-2/3 bg-slate-50 rounded-2xl p-4 font-bold">
+                    <input placeholder="時間 (15:00)" v-model="tempItem.startTime" class="w-2/3 bg-slate-50 rounded-2xl p-4 font-bold outline-none">
                 </div>
-                <input placeholder="地點標題" v-model="tempItem.name" class="w-full bg-slate-50 rounded-2xl p-4 font-black text-xl">
-                <input placeholder="地點地址" v-model="tempItem.address" class="w-full bg-slate-50 rounded-2xl p-4">
+                <input placeholder="地點標題" v-model="tempItem.name" class="w-full bg-slate-50 rounded-2xl p-4 font-black text-xl outline-none">
+                <input placeholder="地點地址" v-model="tempItem.address" class="w-full bg-slate-50 rounded-2xl p-4 outline-none">
                 <div class="bg-sky-50 p-5 rounded-3xl space-y-2">
                     <label class="text-[10px] font-black text-sky-400 ml-1">GOOGLE MAP 分享連結</label>
                     <input placeholder="貼上網址" v-model="tempItem.mapUrl" class="w-full bg-white rounded-xl p-3 text-xs font-bold text-sky-600 outline-none">
                 </div>
                 <div class="flex gap-5 pt-4">
-                    <button @click="closeModals" class="flex-1 py-5 bg-slate-100 rounded-3xl font-bold">取消</button>
+                    <button @click="closeModals" class="flex-1 py-5 bg-slate-100 rounded-3xl font-bold text-slate-400">取消</button>
                     <button @click="confirmAddItinerary" class="flex-1 py-5 bg-[#3ba2e3] text-white rounded-3xl font-black">儲存</button>
                 </div>
             </div>
@@ -375,9 +380,9 @@
                 <h3 class="text-3xl font-black text-slate-800">記一筆支出</h3>
                 <div class="flex gap-4">
                     <select v-model="tempItem.category" class="w-1/3 bg-slate-50 rounded-2xl p-4 font-bold border-none outline-none"><option value="food">餐飲</option><option value="shopping">購物</option><option value="other">其他</option></select>
-                    <input type="number" placeholder="金額 (TWD)" v-model="tempItem.amount" class="w-2/3 bg-slate-50 rounded-2xl p-4 font-black text-4xl">
+                    <input type="number" placeholder="金額" v-model="tempItem.amount" class="w-2/3 bg-slate-50 rounded-2xl p-4 font-black text-4xl outline-none">
                 </div>
-                <input placeholder="項目內容" v-model="tempItem.name" class="w-full bg-slate-50 rounded-2xl p-4 font-black text-xl">
+                <input placeholder="項目內容" v-model="tempItem.name" class="w-full bg-slate-50 rounded-2xl p-4 font-black text-xl outline-none">
                 <select v-model="tempItem.payer" class="w-full bg-slate-50 rounded-2xl p-4 font-bold text-slate-500">
                     <option v-for="m in members" :key="m.id" :value="m.name">{{ m.name }} 支付</option>
                 </select>
@@ -394,11 +399,11 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="col-span-2"><label class="text-[10px] font-black text-slate-300 ml-2">航空公司</label><input v-model="tempItem.airline" class="input-std"></div>
                     <div class="col-span-2"><label class="text-[10px] font-black text-slate-300 ml-2">航班編號</label><input v-model="tempItem.flightNo" class="input-std uppercase"></div>
-                    <div><label class="text-[10px] font-black text-slate-300 ml-2">起飛 (如 KHH)</label><input v-model="tempItem.from" class="input-std uppercase"></div>
-                    <div><label class="text-[10px] font-black text-slate-300 ml-2">抵達 (如 MZG)</label><input v-model="tempItem.to" class="input-std uppercase"></div>
+                    <div><label class="text-[10px] font-black text-slate-300 ml-2">起飛</label><input v-model="tempItem.from" class="input-std uppercase"></div>
+                    <div><label class="text-[10px] font-black text-slate-300 ml-2">抵達</label><input v-model="tempItem.to" class="input-std uppercase"></div>
                     <div><label class="text-[10px] font-black text-slate-300 ml-2">起飛時間</label><input v-model="tempItem.depTime" class="input-std"></div>
                     <div><label class="text-[10px] font-black text-slate-300 ml-2">抵達時間</label><input v-model="tempItem.arrTime" class="input-std"></div>
-                    <div class="col-span-2"><label class="text-[10px] font-black text-slate-300 ml-2">搭乘日期</label><input v-model="tempItem.date" class="input-std"></div>
+                    <div class="col-span-2"><label class="text-[10px] font-black text-slate-300 ml-2">日期</label><input v-model="tempItem.date" class="input-std"></div>
                 </div>
                 <div class="flex gap-5 pt-4">
                     <button @click="closeModals" class="flex-1 py-5 bg-slate-100 rounded-3xl font-bold text-slate-400">取消</button>
@@ -427,7 +432,7 @@
             const isEditMode = ref(false);
 
             // 資料狀態
-            const settings = ref({ tripTitle: '澎湖冒險之旅', targetDate: '2026-05-28', city: '澎湖', currency: 'TWD' });
+            const settings = ref({ tripTitle: '澎冒大冒險', targetDate: '2026-05-28', city: '澎湖', currency: 'TWD' });
             const weather = ref({ temp: 25, status: '晴朗', range: '24°/27°', rain: '5%', wind: '3級', sunrise: '05:30' });
             const members = ref([]);
             const dates = ref([]);
@@ -455,7 +460,7 @@
             let db = null;
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'dog-travel-pro-2026';
 
-            // --- Firebase 初始化 (Rule 3) ---
+            // --- Firebase 初始化 ---
             const initFirebase = async () => {
                 try {
                     const firebaseConfig = JSON.parse(__firebase_config);
@@ -478,19 +483,17 @@
                 }
             };
 
-            // --- 雲端監聽實時同步 (Rule 1 & 2) ---
+            // --- 實時同步 ---
             const startSync = () => {
                 const docRef = (col, name) => doc(db, 'artifacts', appId, 'public', 'data', col, name);
                 const colRef = (name) => collection(db, 'artifacts', appId, 'public', 'data', name);
 
-                // 設定同步
                 onSnapshot(docRef('settings', 'global'), d => { 
                     if(d.exists()) settings.value = d.data(); 
                     fetchWeather();
                     loading.value = false;
                 }, () => loading.value = false);
 
-                // 集合同步 (Rule 2: 不使用複雜查詢，在 JS 過濾)
                 onSnapshot(colRef('members'), s => members.value = s.docs.map(d => ({id:d.id, ...d.data()})), err => console.error(err));
                 onSnapshot(colRef('dates'), s => dates.value = s.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b)=>a.fullDate.localeCompare(b.fullDate)));
                 onSnapshot(colRef('itinerary'), s => itinerary.value = s.docs.map(d => ({id:d.id, ...d.data()})));
@@ -499,27 +502,32 @@
                 onSnapshot(colRef('expenses'), s => expenses.value = s.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b)=>b.id-a.id));
             };
 
-            // --- CRUD 動作 ---
+            // --- 動作方法 ---
             const saveSettings = () => setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global'), settings.value);
             
-            const addDate = () => addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'dates'), { fullDate: '2026-05-28', weekday: '?', displayDate: '05/28' });
+            const addDate = () => addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'dates'), { fullDate: '2026-05-28', weekday: '四', displayDate: '05/28' });
             const updateDayInfo = (d) => {
                 const dobj = new Date(d.fullDate);
+                if (isNaN(dobj)) return;
                 d.weekday = ['日','一','二','三','四','五','六'][dobj.getDay()];
                 d.displayDate = `${(dobj.getMonth()+1).toString().padStart(2,'0')}/${dobj.getDate().toString().padStart(2,'0')}`;
                 setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dates', d.id), d);
             };
 
-            const addMember = () => addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'members'), { name: '成員', avatar: '' });
+            const addMember = () => addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'members'), { name: '新成員', avatar: '' });
             const saveMember = (m) => setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'members', m.id), m);
 
             const triggerAvatar = (id) => document.getElementById('file-'+id).click();
             const uploadAvatar = (e, id) => {
-                const r = new FileReader(); r.readAsDataURL(e.target.files[0]);
+                const file = e.target.files[0];
+                if (!file) return;
+                const r = new FileReader(); r.readAsDataURL(file);
                 r.onload = (ev) => {
                     const m = members.value.find(x => x.id === id);
-                    m.avatar = ev.target.result;
-                    saveMember(m);
+                    if (m) {
+                        m.avatar = ev.target.result;
+                        saveMember(m);
+                    }
                 };
             };
 
@@ -554,7 +562,10 @@
 
             const addChecklistItem = () => addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'checklist'), { name: '新物品', done: false });
             const toggleCheck = (item) => setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'checklist', item.id), { ...item, done: !item.done });
-            const updateChecklistItem = (item) => setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'checklist', item.id), item);
+            const updateChecklistItem = (item) => {
+                if (!item.id) return;
+                setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'checklist', item.id), item);
+            };
 
             const fetchWeather = async () => {
                 const c = cityCoords[settings.value.city]; if(!c) return;
