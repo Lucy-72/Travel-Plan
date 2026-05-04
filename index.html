@@ -40,8 +40,8 @@
         .ticket-divider::before { left: -10px; }
         .ticket-divider::after { right: -10px; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 10px 35px 10px; border-top: 1px solid #e2e8f0; z-index: 100; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; font-size: 11px; font-weight: bold; transition: all 0.2s; }
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 5px 35px 5px; border-top: 1px solid #e2e8f0; z-index: 100; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; font-size: 10px; font-weight: bold; transition: all 0.2s; }
         .nav-item.active { color: #3ba2e3; transform: scale(1.1); }
         
         .fab { position: fixed; bottom: 120px; right: 25px; width: 70px; height: 70px; background: #f4d06f; color: #2d3748; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 10px 25px rgba(244, 208, 111, 0.4); z-index: 90; transition: all 0.2s; }
@@ -53,6 +53,9 @@
         
         .sync-badge { animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .check-item { transition: all 0.2s; cursor: pointer; }
+        .check-item.done { opacity: 0.4; background-color: #f8fafc; }
     </style>
 </head>
 <body>
@@ -65,7 +68,7 @@
 
     <div v-if="loading" class="h-screen flex flex-col items-center justify-center text-[#3ba2e3] gap-5">
         <i class="fa-solid fa-dog fa-bounce text-7xl"></i>
-        <p class="font-black text-xl tracking-widest uppercase">狗狗管家正在載入雲端紀錄...</p>
+        <p class="font-black text-xl tracking-widest uppercase">狗狗管家正在同步資料庫...</p>
     </div>
 
     <div v-else class="max-w-[480px] mx-auto min-h-screen relative pb-40 px-6">
@@ -77,7 +80,7 @@
                 <p class="text-slate-400 text-sm font-bold mt-1 flex items-center gap-2">
                     <i class="fa-solid fa-location-dot text-[#3ba2e3]"></i> {{ settings.city }} • {{ dates.length }}日遊
                     <span v-if="isCloud" class="text-[10px] bg-sky-100 text-sky-600 px-2 py-0.5 rounded-full font-black flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 bg-sky-500 rounded-full sync-badge"></span> 雲端已同步
+                        <span class="w-1.5 h-1.5 bg-sky-500 rounded-full sync-badge"></span> 雲端連線中
                     </span>
                 </p>
             </div>
@@ -190,7 +193,32 @@
                 </div>
             </div>
 
-            <!-- 3. 記帳分頁 -->
+            <!-- 3. 行李準備分頁 -->
+            <div v-if="currentTab === 'prep'" class="space-y-7 animate-in fade-in">
+                <div class="bg-sky-500 rounded-[40px] p-10 text-white shadow-xl relative overflow-hidden">
+                    <i class="fa-solid fa-suitcase-rolling absolute -top-8 -right-8 opacity-10 text-[180px] rotate-12"></i>
+                    <p class="text-xs font-black opacity-60 uppercase tracking-widest">距離出發還有</p>
+                    <h2 class="text-6xl font-black mt-3 tracking-tighter">{{ countdown }} 天</h2>
+                </div>
+                
+                <div class="bg-white rounded-[45px] p-9 border border-slate-100 shadow-sm space-y-7">
+                    <div class="flex justify-between items-center px-2">
+                        <h3 class="font-black text-2xl text-slate-800">行李清單</h3>
+                        <button @click="addChecklistItem" class="text-xs font-black text-sky-500 bg-sky-50 px-5 py-2.5 rounded-2xl">+ 新增</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div v-for="item in checklist" :key="item.id" @click="toggleCheck(item)" class="check-item flex items-center gap-5 p-5 rounded-[30px] border border-slate-100" :class="{'done': item.done}">
+                            <div class="w-8 h-8 rounded-xl border-2 flex items-center justify-center shrink-0" :class="item.done ? 'bg-sky-500 border-sky-500 text-white' : 'border-slate-200'">
+                                <i v-if="item.done" class="fa-solid fa-check text-xs"></i>
+                            </div>
+                            <input v-model="item.name" @blur="updateChecklistItem(item)" @click.stop class="flex-1 bg-transparent border-none font-bold text-lg outline-none p-0 focus:ring-0" :class="item.done ? 'line-through text-slate-400' : 'text-slate-700'">
+                            <button @click.stop="deleteItem('checklist', item.id)" class="text-slate-200 hover:text-red-400 p-2"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 記帳分頁 -->
             <div v-if="currentTab === 'expenses'" class="space-y-7 animate-in fade-in">
                 <div class="bg-yellow-400 rounded-[45px] p-10 text-slate-800 shadow-xl relative overflow-hidden">
                     <i class="fa-solid fa-coins absolute -top-8 -right-8 opacity-10 text-[180px] rotate-12"></i>
@@ -212,7 +240,7 @@
                 </div>
             </div>
 
-            <!-- 4. 設定分頁 (日期、成員管理) -->
+            <!-- 5. 設定分頁 (日期、成員管理) -->
             <div v-if="currentTab === 'info'" class="space-y-8 pb-10 animate-in fade-in">
                 <section class="bg-white rounded-[45px] p-8 border border-slate-100 shadow-sm space-y-6">
                     <h3 class="font-black text-2xl text-slate-800">基礎設定</h3>
@@ -257,6 +285,7 @@
         <nav class="bottom-nav">
             <button @click="currentTab = 'itinerary'" class="nav-item" :class="{'active': currentTab === 'itinerary'}"><i class="fa-solid fa-calendar-days text-xl"></i><span>行程</span></button>
             <button @click="currentTab = 'booking'" class="nav-item" :class="{'active': currentTab === 'booking'}"><i class="fa-solid fa-ticket text-xl"></i><span>預訂</span></button>
+            <button @click="currentTab = 'prep'" class="nav-item" :class="{'active': currentTab === 'prep'}"><i class="fa-solid fa-suitcase-rolling text-xl"></i><span>準備</span></button>
             <button @click="currentTab = 'expenses'" class="nav-item" :class="{'active': currentTab === 'expenses'}"><i class="fa-solid fa-wallet text-xl"></i><span>記帳</span></button>
             <button @click="currentTab = 'info'" class="nav-item" :class="{'active': currentTab === 'info'}"><i class="fa-solid fa-sliders text-xl"></i><span>設定</span></button>
         </nav>
@@ -345,6 +374,7 @@
             const settings = ref({ tripTitle: '狗狗澎湖大冒險', targetDate: '2026-05-28', city: '澎湖' });
             const dates = ref([]);
             const itinerary = ref([]);
+            const checklist = ref([]);
             const expenses = ref([]);
             const bookings = ref({ flights: [], hotels: [] });
             const members = ref([]);
@@ -376,6 +406,7 @@
                 unsubscribeList.push(onSnapshot(getDocRef('settings', 'global'), d => { if(d.exists()) settings.value = d.data(); fetchWeather(); loading.value = false; }));
                 unsubscribeList.push(onSnapshot(getColRef('dates'), s => dates.value = s.docs.map(d => ({id:d.id, ...d.data()})).sort((a,b)=>a.fullDate.localeCompare(b.fullDate))));
                 unsubscribeList.push(onSnapshot(getColRef('itinerary'), s => itinerary.value = s.docs.map(d => ({id:d.id, ...d.data()}))));
+                unsubscribeList.push(onSnapshot(getColRef('checklist'), s => checklist.value = s.docs.map(d => ({id:d.id, ...d.data()}))));
                 unsubscribeList.push(onSnapshot(getColRef('expenses'), s => expenses.value = s.docs.map(d => ({id:d.id, ...d.data()}))));
                 unsubscribeList.push(onSnapshot(getDocRef('bookings', 'main'), d => { if(d.exists()) bookings.value = d.data(); }));
                 unsubscribeList.push(onSnapshot(getColRef('members'), s => members.value = s.docs.map(d => ({id:d.id, ...d.data()}))));
@@ -415,6 +446,10 @@
                 closeModals();
             };
 
+            const addChecklistItem = () => { addDoc(collection(db, 'artifacts', appId, 'public', 'data', syncId.value + "_checklist"), { name: '新物品', done: false }); };
+            const toggleCheck = (item) => { item.done = !item.done; setDoc(doc(db, 'artifacts', appId, 'public', 'data', syncId.value + "_checklist", item.id), { name: item.name, done: item.done }); };
+            const updateChecklistItem = (item) => { setDoc(doc(db, 'artifacts', appId, 'public', 'data', syncId.value + "_checklist", item.id), { name: item.name, done: item.done }); };
+
             const removeBooking = (type, idx) => {
                 const newBookings = { ...bookings.value };
                 newBookings[type].splice(idx, 1);
@@ -448,12 +483,12 @@
             onMounted(() => initApp());
 
             return {
-                isCloud, loading, currentTab, bookingSubTab, selectedDateIndex, settings, weather, dates, itinerary, expenses, bookings, members, modals, tempItem, errorMsg, syncId,
-                totalExpenses: computed(() => expenses.value.reduce((s, e) => s + Number(e.amount), 0)),
+                isCloud, loading, currentTab, bookingSubTab, selectedDateIndex, settings, weather, dates, itinerary, checklist, expenses, bookings, members, modals, tempItem, errorMsg, syncId,
+                countdown: computed(() => Math.max(0, Math.ceil((new Date(settings.value.targetDate)-new Date())/86400000))),
                 currentDayItinerary: computed(() => itinerary.value.filter(i => i.dateIndex === selectedDateIndex.value).sort((a,b)=>a.startTime.localeCompare(b.startTime))),
                 getCategoryColor: c => ({sightseeing:'bg-emerald-500', food:'bg-orange-500', transport:'bg-sky-500'}[c]||'bg-slate-400'),
                 getCategoryIcon: c => ({sightseeing:'fa-camera', food:'fa-utensils', transport:'fa-plane'}[c]||'fa-paw'),
-                saveSettings, addDate, updateDayInfo, deleteItem, openModal, closeModals, confirmAddItinerary, confirmAddExpense, openAddBooking, confirmAddBooking, removeBooking, addMember, saveMember, triggerAvatar, uploadAvatar, handleCityChange
+                saveSettings, addDate, updateDayInfo, deleteItem, openModal, closeModals, confirmAddItinerary, confirmAddExpense, openAddBooking, confirmAddBooking, addChecklistItem, toggleCheck, updateChecklistItem, removeBooking, addMember, saveMember, triggerAvatar, uploadAvatar, handleCityChange
             };
         }
     }).mount('#app');
